@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>hanbiz_logo_ending_paper — 로고 조립 엔딩(크림 바탕). 로고는 주신 원본 이미지 조각(tools/scenes/hanbiz_logo_parts.py)</title>
+<style>
+  /* 글꼴 @font-face 는 tools/html_motion.py 가 주입한다("HM Pretendard"). */
+  html, body { margin: 0; padding: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  :root { --bg: #F6F4EF; --ink: #060606; --acc: #0639A4; --wave: #0639A4; --btn-border: transparent; --word-filter: none; }
+  .abs { position: absolute; }
+  .hud { font-family: "HM Pretendard", "Noto Sans KR", sans-serif; color: var(--ink); }
+  .br { position: absolute; width: 44px; height: 44px; border: 0 solid var(--ink); opacity: .55; }
+  #brTL { left: 48px; top: 48px; border-width: 3px 0 0 3px; }
+  #brTR { right: 48px; top: 48px; border-width: 3px 3px 0 0; }
+  #brBL { left: 48px; bottom: 48px; border-width: 0 0 3px 3px; }
+  #brBR { right: 48px; bottom: 48px; border-width: 0 3px 3px 0; }
+  #label { left: 0; width: 1080px; top: 96px; text-align: center; font-size: 26px; font-weight: 500; letter-spacing: .22em; opacity: .6; }
+  .dash { position: absolute; bottom: 104px; height: 4px; width: 56px; background: var(--ink); }
+  .dashbg { opacity: .18; }
+  #stage { left: 298px; top: 510px; width: 484px; height: 501px; }
+  .part { position: absolute; left: -39.3px; top: -29.5px; width: 560px; height: 560px; will-change: transform; }
+  .word { position: absolute; left: 140px; width: 800px; filter: var(--word-filter); }
+  #wordKo { top: 1110px; height: 91px; }
+  #wordEn { top: 1225px; height: 52px; }
+  #btn { left: 250px; top: 1388px; width: 580px; height: 124px; border-radius: 62px; background: var(--acc);
+         border: 2px solid var(--btn-border); box-sizing: border-box; display: flex; align-items: center; justify-content: center;
+         font-family: "HM Pretendard", "Noto Sans KR", sans-serif; font-weight: 700; font-size: 46px; letter-spacing: -0.01em; color: #fff; white-space: nowrap; }
+  .ring { border: 4px solid var(--wave); box-sizing: border-box; pointer-events: none; }
+  #ringSym { border-radius: 50%; width: 560px; height: 560px; left: 260px; top: 480px; }
+  #ringBtn { left: 250px; top: 1388px; width: 580px; height: 124px; border-radius: 62px; }
+  #hud { width: 1080px; height: 1920px; left: 0; top: 0; }   /* 10-08 설계자: HUD 상자 크기가 0 이라 모서리 괄호가 왼쪽 위에만 보이던 것 고침 */
+</style>
+</head>
+<body>
+<div class="abs hud" id="hud">
+  <div class="br" id="brTL"></div><div class="br" id="brTR"></div><div class="br" id="brBL"></div><div class="br" id="brBR"></div>
+  <div class="abs" id="label" data-box="label">HANBIZ — 08 / 08</div>
+</div>
+<div class="abs ring" id="ringSym"></div>
+<div class="abs" id="stage" data-box="symbol">
+  <img class="part" id="partBlue" src="../../../소재/브랜드/logo_part_blue.png">
+  <img class="part" id="partWarm" src="../../../소재/브랜드/logo_part_warm.png">
+</div>
+<img class="word" id="wordKo" src="../../../소재/브랜드/logo_word_ko.png" data-box="wordKo">
+<img class="word" id="wordEn" src="../../../소재/브랜드/logo_word_en.png" data-box="wordEn">
+<div class="abs ring" id="ringBtn"></div>
+<div class="abs" id="btn" data-box="cta">상담 신청하기</div><!-- «상담 신청하기» = 시안 문구(사장님 확인 전) -->
+<script>
+// ── 장면 계약 ─────────────────────────────────────────────
+window.W = 1080; window.H = 1920; window.FPS = 29.97; window.DURATION = 4.0;
+
+// 테마(크림/남색 파일만 이 줄이 다르다)
+const THEME = { name: 'paper', bg: '#F6F4EF', ink: '#060606', acc: '#0639A4', wave: '#0639A4', btnBorder: 'transparent', wordFilter: 'none' };
+document.documentElement.style.setProperty('--bg', THEME.bg);
+document.documentElement.style.setProperty('--ink', THEME.ink);
+document.documentElement.style.setProperty('--acc', THEME.acc);
+document.documentElement.style.setProperty('--wave', THEME.wave);
+document.documentElement.style.setProperty('--btn-border', THEME.btnBorder);
+document.documentElement.style.setProperty('--word-filter', THEME.wordFilter);
+
+const F = 1001 / 30000;
+const T = {
+  blue: 0.15, warm: 0.25, fly: 0.85,   // 두 획 날아오기(감속 착지, 오버슈트 0)
+  lock: 1.10,                          // 맞물림 + 원형 파동
+  move: 1.25, moveDur: 0.6,            // 심볼 위로 80px
+  ko: 1.40, koDur: 0.65,               // 한글 줄 왼→오 와이프
+  en: 2.05, enDur: 0.30,               // 영문 줄 페이드
+  cta: 2.65, ctaDur: 0.5,              // CTA 올라옴 → 파동
+  wave: 0.7,
+};
+window.PALETTE = [THEME.bg, THEME.ink, THEME.acc];
+window.EVENTS = [
+  { t: T.blue, role: 'logo_in',   id: 'symbol', text: 'blue+warm stroke fly-in' },
+  { t: T.lock, role: 'lock_pulse', id: 'symbol' },
+  { t: T.ko,   role: 'word_in',   id: 'wordKo', text: '한국중소기업 비즈니스센터' },
+  { t: T.en,   role: 'sub_in',    id: 'wordEn', text: 'Korea Company Business Support Center' },
+  { t: T.cta,  role: 'cta_in',    id: 'cta',    text: '상담 신청하기' },
+  { t: T.cta + T.ctaDur, role: 'cta_pulse', id: 'cta' },
+];
+
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eoQ = x => { x = clamp(x); return 1 - Math.pow(1 - x, 4); };   // 감속(착지 구간이 길고 느림), 오버슈트 없음
+const eoC = x => { x = clamp(x); return 1 - Math.pow(1 - x, 3); };
+
+let built = false, els = {};
+async function build() {
+  if (built) return; built = true;
+  ['hud','stage','partBlue','partWarm','wordKo','wordEn','btn','ringSym','ringBtn','brTL','brTR','brBL','brBR','label'].forEach(id => els[id] = document.getElementById(id));
+  // 진행 대시 8칸(바닥 줄) — 마지막 칸이 영상 길이만큼 채워진다
+  const hud = els.hud; els.dashFill = [];
+  for (let i = 0; i < 8; i++) {
+    const left = 540 - (8 * 56 + 7 * 12) / 2 + i * 68;
+    const bg = document.createElement('div'); bg.className = 'dash dashbg'; bg.style.left = left + 'px'; hud.appendChild(bg);
+    const fg = document.createElement('div'); fg.className = 'dash'; fg.style.left = left + 'px';
+    if (i < 7) fg.style.opacity = .55; else { fg.style.transformOrigin = '0 50%'; }
+    hud.appendChild(fg); els.dashFill.push(fg);
+  }
+  await Promise.all([els.partBlue, els.partWarm, els.wordKo, els.wordEn].map(im => im.decode()));
+}
+
+function ring(el, p, scaleTo) {      // p: 0~1
+  const on = p > 0 && p < 1;
+  el.style.display = on ? 'block' : 'none';
+  if (!on) return;
+  const e = eoC(p);
+  el.style.opacity = (0.55 * (1 - p)).toFixed(4);
+  el.style.transform = `scale(${(0.35 + (scaleTo - 0.35) * e).toFixed(4)})`;
+}
+
+async function seek(t) {
+  await document.fonts.ready;
+  await build();
+
+  // HUD: 0~0.3 페이드 인
+  els.hud.style.opacity = eoC(t / 0.3).toFixed(4);
+  els.dashFill[7].style.transform = `scaleX(${clamp(t / window.DURATION).toFixed(4)})`;
+
+  // (1) 두 획 날아와 맞물림
+  const pb = eoQ((t - T.blue) / T.fly), pw = eoQ((t - T.warm) / T.fly);
+  const ob = clamp((t - T.blue) / (4 * F)), ow = clamp((t - T.warm) / (4 * F));
+  els.partBlue.style.opacity = ob;
+  els.partWarm.style.opacity = ow;
+  els.partBlue.style.transform = `translate(${(700 * (1 - pb)).toFixed(2)}px, ${(-820 * (1 - pb)).toFixed(2)}px) rotate(${(80 * (1 - pb)).toFixed(3)}deg)`;
+  els.partWarm.style.transform = `translate(${(-700 * (1 - pw)).toFixed(2)}px, ${(780 * (1 - pw)).toFixed(2)}px) rotate(${(-80 * (1 - pw)).toFixed(3)}deg)`;
+
+  // (2) 심볼이 위로 살짝(80px)
+  const m = eoC((t - T.move) / T.moveDur);
+  els.stage.style.transform = `translateY(${(80 * (1 - m)).toFixed(3)}px)`;
+  els.ringSym.style.top = (480 + 80 * (1 - m)).toFixed(3) + 'px';
+  ring(els.ringSym, (t - T.lock) / T.wave, 2.6);
+
+  // (3) 한글 줄 왼→오 마스크 와이프, 영문 줄 페이드
+  const kp = eoC((t - T.ko) / T.koDur);
+  const edge = 100 * kp * 1.1;      // 0 → 110%
+  const mask = `linear-gradient(90deg, #000 ${(edge - 10).toFixed(2)}%, transparent ${edge.toFixed(2)}%)`;
+  els.wordKo.style.webkitMaskImage = mask; els.wordKo.style.maskImage = mask;
+  els.wordKo.style.opacity = t >= T.ko ? 1 : 0;
+  els.wordEn.style.opacity = eoC((t - T.en) / T.enDur).toFixed(4);
+
+  // (4) CTA 올라옴 + 파동
+  const cp = eoC((t - T.cta) / T.ctaDur);
+  els.btn.style.opacity = cp.toFixed(4);
+  els.btn.style.transform = `translateY(${(110 * (1 - cp)).toFixed(3)}px)`;
+  ring(els.ringBtn, (t - (T.cta + T.ctaDur)) / T.wave, 1.7);
+  return true;
+}
+window.seek = seek;
+</script>
+</body>
+</html>

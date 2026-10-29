@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-21 7번 7.124~16.917 «그런데 강남빌딩이라고 해서 다 같은 강남빌딩은 아니에요 / 잘못 산 강남빌딩은 공실에 대출이자에 손해만 보고 / 잘 산 강남빌딩은 매달 수천만 원 월세에» — 자막 밑 카드 한 장 3막.
+     사장님 «그 화면전체다음에는 자막밑으로 가고싶거든» → 2안(한 장이 반으로 갈림) «2안으로 가고 거기사 잘못산강남빌딩은할때 잘못산거만 포커스되고 (잘된건 옆으로 밀려 사라지고) 공실에 대출이자에 손해만보고 << 연출하고
+     잘산 강남빌딩은할때는 밀려난 방향에서 빌딩이 다시 밀어내며 들어오면서 설명하는» «이거 다 자막밑으로 연출할거야» «딱지 고지서글자 달력숫자 이런거 다 넣어서 만들어줘»
+     «+ 수천만원 이런거 4번영상이랑 너무비슷한데 … 둘이 비슷해보이지않게» «도장도 마찬가지고» → 떠오르는 금액·도장 없음: 고지서는 «연체» 종이가 철썩, 월세는 달력 넘김 + 은행 앱 «월세 입금» 알림이 쌓임.
+     «이거 시세차익도 수십억씩 얻을 수 있습니다 << 이부분 까지 해주는데 완전 여기까지 전환잘되고 품질높은데 4번이랑은 비슷해보이지않게 만들어줘»
+     → 4막 16.917~19.136: 잘 산 빌딩이 작은 사진으로 줄어 그래프 위에 서고, 상승 곡선을 타고 오르며 커짐 · 매입가 점선과 곡선 사이 금빛이 차오름 · «얻을 수 있습니다»에 «시세차익» 괄호.
+     10-21 2판 — 사장님 «이거 엄청 깜빡깜빡 거리고 두개가 뭐가 잘산건지 구분이 잘안가 척보기에도 구분이 가게끔해주고 여기 들어가는 잘못산 건물의 이미지는 우리 레퍼런스에서 찾지말고 아예 새로 제작해서 해줘»
+     → 깜빡임 = seek 가 앞 프레임 상태에 기대던 것(렌더러 2개가 번갈아 다른 화면) → 매 프레임 모든 상태를 t 만으로 다시 정함.
+     → 처음부터 반반: 왼쪽 낡은 빌딩(Codex set19 r7g_bad.png 새로 그림) · 오른쪽 고급 빌딩(r7g_good.png) · «다 같은» = 두 건물에 같은 «강남» 핀 · «아니에요» = 왼쪽 소등 · 오른쪽 스포트라이트.
+     10-21 3판 — 사장님 «아니에요 할때 뭔가 좀더 효과가 명확했으면 좋겠어 나머지는 좋아» → 10.344 왼쪽: 순간 흑백 소등+흔들림+빨간 ✕ 두 획 · 오른쪽: 금빛 번쩍+6% 커짐+진한 스포트라이트+금빛 테두리.
+     10-21 4판 — 사장님 «아니지 이걸 x자로 표시하고 저걸 확대하면 이상해 지잖아 다른 느낌으로 표현할방법 시안좀 먼저 추천해봐» → «a로가자»: ✕·확대·번쩍·소등 뺌 · 칸막이 가운데 «=» 표지(«다 같은»에 등장) → «아니에요»에 빨간 빗금이 그어져 «≠» + 잔금 · 건물은 그대로.
+     카드 x 20~880 · y 850~1470(자막 y 755~818 밑) · 흰 니트 위라 흰 테두리 대신 금빛. 900×1600 · 59.94 · 장면 0초 = 시퀀스 7.124.
+     소재: Codex set18 소재/codex/r7g_street_good.png(쌍둥이 빌딩) · r7g_street_old.png(같은 구도 왼쪽만 낡음). 두 건물 사이 골목 = 카드 x 437. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#card{position:absolute;left:20px;top:850px;width:860px;height:620px;border-radius:16px;overflow:hidden;background:#0b0d12;
+  box-shadow:0 0 0 2px rgba(214,178,98,.95),0 14px 40px rgba(0,0,0,.6)}
+#cin,.grp,.gi,.ly{position:absolute;left:0;top:0;width:860px;height:620px}
+.gi{transform-origin:0 0}
+.im{position:absolute;left:0;top:0;width:1024px;height:1536px;background-size:100% 100%}
+#gR{overflow:hidden}
+#spot{background:radial-gradient(55% 80% at 75% 0%,rgba(255,240,190,.85),rgba(255,220,140,.3) 45%,rgba(255,220,140,0) 72%);mix-blend-mode:screen}
+#neq{position:absolute;left:340px;top:220px;width:180px;height:180px;overflow:visible;filter:drop-shadow(0 8px 14px rgba(0,0,0,.6))}
+#divl{position:absolute;left:429px;top:0;width:2px;height:620px;background:rgba(214,178,98,.95)}
+.pin{position:absolute;top:22px;width:150px;height:60px;margin-left:-75px;border-radius:30px;background:#1d2a44;box-shadow:0 0 0 3px #e9c46a,0 8px 18px rgba(0,0,0,.5);color:#f1d27a;font:900 32px/60px "HM Pretendard";text-align:center}
+.pin:after{content:"";position:absolute;left:63px;bottom:-14px;border:12px solid transparent;border-top:14px solid #e9c46a;border-bottom:0}
+.rain{position:absolute;width:2px;height:46px;background:linear-gradient(rgba(200,220,255,0),rgba(210,228,255,.75));transform:rotate(12deg)}
+#storm{background:linear-gradient(rgba(14,18,28,.85),rgba(14,18,28,.25) 55%,rgba(14,18,28,.45))}
+.stk{position:absolute;width:160px;height:100px;background:#d8262b;border-radius:4px;box-shadow:0 6px 14px rgba(0,0,0,.55),inset 0 0 0 3px rgba(255,255,255,.18);
+  color:#fff;font:400 58px/100px "HM BlackHanSans";text-align:center;letter-spacing:4px}
+.stk:before{content:"";position:absolute;left:58px;top:-10px;width:44px;height:20px;background:rgba(240,235,215,.85);transform:rotate(-4deg)}
+#note{position:absolute;left:250px;top:170px;width:400px;height:270px;background:#f6f3ea;border-radius:6px;box-shadow:0 14px 30px rgba(0,0,0,.6);overflow:hidden;font-family:"HM Pretendard"}
+#note .hd{height:70px;background:#c4161c;color:#fff;font:800 34px/70px "HM Pretendard";padding-left:24px}
+#note .rw{margin:18px 24px 0;font:600 26px/34px "HM Pretendard";color:#2a2a2a;border-bottom:2px solid #ddd5c4;padding-bottom:10px}
+#note .rw b{color:#c4161c;font-weight:800}
+#note .tag{position:absolute;right:20px;bottom:18px;background:#c4161c;color:#fff;font:800 30px/48px "HM Pretendard";padding:0 18px;border-radius:24px}
+#warm{background:linear-gradient(rgba(255,176,80,.34),rgba(255,176,80,0) 50%);mix-blend-mode:screen}
+#cal{position:absolute;left:640px;top:28px;width:190px;height:212px;perspective:700px}
+.pg{position:absolute;left:0;top:0;width:190px;height:212px;background:#fbfaf6;border-radius:10px;box-shadow:0 8px 18px rgba(0,0,0,.5);transform-origin:50% 0;overflow:hidden;backface-visibility:hidden}
+.pg .yr{height:46px;background:#1d2a44;color:#e9c46a;font:800 26px/46px "HM Pretendard";text-align:center;letter-spacing:2px}
+.pg .mo{font:900 104px/120px "HM Pretendard";color:#1a1a1a;text-align:center}
+.pg .mo small{font-size:40px;font-weight:800;margin-left:2px}
+.pg .ln{position:absolute;left:18px;right:18px;bottom:16px;height:8px;border-radius:4px;background:repeating-linear-gradient(90deg,#d9d2c0 0 14px,transparent 14px 22px)}
+.nt{position:absolute;left:26px;width:400px;height:76px;border-radius:18px;background:rgba(250,250,252,.96);box-shadow:0 8px 20px rgba(0,0,0,.45);font-family:"HM Pretendard"}
+.nt .ic{position:absolute;left:14px;top:14px;width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#e9c46a,#b8862f);color:#1d2a44;font:900 30px/48px "HM NotoSansKR";text-align:center}
+.nt .t1{position:absolute;left:76px;top:11px;font:800 26px/30px "HM Pretendard";color:#111}
+.nt .t2{position:absolute;left:76px;top:42px;font:600 21px/26px "HM Pretendard";color:#555}
+.nt .tm{position:absolute;right:16px;top:12px;font:600 18px/22px "HM Pretendard";color:#888}
+#chart{position:absolute;left:0;top:0;width:860px;height:620px}
+#chart text{font-family:"HM Pretendard"}
+#gR{transform-origin:0 0;border-radius:10px}
+</style></head>
+<body>
+<div id="card"><div id="cin">
+  <div class="grp" id="gL">
+    <div class="gi" id="gLi"><div class="im" id="lBad"></div></div>
+    <div class="ly" id="storm"></div><div class="ly" id="rainL"></div>
+    <div id="stks"></div>
+    <div id="note"><div class="hd">대출이자 연체 안내</div>
+      <div class="rw">납부기한이 <b>지났습니다</b></div><div class="rw">연체이자 <b>매달 증가</b></div><div class="tag">연체</div></div>
+  </div>
+  <svg id="chart" viewBox="0 0 860 620"><defs>
+      <linearGradient id="bgG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16213a"/><stop offset="1" stop-color="#0b111e"/></linearGradient>
+      <linearGradient id="arG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1cf74" stop-opacity=".62"/><stop offset="1" stop-color="#f1cf74" stop-opacity=".12"/></linearGradient>
+      <radialGradient id="tipG"><stop offset="0" stop-color="#fff3c4"/><stop offset=".35" stop-color="#f1cf74" stop-opacity=".9"/><stop offset="1" stop-color="#f1cf74" stop-opacity="0"/></radialGradient></defs>
+    <rect width="860" height="620" fill="url(#bgG)"/>
+    <g id="grid" stroke="rgba(255,255,255,.07)" stroke-width="1.5"></g>
+    <line x1="70" y1="540" x2="820" y2="540" stroke="rgba(255,255,255,.35)" stroke-width="2.5"/>
+    <path id="area" fill="url(#arG)"/>
+    <g id="buy"><line x1="70" y1="470" x2="820" y2="470" stroke="rgba(255,255,255,.55)" stroke-width="2.5" stroke-dasharray="10 9"/>
+      <text x="78" y="458" fill="rgba(255,255,255,.75)" font-size="24" font-weight="600">매입가</text></g>
+    <path id="curve" fill="none" stroke="#f1cf74" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <g id="xl" fill="rgba(255,255,255,.7)" font-size="24" font-weight="600" text-anchor="middle"><text x="170" y="576">매입</text><text x="690" y="576">지금</text></g>
+    <g id="brk"><line id="bl" x1="728" y1="470" x2="728" y2="250" stroke="#f1cf74" stroke-width="4"/>
+      <line x1="712" y1="470" x2="744" y2="470" stroke="#f1cf74" stroke-width="4"/><line id="bt" x1="712" y1="250" x2="744" y2="250" stroke="#f1cf74" stroke-width="4"/></g>
+    <g id="lab"><rect x="475" y="392" width="230" height="64" rx="32" fill="#f1cf74"/><text x="590" y="436" fill="#16213a" font-size="36" font-weight="900" text-anchor="middle">시세차익</text></g>
+    <circle id="tip" r="46" fill="url(#tipG)"/>
+  </svg>
+  <div class="grp" id="gR">
+    <div class="gi" id="gRi"><div class="im" id="rDim"></div><div class="im" id="rLit"></div></div>
+    <div class="ly" id="spot"></div><div class="ly" id="warm"></div>
+    <div id="nts"></div>
+    <div id="cal"></div>
+  </div>
+  <div id="divl"></div><svg id="neq" viewBox="-75 -75 150 150"><circle r="62" fill="#1d2a44" stroke="#e9c46a" stroke-width="5"/>
+    <rect x="-30" y="-17" width="60" height="11" rx="5" fill="#f1d27a"/><rect x="-30" y="6" width="60" height="11" rx="5" fill="#f1d27a"/>
+    <line id="sl" x1="22" y1="-40" x2="-22" y2="40" stroke="#ff4040" stroke-width="12" stroke-linecap="round" stroke-dasharray="92"/>
+    <g id="ck" stroke="#f1d27a" stroke-width="3.5" stroke-linecap="round" fill="none"><path d="M40 -50 l9 -9 l-2 -10"/><path d="M-40 50 l-9 9 l2 10"/><path d="M52 -26 l14 -3"/><path d="M-52 26 l-14 4"/><path d="M30 -60 l3 -9"/><path d="M-30 60 l-3 9"/></g></svg><div class="pin" id="pin0">📍강남</div><div class="pin" id="pin1">📍강남</div>
+</div></div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 12.012;
+window.PALETTE = ['#d6b262', '#c4161c', '#1d2a44'];
+const GOOD = '../../소재/codex/r7g_good.png', BAD = '../../소재/codex/r7g_bad.png';
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const ei = x => Math.pow(clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = x => { x = clamp(x); const c = 1.4; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const bump = x => (x <= 0 || x >= 1) ? 0 : Math.sin(Math.PI * x);
+const O = 7.124, at = s => s - O;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+const T = {a: at(7.524), tw: at(8.892), seam: at(10.344), out: at(10.777), stk: at(12.246), note: at(12.70), kung: at(13.347),
+           back: at(14.248), cal: at(15.382), lit: at(16.30), up: at(16.917), su: at(17.584), gain: at(18.085), end: 12.012};
+const $ = id => document.getElementById(id);
+const card = $('card'), cin = $('cin'), gL = $('gL'), gR = $('gR'), gLi = $('gLi'), gRi = $('gRi');
+$('lBad').style.backgroundImage = `url(${BAD})`;
+[$('rDim'), $('rLit')].forEach(e => e.style.backgroundImage = `url(${GOOD})`);
+$('rDim').style.filter = 'brightness(.74) saturate(.9)';
+$('rLit').style.filter = 'brightness(1.12) saturate(1.12)';
+const pins = [$('pin0'), $('pin1')]; pins[0].style.left = '215px'; pins[1].style.left = '645px';
+// 비
+const rainL = $('rainL'), RAIN = [];
+let seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+for (let i = 0; i < 90; i++) { const e = document.createElement('div'); e.className = 'rain'; rainL.appendChild(e); RAIN.push({e, x: rnd() * 900 - 20, y: rnd() * 700, v: 1500 + rnd() * 700, k: rnd()}); }
+// 딱지(공실·임대)
+const STK = [[70, 56, '임대', -6], [560, 44, '공실', 5], [56, 384, '공실', -4], [654, 430, '임대', 7]].map(([x, y, s, r], i) => {
+  const e = document.createElement('div'); e.className = 'stk'; e.textContent = s; Object.assign(e.style, {left: x + 'px', top: y + 'px'}); $('stks').appendChild(e);
+  return {e, r, t: T.stk + .01 + i * .085};
+});
+const note = $('note');
+// 달력 1~6월 · 은행 앱 알림
+const MON = [1, 2, 3, 4, 5, 6], FLIP = [T.cal + .02, T.cal + .24, T.cal + .44, T.cal + .61, T.cal + .76, T.cal + .89];
+const PG = MON.map(m => { const e = document.createElement('div'); e.className = 'pg'; e.innerHTML = `<div class="yr">2026</div><div class="mo">${m}<small>월</small></div><div class="ln"></div>`; return e; });
+for (let i = PG.length - 1; i >= 0; i--) $('cal').appendChild(PG[i]);   // 1월이 맨 위
+const NT = MON.slice(0, 5).map(m => { const e = document.createElement('div'); e.className = 'nt';
+  e.innerHTML = `<div class="ic">₩</div><div class="t1">월세 입금</div><div class="t2">${m}월 월세가 입금되었습니다</div><div class="tm">${m}월 25일</div>`; $('nts').appendChild(e); return e; });
+window.EVENTS = [{t: T.a, role: 'card_in'}, {t: T.tw, role: 'pins'}, {t: T.seam, role: 'seam'}, {t: T.out, role: 'push_out'}, {t: T.stk, role: 'stickers'},
+                 {t: T.note, role: 'notice'}, {t: T.kung, role: 'kung'}, {t: T.back, role: 'push_back'}, {t: T.cal, role: 'calendar'}, {t: T.lit, role: 'lights'}, {t: T.up, role: 'graph'}, {t: T.su, role: 'climb'}, {t: T.gain, role: 'gain'}];
+// ── 4막 그래프: 곡선 u∈[0,1] — 매입(170,470) → 지금(690,250), 처음 완만 · 나중 가파름 + 잔물결
+const CP = u => [170 + 520 * u, 470 - 220 * (.18 * u + .82 * Math.pow(u, 2.1)) + 9 * Math.sin(u * 17) * u * (1 - u)];
+for (let i = 0; i < 6; i++) { const y = 120 + i * 70; $('grid').insertAdjacentHTML('beforeend', `<line x1="70" y1="${y}" x2="820" y2="${y}"/>`); }
+const chart = $('chart');
+
+// 화면 틀: 카드의 (cx,cy) 에 사진의 (px,py) 를 s 배로(사진 1024×1536)
+const view = (cx, cy, px, py, s) => `translate(${cx}px,${cy}px) scale(${s}) translate(${-px}px,${-py}px)`;
+const lerp = (a, b, k) => a + (b - a) * k;
+
+window.seek = async function (t) {
+  // ── 카드: 아래에서 0.45초 감속하며 올라옴 · 끝 0.2초 페이드
+  const ci = eo((t - T.a) / .45);
+  card.style.transform = `translateY(${(1 - ci) * 720}px)`;
+  show(card, clamp((t - T.a) / .12) * (1 - clamp((t - (T.end - .2)) / .2)));
+  // «아니에요» 금 갈 때 흔들림 · «손해만 보고» 쿠궁
+  const sh = t > T.seam && t < T.seam + .28 ? 5 * Math.exp(-14 * (t - T.seam)) * Math.sin(70 * (t - T.seam)) : 0;
+  const u = t - T.kung, ky = u > 0 ? 30 * Math.exp(-5.5 * u) * Math.sin(Math.PI * Math.min(u * 6, 3.5)) : 0;
+  cin.style.transform = `translateX(${sh}px)`;
+  // ── 1막: 반반(왼쪽 낡은 · 오른쪽 고급) 천천히 다가감
+  const s1 = 1 + .03 * eio((t - T.a) / (T.seam - T.a));
+  // ── 2막: 오른쪽(잘 산)은 오른쪽으로 밀려 사라짐 · 왼쪽(잘못 산)이 카드 전체로 펼쳐지며 다가감
+  const zk = eio((t - T.out) / .6);
+  const drL = 1 + .035 * eio((t - T.out - .6) / (T.back - T.out - .6));
+  gLi.style.transform = view(lerp(215, 430, zk), 310, 512, lerp(768, 640, zk), lerp(.42 * s1, .84, zk) * drL);
+  gL.style.clipPath = `inset(0 ${430 * (1 - zk)}px 0 0)`;
+  const po = ei((t - T.out) / .42);                                      // 밀려 나감(가속)
+  // ── 3막: 밀려난 오른쪽에서 다시 밀고 들어와 왼쪽을 밀어냄(살짝 넘쳤다 섬)
+  const pb = back((t - T.back) / .55), ret = t >= T.back - .05;
+  gL.style.transform = `translate(${-880 * pb}px,${ky}px)`;
+  gR.style.transform = `translateX(${ret ? 880 * (1 - pb) : 900 * po}px)`;
+  gR.style.clipPath = ret ? 'none' : 'inset(0 0 0 430px)';
+  gR.style.boxShadow = 'none';
+  gRi.style.transform = ret ? view(430, 310, 512, 700, .84 * (1 + .04 * eio((t - T.back) / (T.end - T.back)))) : view(645, 310, 512, 768, .42 * s1);
+  show(gR, t < T.out + .45 || ret ? 1 : 0);
+  show(gL, pb < .999 ? 1 : 0);
+  // «다 같은»: 두 건물에 같은 «강남» 핀 · 1막 가운데 금빛 칸막이
+  pins.forEach((p, i) => { const k = (t - T.tw - i * .08) / .45; p.style.transform = `translateY(${-130 * (1 - back(k))}px)`; show(p, k > 0 ? 1 - clamp((t - T.out) / .2) : 0); });
+  show($('divl'), clamp((t - T.a) / .2) * (1 - clamp((t - T.out) / .15)));
+  // «아니에요»: 왼쪽 불 꺼짐 · 오른쪽 스포트라이트
+  const nd = eo((t - T.seam) / .12), nf = 1 - clamp((t - T.out) / .2);
+  show($('spot'), 0);
+  // «다 같은»: 칸막이 가운데 «=» 표지 톡 · «아니에요»: 빨간 빗금 → «≠» + 잔금 · 흔들림
+  const qk = back((t - T.tw - .12) / .4), u2 = t - T.seam;
+  const wob = u2 > 0 ? 9 * Math.exp(-9 * u2) * Math.sin(40 * u2) : 0;
+  $('neq').style.transform = `rotate(${wob}deg) scale(${qk * (1 + .16 * bump(u2 / .22))})`;
+  show($('neq'), t > T.tw + .12 ? nf : 0);
+  $('sl').style.strokeDashoffset = 92 * (1 - eo((u2 - .02) / .1));
+  show($('sl'), u2 > .02 ? 1 : 0);
+  const ck = eo((u2 - .06) / .18);
+  $('ck').style.transform = `scale(${.6 + .5 * ck})`;
+  show($('ck'), u2 > .06 ? 1 - clamp((u2 - .3) / .3) : 0);
+  // 2막 날씨: 어두워지고 비 · 쿠궁 뒤 거의 흑백 · 비 굵어짐
+  const dk = eio((t - T.out) / .5), gy = eio((t - T.kung) / .3);
+  gLi.style.filter = `brightness(${1 - .3 * dk - .12 * gy}) saturate(${1 - .45 * dk - .45 * gy})`;
+  show($('storm'), .8 * dk);
+  const ra = clamp((t - T.out - .1) / .4);
+  rainL.style.opacity = ra * (.55 + .45 * gy);
+  RAIN.forEach((r, i) => {
+    const on = i < 55 || gy > r.k;                                       // 쿠궁 뒤 빗줄기 늘어남
+    if (!ra || !on) { r.e.style.display = 'none'; return; }
+    r.e.style.display = 'block';
+    const y = ((r.y + r.v * (1 + .5 * gy) * t) % 720) - 60;
+    r.e.style.transform = `translate(${r.x - .21 * y}px,${y}px) rotate(12deg)`;
+  });
+  // «공실에»: 딱지 착착
+  STK.forEach(s => { const k = (t - s.t) / .09; show(s.e, k > 0 ? 1 : 0); s.e.style.transform = `rotate(${s.r}deg) scale(${1 + .45 * (1 - eo(k))})`; });
+  // «대출이자에»: 연체 안내 종이 철썩
+  const nk = (t - T.note) / .1;
+  show(note, nk > 0 ? 1 : 0);
+  note.style.transform = `rotate(-4deg) scale(${1 + .5 * (1 - eo(nk))})`;
+  // 3막: 하늘 금빛 · «매달 수천만 원» 달력 넘김 + 알림 쌓임 · «월세에» 창마다 불 (아래 → 위)
+  show($('warm'), eo((t - T.back - .2) / .6));
+  const li = eio((t - T.lit) / .6);
+  $('rLit').style.clipPath = `inset(${100 - 100 * li}% 0 0 0)`;
+  show($('rLit'), li > 0 ? 1 : 0);
+  const cin2 = eo((t - T.cal + .12) / .3);
+  $('cal').style.transform = `translateY(${-260 * (1 - cin2)}px)`;
+  show($('cal'), t > T.cal - .12 ? 1 : 0);
+  PG.forEach((p, i) => {
+    const f = i < PG.length - 1 ? clamp((t - FLIP[i + 1] + .14) / .14) : 0;   // 다음 달이 오기 직전에 이 장이 위로 넘어감
+    p.style.transform = `rotateX(${-105 * eio(f)}deg)`;
+    show(p, f < .98 ? 1 : 0);
+  });
+  NT.forEach((e, i) => {
+    const k = eo((t - FLIP[i + 1 < FLIP.length ? i + 1 : i] + .1) / .22);
+    const n = FLIP.filter(f => t > f + .02).length - 1;                  // 지금까지 온 알림 수 - 1
+    const row = Math.max(0, n - 1 - i);
+    e.style.top = 26 + Math.min(row, 4) * 86 + 'px';
+    e.style.transform = `translateX(${-470 * (1 - k)}px)`;
+    show(e, k > 0 ? 1 - clamp(row - 4) : 0);
+  });
+  // ── 4막 «시세차익도 수십억씩 얻을 수 있습니다»: 빌딩이 작은 사진으로 줄어 곡선을 타고 오름
+  const k4 = eio((t - T.up) / .42);
+  show(chart, k4);
+  show($('nts'), 1 - clamp((t - T.up + .05) / .2)); show($('cal'), t > T.cal - .12 ? 1 - clamp((t - T.up + .05) / .2) : 0);
+  const dr = .3 * eio((t - T.up - .12) / (T.su - T.up - .12)) + .7 * eo((t - T.su) / .55);
+  const pts = []; for (let j = 0; j <= 60; j++) pts.push(CP(dr * j / 60));
+  $('curve').setAttribute('d', 'M' + pts.map(p => p.map(v => v.toFixed(1)).join(',')).join('L'));
+  $('area').setAttribute('d', 'M170,470L' + pts.map(p => p.map(v => v.toFixed(1)).join(',')).join('L') + `L${pts[pts.length - 1][0].toFixed(1)},470Z`);
+  show($('curve'), dr > .002 ? 1 : 0);
+  show($('area'), dr > .002 ? 1 + .25 * bump((t - T.gain) / .5) : 0);
+  show($('buy'), eo((t - T.up - .2) / .3)); show($('xl'), eo((t - T.up - .25) / .3));
+  const [tx, ty] = CP(dr);
+  $('tip').setAttribute('cx', tx); $('tip').setAttribute('cy', ty);
+  show($('tip'), dr > .002 ? .7 + .3 * bump((t - T.gain) / .45) : 0);
+  $('tip').setAttribute('r', 34 + 30 * bump((t - T.gain) / .45));
+  // «얻을 수 있습니다»: 매입가 ~ 지금 사이 괄호 + «시세차익»
+  const bk = eo((t - T.gain) / .3);
+  $('bl').setAttribute('y2', 470 - 220 * bk); $('bt').setAttribute('y1', 470 - 220 * bk); $('bt').setAttribute('y2', 470 - 220 * bk);
+  show($('brk'), t > T.gain ? 1 : 0);
+  const lk = eo((t - T.gain - .12) / .3);
+  show($('lab'), lk); $('lab').setAttribute('transform', `translate(590 424) scale(${.6 + .4 * lk}) translate(-590 -424)`);
+  if (t >= T.up) {
+    // 빌딩 사진: 카드 크기 → 작은 사진(밑변 가운데가 곡선 끝에 섬) · 오를수록 커짐
+    const S = lerp(1, .2 + .1 * dr, k4);
+    const X = lerp(0, tx - 430 * S, k4), Y = lerp(0, ty - 8 - 620 * S, k4);
+    gR.style.transform = `translate(${X}px,${Y}px) scale(${S})`;
+    gR.style.boxShadow = `0 0 0 ${(4 / S) * k4}px rgba(241,207,116,.95), 0 ${10 / S * k4}px ${26 / S * k4}px rgba(0,0,0,${.6 * k4})`;
+    gR.style.overflow = 'hidden';
+  } else { gR.style.boxShadow = 'none'; }
+};
+</script></body></html>

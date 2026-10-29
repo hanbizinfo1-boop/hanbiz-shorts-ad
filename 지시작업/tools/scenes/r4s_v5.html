@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-21 v5 — 클라이언트 «강의 사진보다 상담사진이 좋을거같네요 / 돈 있는 분들이 찾는 내용이라서요 / 상담 수백명 온거 홈피에 있는거요»
+     사장님 «D:\26년 10월\261021 여기있는 사진들로 구성해서 교체해야해» → ② «추천대로가자»: 자막 밑 두 줄 필름(위 줄 ← · 아래 줄 →) 상담 사진 26장.
+     흐름은 v4(건물교체판)와 같음: 15.649 들어옴 · 17.47 «찾는게» 병풍처럼 접혀 사라짐 · 17.768/17.88/17.99 누끼 건물 딱·딱·쿵 (가운데 = 리모델링 후 bldcut_uh).
+     900×1600 · 59.94 · 장면 0초 = 시퀀스 15.649 · 자막(y≈924) 밑. 소재 tools/r4s5_assets.py -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:relative;width:900px;height:1600px;overflow:hidden;perspective:1300px}
+.film{position:absolute;left:0;top:0;height:230px;transform-style:preserve-3d;will-change:transform,opacity}
+.seg{position:absolute;top:0;width:300px;height:230px;transform-origin:0 50%}
+.seg i{position:absolute;left:0;top:0;width:300px;height:230px;background-size:cover;background-position:center;border:4px solid #fff;box-shadow:0 12px 22px rgba(0,0,0,.42)}
+.bd{position:absolute;left:0;top:0;background-size:100% 100%;transform-origin:50% 100%;filter:drop-shadow(0 16px 18px rgba(0,0,0,.45));will-change:transform,opacity}
+</style></head>
+<body><div id="st"><div class="film" id="fa"></div><div class="film" id="fb"></div></div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 3.186;
+window.PALETTE = ['#ffffff', '#121214'];
+const A = '../../소재/r4s/', P = '../../소재/r4s5/';
+const st = document.getElementById('st');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const wob = (x, f = 30, d = 9) => x <= 0 ? 0 : Math.cos(x * f) * Math.exp(-x * d);
+const O = 15.649, at = s => s - O;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+// 10-21 사장님 «이거는 쓰지말고 완전 상담하는 사진들만» → 서서 찍은 기념 컷(cs_0_60) 뺌, 테이블 상담 컷만
+const CS = ['cs_0_00.jpg', 'cs_1_45.jpg', 'cs_2_84.jpg', 'cs_0_33.jpg', 'cs_1_72.jpg', 'cs_2_21.jpg', 'cs_0_13.jpg', 'cs_1_15.jpg', 'cs_2_54.jpg', 'cs_0_04.jpg', 'cs_1_43.jpg', 'cs_2_82.jpg', 'cs_0_31.jpg',
+            'cs_1_70.jpg', 'cs_2_25.jpg', 'cs_0_64.jpg', 'cs_1_13.jpg', 'cs_2_52.jpg', 'cs_0_02.jpg', 'cs_1_41.jpg', 'cs_2_80.jpg', 'cs_0_35.jpg', 'cs_1_74.jpg', 'cs_2_23.jpg', 'cs_0_62.jpg', 'cs_1_11.jpg'];
+const FW = 316, N = 13, V = 800;                // 칸 폭(사진 300 + 간격 16) · 줄마다 칸 수 · 흐름 속도(px/초) — 10-21 «너무빨라서 상담인지도 모르겠어 살짝 느려야할거같은데» 1500 → 650 → «원래 처음 연출이랑 비슷하게 두줄로 구성은안돼? 그 느낌이안사는데» 800(v4 1420 과 사이)
+const ROW = [{e: document.getElementById('fa'), y: 1108, dir: -1, lag: 0, imgs: CS.slice(0, 13)},     // 위 줄 ← (자막 밑 993~1223)
+             {e: document.getElementById('fb'), y: 1354, dir: 1, lag: .08, imgs: CS.slice(13)}];      // 아래 줄 → (1239~1469) · 10-21 «위는 오른쪽에서나오고 아래는 왼쪽에서나오고» · 0.08초 늦게
+ROW.forEach(r => { r.seg = r.imgs.map(f => { const s = document.createElement('div'); s.className = 'seg'; s.innerHTML = `<i style="background-image:url(${P}${f})"></i>`; r.e.appendChild(s); return s; }); });
+const T = {fold: at(17.47), gone: at(17.75), b: [at(17.768), at(17.88), at(17.99)], out: at(18.74), end: 3.186};
+// 줄 왼쪽 끝 화면 x — 위 줄은 왼쪽으로, 아래 줄은 오른쪽으로(처음부터 화면 안, 0.1초 페이드로 나타남)
+// 10-21 «원래 처음 연출이랑 비슷하게 두줄로» → v4 처럼 두 줄 다 오른쪽에서 확 밀려 들어와(0.25초) 왼쪽으로 흐름 · 흐르는 속도는 두 줄 같음
+const rowX = (r, t) => {
+  // 10-21 «전영상에서 전환될때 조금 더 부드러웠으면» → 0.5초 감속(2차 곡선)으로 들어와 흐르는 속도에 이음새 없이 이어짐
+  const u = clamp((t - r.lag) / .5), run = V * Math.min(t, T.fold), slide = 560 * (1 - u) * (1 - u);
+  return r.dir < 0 ? 230 - run + slide : (900 - 230 - N * FW) + run - slide;   // 위: 오른쪽에서 들어와 ← · 아래: 왼쪽에서 들어와 → (거울)
+};
+const BASE = 1430;
+const BD = [
+  {f: 'bldcut_3.png', w: 278, h: 400, x: 250, t: T.b[0], z: 1},
+  {f: 'bldcut_2.png', w: 298, h: 400, x: 652, t: T.b[1], z: 1},
+  {f: 'bldcut_uh.png', w: 233, h: 449, x: 450, t: T.b[2], z: 2},   // 10-20 리모델링 후 건물
+];
+BD.forEach(b => { b.e = document.createElement('div'); b.e.className = 'bd'; Object.assign(b.e.style, {width: b.w + 'px', height: b.h + 'px', backgroundImage: `url(${A}${b.f})`, zIndex: b.z}); st.appendChild(b.e); });
+window.EVENTS = [{t: 0, role: 'film_in'}, {t: T.fold, role: 'fold'}, ...BD.map((b, i) => ({t: b.t, role: 'slam' + i}))];
+
+window.seek = async function (t) {
+  const fade = clamp((T.end - t) / (T.end - T.out));
+  // ① 두 줄 필름 — 흐르다가 17.47 부터 병풍처럼 접혀 가운데로 모여 사라짐
+  const fk = eio((t - T.fold) / (T.gone - T.fold));
+  const ang = 84 * fk, cw = FW * Math.cos(ang * Math.PI / 180);
+  ROW.forEach((r, ri) => {
+    const x0 = rowX(r, t), totalW = cw * N, startX = x0 + (450 - (x0 + totalW / 2)) * fk;
+    r.seg.forEach((s, i) => {
+      s.style.transform = `translate(${startX + i * cw}px,0) rotateY(${(i + ri) % 2 ? -ang : ang}deg)`;
+      s.style.filter = `brightness(${1 - ((i + ri) % 2 ? .35 : .1) * fk})`;
+    });
+    r.e.style.transform = `translate(0,${r.y - 115}px) scale(${1 - .25 * fk})`;
+    r.e.style.transformOrigin = '450px 115px';
+    show(r.e, eio(clamp((t - r.lag) / .25)) * (1 - clamp((t - T.gone + .06) / .06)));
+  });
+  // ② 누끼 건물 딱·딱·쿵
+  BD.forEach(b => {
+    const u = t - b.t; if (u < 0) { show(b.e, 0); return; }
+    const k = Math.min(1, Math.pow(u / .14, 2)), drop = (1 - k) * 160;
+    const sq = u > .14 ? .1 * wob(u - .14, 32, 10) : 0;
+    b.e.style.transform = `translate(${b.x - b.w / 2}px,${BASE - b.h - drop}px) scale(${1 + sq},${1 - sq})`;
+    show(b.e, clamp(u / .04) * fade);
+  });
+};
+</script></body></html>

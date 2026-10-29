@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>hanbiz_typo_test — 키네틱 타이포 시험 (T1 쌓기+재중앙 · T2/T6 폭 맞춤 반전 카드 · T4 음절 캐스케이드)</title>
+<style>
+  /* 글꼴 @font-face 는 tools/html_motion.py 가 주입한다("HM Pretendard"). */
+  html, body { margin: 0; padding: 0; width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+  :root { --ink: #111111; --white: #ffffff; --accent: #ffd60a; }   /* 3색: 글 흰색 · 바탕 없음(알파) · 강조 하나 (+카드 글 ink) */
+  .abs { position: absolute; left: 540px; top: 0; white-space: nowrap; word-break: keep-all;
+         font-family: "HM Pretendard", "Noto Sans KR", sans-serif; font-weight: 700; color: var(--white); }
+  .line { font-size: 128px; letter-spacing: -0.02em; line-height: 1; text-shadow: 0 4px 22px rgba(0,0,0,.45); }
+  .acc { color: var(--accent); }
+  #card { left: 0; width: 1080px; height: 600px; background: var(--white); }
+  #cardTxt { color: var(--ink); line-height: 1; letter-spacing: -0.04em; }
+  .syl { display: inline-block; }
+  #casc { font-size: 118px; letter-spacing: -0.02em; line-height: 1; text-shadow: 0 4px 22px rgba(0,0,0,.45); }
+</style>
+</head>
+<body>
+<script>
+// ── 장면 계약 ─────────────────────────────────────────────
+window.W = 1080; window.H = 1920; window.FPS = 29.97; window.DURATION = 6.0;
+
+const F = 1001 / 30000;                 // 1프레임(초)
+const EASE_IN = 6 * F;                  // 등장 6프레임 감속
+const CY = 780;                         // 임시: 자막 자리(아래 BOXES keepout) 위로 올린 중심. 세로 확정 수치 없음 — 첫 작업 때 재서 바꾼다
+const LH = 176;                         // 줄 간격
+
+const LINES = [
+  { txt: '막막한',       t: 0.30, acc: false },
+  { txt: '정책자금',     t: 1.00, acc: true  },   // 핵심어 하나만 강조색
+  { txt: '어디서부터?',  t: 1.70, acc: false },
+];
+const A_OUT = 2.55;                     // 쌓기 블록이 빠지는 시각
+const CARD = { t: 3.10, out: 4.30, txt: '상담', fill: 0.80 };   // T2 폭 맞춤(화면 폭의 80%) + T6 반전 카드
+const CASC = { t: 4.70, parts: [['한비즈', true], ['에 맡기세요', false]] };   // T4 음절 캐스케이드
+const CASC_STEP = 2 * F;                // 음절 간격 2프레임
+const CASC_DUR = 6 * F;                 // 음절당 6프레임
+
+// 점검용(html_motion 이 렌더 전에 읽는다). 색 목록 = 글 흰색 · 강조 노랑 · 카드 글 ink (바탕은 알파라 없음)
+window.PALETTE = ['#ffffff', '#ffd60a', '#111111'];
+// 금지 구역. ★임시★ 자막 자리 — 세로 쇼츠 확정 수치가 없어 edit_plan.CAPTION_STYLE(y=1150, 66px, max_w 960)을 감싸는 값으로 잡았다.
+// 첫 작업 때 사장님 편집에서 재서 바꿀 것(SKILL 6장 «재서 채울 칸»). 요소 박스는 data-box 속성으로 렌더러가 직접 잰다.
+window.BOXES = [
+  { kind: 'keepout', id: 'caption_zone(임시)', x: 60, y: 1100, w: 960, h: 130 },
+];
+
+window.EVENTS = [
+  ...LINES.map((l, i) => ({ t: l.t, role: 'text_in', id: 'line' + i, text: l.txt })),
+  { t: A_OUT,  role: 'text_out',    id: 'stack' },
+  { t: CARD.t, role: 'card_in',     id: 'card', text: CARD.txt },
+  { t: CARD.out, role: 'card_out',  id: 'card' },
+  { t: CASC.t, role: 'cascade_in',  id: 'casc', text: CASC.parts.map(p => p[0]).join('') },
+];
+
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => { x = clamp(x); return 1 - Math.pow(1 - x, 3); };   // ease-out cubic, 오버슈트 없음
+
+// ── DOM 은 첫 seek 에서 한 번 만든다(글꼴 로딩 뒤) ────────────
+let built = false, lineEls = [], cardEl, cardTxtEl, cascEl, sylEls = [], cardFontPx = 300;
+function build() {
+  if (built) return; built = true;
+  LINES.forEach(l => {
+    const d = document.createElement('div'); d.className = 'abs line' + (l.acc ? ' acc' : '');
+    d.textContent = l.txt; d.dataset.box = 'line' + lineEls.length; document.body.appendChild(d); lineEls.push(d);
+  });
+  cardEl = document.createElement('div'); cardEl.id = 'card'; cardEl.className = 'abs'; cardEl.dataset.box = 'card'; cardEl.dataset.boxGroup = 'card'; cardEl.dataset.boxBleed = ''; document.body.appendChild(cardEl);
+  cardTxtEl = document.createElement('div'); cardTxtEl.id = 'cardTxt'; cardTxtEl.className = 'abs'; cardTxtEl.dataset.box = 'cardTxt'; cardTxtEl.dataset.boxGroup = 'card'; cardTxtEl.textContent = CARD.txt;
+  document.body.appendChild(cardTxtEl);
+  // T2: 100px 로 폭을 재서 화면 폭의 80% 가 되는 글자 크기를 구한다
+  cardTxtEl.style.fontSize = '100px';
+  const w100 = cardTxtEl.getBoundingClientRect().width;
+  cardFontPx = Math.round(1080 * CARD.fill / w100 * 100);
+  cardTxtEl.style.fontSize = cardFontPx + 'px';
+  cascEl = document.createElement('div'); cascEl.id = 'casc'; cascEl.className = 'abs'; cascEl.dataset.box = 'casc'; document.body.appendChild(cascEl);
+  CASC.parts.forEach(([s, acc]) => {
+    for (const ch of s) {                       // 한글 음절 = 글자 하나
+      const sp = document.createElement('span'); sp.className = 'syl' + (acc ? ' acc' : '');
+      sp.textContent = ch; cascEl.appendChild(sp); sylEls.push(sp);
+    }
+  });
+  // 공백은 폭이 0 이 되지 않게 span 안에서 nbsp 로
+  sylEls.forEach(sp => { if (sp.textContent === ' ') sp.innerHTML = '&nbsp;'; });
+}
+
+async function seek(t) {
+  await document.fonts.ready;
+  build();
+
+  // ── (a) T1 쌓기 + 재중앙 ─────────────────────────────
+  const e = LINES.map(l => eo((t - l.t) / EASE_IN));
+  const n = e.reduce((s, v) => s + v, 0);                // 연속 줄 수 → 블록 중심이 항상 CY
+  const outP = eo((t - A_OUT) / EASE_IN);
+  lineEls.forEach((el, i) => {
+    const y = CY + (i - (n - 1) / 2) * LH - 28 * outP;
+    const op = e[i] * (1 - outP);
+    el.style.opacity = op;
+    el.style.display = op <= 0.001 ? 'none' : 'block';
+    el.style.transform = `translate(-50%, -50%) translateY(${y.toFixed(2)}px) scale(${(0.94 + 0.06 * e[i]).toFixed(4)})`;
+  });
+
+  // ── (b) T2 폭 맞춤 + T6 색 반전 카드 ─────────────────
+  const cin = eo((t - CARD.t) / EASE_IN), cout = eo((t - CARD.out) / EASE_IN);
+  const cv = cin * (1 - cout);                           // 0~1 열린 정도
+  const show = t >= CARD.t && cv > 0.001;
+  cardEl.style.display = cardTxtEl.style.display = show ? 'block' : 'none';
+  if (show) {
+    const inset = ((1 - cv) * 50).toFixed(3);
+    cardEl.style.left = '0px';
+    cardEl.style.transform = `translateY(${CY - 300}px)`;
+    cardEl.style.clipPath = `inset(${inset}% 0 ${inset}% 0)`;
+    cardTxtEl.style.opacity = cin * (1 - cout);
+    cardTxtEl.style.transform = `translate(-50%, -50%) translateY(${CY}px) scale(${(0.94 + 0.06 * cv).toFixed(4)})`;
+  }
+
+  // ── (c) T4 음절 캐스케이드 ───────────────────────────
+  const total = (sylEls.length - 1) * CASC_STEP + CASC_DUR;
+  const started = t >= CASC.t - 1e-6;
+  cascEl.style.display = started ? 'block' : 'none';
+  cascEl.style.transform = `translate(-50%, -50%) translateY(${CY}px)`;
+  sylEls.forEach((sp, i) => {
+    const p = eo((t - CASC.t - i * CASC_STEP) / CASC_DUR);
+    sp.style.opacity = p;
+    sp.style.transform = `translateY(${(24 * (1 - p)).toFixed(2)}px)`;
+  });
+  return true;
+}
+window.seek = seek;
+</script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-19 4번 뼈대 × 레퍼런스(인스타 릴스 DeolaEOtysF) 연출 층 — 사장님 «위에랑 밑에 저런 규격줄이기는 진행하지않고 연출방법만 레퍼런스»
+     «말풍선은 … 좀더 말풍선 디자인이나 안의 글자체는 세련되었으면». 시각은 사장님 프리미어 «4번» 자막(V2) 그대로.
+     영상 쪽 연출(줌·흑백·작아지는 화면)은 지시작업/tools/r4_build.py 가 깐다. 이 층은 큰 자막·빨간 자막·3D 아이콘·흰 인형·떨어지는 지폐·말풍선. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+#st{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:"HM Pretendard",sans-serif;word-break:keep-all}
+.abs{position:absolute;left:0;top:0;will-change:transform,opacity}
+/* 큰 자막 — 레퍼런스 «거의 없을 거라고 봅니다»·«길어야 10년입니다»: 흰 굵은 글 + 검은 외곽 + 부드러운 그림자, 서서히 떠오름 */
+.big{position:absolute;left:0;width:1080px;text-align:center;white-space:nowrap;z-index:5}
+.big .l{display:block;position:relative}
+.big .s,.big .f{display:block;font-weight:800;letter-spacing:-2px;line-height:1.12}
+.big .s{position:absolute;left:0;right:0;top:0;color:#111;-webkit-text-stroke:14px #111;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45))}
+.big .f{position:relative;color:#fff}
+.red .f{color:#ff3b30}
+/* 말풍선 — 둥근 흰 카드 + 은은한 그림자 + 말꼬리(사람 쪽) */
+.bub{position:absolute;background:#fff;border-radius:36px;padding:30px 42px 34px;color:#16181d;
+  font-weight:600;font-size:52px;line-height:1.3;letter-spacing:-1px;text-align:left;white-space:nowrap;z-index:4;
+  box-shadow:0 22px 44px rgba(0,0,0,.30),0 3px 8px rgba(0,0,0,.12)}
+.bub small{display:block;font-weight:500;font-size:32px;color:#8a8f99;letter-spacing:-0.3px;margin-bottom:6px}
+.bub b{font-weight:800;color:#e8402e}
+.bub .tail{position:absolute;width:48px;height:48px;background:#fff;border-radius:6px;bottom:-14px;transform:rotate(45deg)}
+.ico{position:absolute;width:240px;height:240px;z-index:3;object-fit:contain;filter:drop-shadow(0 10px 16px rgba(0,0,0,.35))}
+.bill{position:absolute;width:230px;z-index:1;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(0,0,0,.3))}
+</style></head>
+<body><div id="st"></div>
+<script>
+window.W = 1080; window.H = 1920; window.FPS = 29.97; window.DURATION = 57.69;
+window.PALETTE = ['#ffffff', '#111111', '#ff3b30'];
+const A = '../../소재/codex/';
+const st = document.getElementById('st');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const back = x => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+function el(tag, cls, html, box, group) {
+  const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html;
+  if (box) e.dataset.box = box; if (group) e.dataset.boxGroup = group; st.appendChild(e); return e;
+}
+// 들어옴·나감 불투명도
+const vis = (t, t0, t1, fi = 0.18, fo = 0.14) => clamp((t - t0) / fi) * clamp((t1 - t) / fo);
+
+/* ── 큰 자막 (사장님 자막 줄 시각 그대로) ── y = 글 위 끝 */
+const BIG = [
+  {id: 'b_red',  t0: 5.00,  t1: 6.26,  y: 1150, lines: [['이 영상 보지마세요', 84]], red: true},
+  {id: 'b_val',  t0: 13.50, t1: 14.30, y: 1130, lines: [['돈의 가치는', 112]]},
+  {id: 'b_drop', t0: 14.30, t1: 15.78, y: 1130, lines: [['급격히 떨어지고 있어요', 92]]},
+  {id: 'b_mis',  t0: 24.44, t1: 25.49, y: 1140, lines: [['착각하는게 있어요', 100]]},
+  {id: 'b_ten',  t0: 29.58, t1: 30.86, y: 1140, lines: [['임차인이 있어야 됩니다', 92]]},
+  {id: 'b_way',  t0: 35.37, t1: 38.76, y: 1090, lines: [['100% 임차인을', 60, 35.37], ['채우고 나서', 60, 36.59], ['건물을 사는 방법!', 110, 37.59]], row: true},
+  {id: 'b_45',   t0: 43.64, t1: 45.34, y: 1140, lines: [['45번을 그걸 했습니다', 96]]},
+  {id: 'b_none', t0: 46.56, t1: 47.63, y: 1140, lines: [['존재치 않아요', 110]]},
+  {id: 'b_cta',  t0: 55.14, t1: 57.69, y: 1100, lines: [['아래 링크를 눌러서', 62, 55.14], ['상담신청을 남겨주세요', 100, 56.26]]},
+];
+for (const b of BIG) {
+  b.e = el('div', 'big' + (b.red ? ' red' : ''));          // 상자는 줄마다 글자 폭으로(아래 wrap) — 1080 폭 div 를 재면 가장자리 ERROR
+  b.e.style.top = b.y + 'px';
+  b.parts = [];
+  // row: 앞 두 조각은 한 줄(작은 글)에 이어 붙이고 마지막은 아래 큰 줄
+  const rows = b.row ? [[b.lines[0], b.lines[1]], [b.lines[2]]] : b.lines.map(l => [l]);
+  for (const r of rows) {
+    const line = document.createElement('span'); line.className = 'l'; b.e.appendChild(line);
+    const wrap = document.createElement('span'); wrap.style.cssText = 'display:inline-block;position:relative'; line.appendChild(wrap);
+    wrap.dataset.box = b.id + '_' + rows.indexOf(r); wrap.dataset.boxGroup = b.id;
+    r.forEach((p, i) => {
+      const seg = document.createElement('span'); seg.style.cssText = 'display:inline-block;position:relative;font-size:' + p[1] + 'px' + (i ? ';margin-left:.32em' : '');
+      seg.innerHTML = '<span class="s">' + p[0] + '</span><span class="f">' + p[0] + '</span>';
+      wrap.appendChild(seg); b.parts.push({e: seg, t: p[2] ?? b.t0});
+    });
+  }
+}
+function drawBig(t) {
+  for (const b of BIG) {
+    const o = vis(t, b.t0, b.t1, 0.01, 0.12);
+    b.e.style.opacity = o; b.e.style.display = o > 0 ? 'block' : 'none';
+    for (const p of b.parts) {
+      const k = clamp((t - p.t) / 0.28);          // 레퍼런스: 0.3초쯤 걸쳐 흐릿→선명, 살짝 커지며 자리 잡음
+      p.e.style.opacity = eo(k);
+      p.e.style.transform = `translateY(${(1 - eo(k)) * 18}px) scale(${0.94 + 0.06 * eo(k) + 0.015 * clamp((t - p.t - 0.28) / 1.2)})`;
+      p.e.style.filter = `blur(${(1 - eo(k)) * 6}px)`;
+    }
+  }
+}
+
+/* ── 3D 아이콘 (레퍼런스 15.0 «돈이나 건물 같은 자본» 옆 💰🏢) ── */
+const ICO = [
+  {id: 'i_bld0', f: 'r4_building_a.png', t0: 0.12,  t1: 1.97,  x: 800, y: 900},
+  {id: 'i_bag1', f: 'r4_moneybag_a.png', t0: 6.30,  t1: 7.99,  x: 810, y: 930, g: 'bags'},
+  {id: 'i_bag2', f: 'r4_moneybag_a.png', t0: 6.98,  t1: 7.99,  x: 700, y: 980, g: 'bags', s: 0.85},
+  {id: 'i_bag3', f: 'r4_moneybag_a.png', t0: 7.14,  t1: 7.99,  x: 920, y: 985, g: 'bags', s: 0.85},
+  {id: 'i_bag4', f: 'r4_moneybag_a.png', t0: 16.62, t1: 18.97, x: 640, y: 930},
+  {id: 'i_bld1', f: 'r4_building_a.png', t0: 17.46, t1: 18.97, x: 900, y: 910},
+  {id: 'i_up',   f: 'r4_chartup_a.png',  t0: 20.16, t1: 22.36, x: 830, y: 920},
+  {id: 'i_bld2', f: 'r4_building_a.png', t0: 38.80, t1: 41.44, x: 600, y: 910},
+  {id: 'i_key',  f: 'r4_house_key_a.png', t0: 39.80, t1: 41.44, x: 910, y: 940},
+];
+for (const c of ICO) { c.e = el('img', 'ico', null, c.id, c.g); c.e.src = A + c.f; }
+function drawIco(t) {
+  for (const c of ICO) {
+    const o = vis(t, c.t0, c.t1, 0.06, 0.15);
+    c.e.style.display = o > 0 ? 'block' : 'none'; c.e.style.opacity = o;
+    const s = (c.s || 1) * back((t - c.t0) / 0.32);
+    const bob = Math.sin((t - c.t0) * 3.2) * 6;
+    c.e.style.left = (c.x - 120) + 'px'; c.e.style.top = (c.y - 120 + bob) + 'px';
+    c.e.style.transform = `scale(${s}) rotate(${Math.sin((t - c.t0) * 2.1) * 3}deg)`;
+  }
+}
+
+/* ── 흰 인형 어깨 으쓱 (레퍼런스 4.5~6.5 «당신 부자 되고 싶으면 뭘 할 수 있는데?») — «예금하려는 분들은 없죠?» ── */
+const FIG = {t0: 7.99, t1: 9.68};
+FIG.e = el('img', 'ico', null, 'fig'); FIG.e.src = A + 'r4_figure_a.png';
+FIG.e.style.cssText = 'position:absolute;width:300px;height:450px;object-fit:contain;filter:drop-shadow(0 14px 18px rgba(0,0,0,.4))';
+function drawFig(t) {
+  const o = vis(t, FIG.t0, FIG.t1, 0.06, 0.15);
+  FIG.e.style.display = o > 0 ? 'block' : 'none'; FIG.e.style.opacity = o;
+  const k = back((t - FIG.t0) / 0.35), sh = Math.max(0, Math.sin((t - FIG.t0 - 0.3) * 7)) * clamp((t - FIG.t0 - 0.3) / 0.2) * clamp((FIG.t0 + 1.3 - t) / 0.2);
+  FIG.e.style.left = '70px'; FIG.e.style.top = (1290 + (1 - k) * 120 - sh * 10) + 'px';
+  FIG.e.style.transform = `scale(${0.6 + 0.4 * k})`; FIG.e.style.transformOrigin = '50% 100%';
+}
+
+/* ── 떨어지는 지폐 (레퍼런스 21.0 «돈이 돈을 벌 수 있는») — «돈의 가치는 급격히 떨어지고 있어요» ── */
+const BILL = {t0: 13.50, t1: 15.78};
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const bills = [];
+for (let i = 0; i < 16; i++) {
+  const b = {x: 40 + rnd() * 1000, d: rnd() * 1.0, v: 900 + rnd() * 500, r0: rnd() * 360, rv: (rnd() - .5) * 260, sw: 30 + rnd() * 50, ph: rnd() * 6, s: 0.65 + rnd() * 0.5};
+  b.e = el('img', 'bill'); b.e.src = A + 'r4_bill_a.png'; bills.push(b);
+}
+function drawBills(t) {
+  for (const b of bills) {
+    const u = t - BILL.t0 - b.d, o = vis(t, BILL.t0 + b.d, BILL.t1 + 0.3, 0.05, 0.3);
+    b.e.style.display = (o > 0 && u > 0) ? 'block' : 'none'; b.e.style.opacity = o;
+    b.e.style.left = (b.x - 115 + Math.sin(u * 2.4 + b.ph) * b.sw) + 'px';
+    b.e.style.top = (-200 + u * b.v) + 'px';
+    b.e.style.transform = `scale(${b.s}) rotate(${b.r0 + u * b.rv}deg) rotateX(${Math.sin(u * 3 + b.ph) * 55}deg)`;
+  }
+}
+
+/* ── 말풍선 — 사장님 «좀더 말풍선 디자인이나 안의 글자체는 세련되었으면»: 타원+손글씨 대신 둥근 카드 + 프리텐다드 ── */
+const BUB = [
+  // 얼굴이 y 400~800 · x 360~680(10-19 바탕 실측) → 머리 위 옆자리, 꼬리는 머리 쪽
+  {id: 'bub1', t0: 25.49, t1: 27.13, x: 40, y: 170, side: 'r', html: '<small>많이들 이렇게 생각하죠</small>건물만 사면<br><b>돈 버는 거</b> 아냐? 🤔'},
+  {id: 'bub2', t0: 31.83, t1: 34.52, r: 40, y: 170, side: 'l', html: '<small>임차인 없는 건물주</small>이번 달 월세…<br><b>또 안 들어왔네</b> 😥'},
+];
+for (const b of BUB) {
+  b.e = el('div', 'bub', b.html, b.id);
+  const tl = document.createElement('span'); tl.className = 'tail'; b.e.appendChild(tl);
+  tl.style[b.side === 'r' ? 'right' : 'left'] = '56px';
+  if (b.r != null) b.e.style.right = b.r + 'px'; else b.e.style.left = b.x + 'px';
+  b.e.style.top = b.y + 'px';
+  b.e.style.transformOrigin = b.side === 'r' ? '85% 100%' : '15% 100%';
+}
+function drawBub(t) {
+  for (const b of BUB) {
+    const o = vis(t, b.t0, b.t1, 0.05, 0.16);
+    b.e.style.display = o > 0 ? 'block' : 'none'; b.e.style.opacity = o;
+    const k = back((t - b.t0) / 0.34);
+    b.e.style.transform = `translateY(${(1 - k) * 30 - clamp((t - b.t0) / 2) * 6}px) scale(${0.7 + 0.3 * k})`;
+  }
+}
+
+/* 효과음 계기 (r4_build.py 가 역할 → 파일로 바꾼다) */
+window.EVENTS = [
+  ...ICO.map(c => ({t: c.t0, role: 'ico', id: c.id})),
+  {t: FIG.t0, role: 'fig', id: 'fig'},
+  {t: BILL.t0, role: 'bills', id: 'bills'},
+  ...BUB.map(b => ({t: b.t0, role: 'bub', id: b.id})),
+  {t: 56.26, role: 'cta', id: 'b_cta'},
+];
+
+let first = true;
+window.seek = async function (t) {
+  if (first) { first = false; await Promise.all([...st.querySelectorAll('img')].map(i => i.decode().catch(() => 0))); }
+  drawBig(t); drawIco(t); drawFig(t); drawBills(t); drawBub(t);
+};
+</script></body></html>

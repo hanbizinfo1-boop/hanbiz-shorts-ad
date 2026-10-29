@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-21 7번 상담 모자이크 V2 완성도 판 — 사장님 «뭔가 이렇게 덩그러니 건물만있으니까 좀 연출이 별로인듯한느낌이고 뭔가 속도가 너무 일정하고
+     사진도 움직임이 별로없으니까 고급진 느낌이안나 / 이게 뭐랄까 연출방법은 좋은데 완성도가 떨어진다고해야하나»
+     → ① 마지막 = 실제 강남 밤거리(Codex set17) — 모자이크 모양이 그 사진 속 건물 누끼라 제자리에서 바뀜 ② 속도 강약: 천천히 다가감 → 훅 빠짐(지수 곡선) → 살짝 더 밀려났다 섬 → 번쩍 뒤 다시 천천히 다가감
+     ③ 사진마다 천천히 흐르는 움직임 + 줌아웃 끝에 빛 물결(아래 → 위) + 6.50 금빛이 건물을 쓸고 지나감. 흐린 밤거리가 처음부터 바탕(검은 배경 대신).
+     900×1600 · 59.94 · 장면 0초 = 시퀀스 3.971. 칸 자리 r7m3_cells.js(tools/r7m2_build.py night) -->
+<script src="r7m3_cells.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:relative;width:900px;height:1600px;overflow:hidden;background:#0c0d10}
+#w{position:absolute;left:0;top:0;width:900px;height:1600px;transform-origin:0 0;will-change:transform}
+.ni{position:absolute;top:0;height:1600px;background-size:100% 100%}
+#nb{filter:blur(18px) brightness(.32) saturate(.8)}
+.tile{position:absolute;background-size:118% 118%;box-shadow:0 0 0 .8px rgba(255,255,255,.8);will-change:transform,opacity,filter}
+.mk{position:absolute;top:0;height:1600px;-webkit-mask-size:100% 100%;mask-size:100% 100%}
+#fl{background:#FFD27A}
+#sweep{overflow:hidden}
+#band{position:absolute;top:0;width:260px;height:1600px;background:linear-gradient(100deg,rgba(255,236,190,0) 0%,rgba(255,232,180,.55) 50%,rgba(255,236,190,0) 100%)}
+#vig{position:absolute;inset:0;background:radial-gradient(110% 75% at 50% 50%,rgba(0,0,0,0) 55%,rgba(0,0,0,.55) 100%);pointer-events:none}
+</style></head>
+<body><div id="st"><div id="w"><div class="ni" id="nb"></div><div class="ni" id="ns"></div><div id="tiles"></div><div class="mk" id="fl"></div><div class="mk" id="sweep"><div id="band"></div></div></div><div id="vig"></div></div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 3.153;
+window.PALETTE = ['#ffffff', '#FFD43B'];
+const R = window.R7M3, P = '../../소재/r4s5/', NI = '../../소재/codex/r7m_night.png', NM = '../../소재/codex/r7m_night_bld.png';
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const expo = x => { x = clamp(x); return x === 0 ? 0 : x === 1 ? 1 : x < .5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2; };
+const bump = x => (x <= 0 || x >= 1) ? 0 : Math.sin(Math.PI * x);
+const O = 3.971, at = s => s - O;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+const T = {z0: at(4.62), z1: at(5.50), flash: at(5.68), glow: at(6.50), out: at(6.98), end: 3.153};
+const st = document.getElementById('st'), w = document.getElementById('w');
+const nb = document.getElementById('nb'), ns = document.getElementById('ns'), fl = document.getElementById('fl'), sweep = document.getElementById('sweep'), band = document.getElementById('band');
+[nb, ns, fl, sweep].forEach(e => Object.assign(e.style, {left: R.ox + 'px', width: R.nw + 'px'}));
+nb.style.backgroundImage = ns.style.backgroundImage = `url(${NI})`;
+[fl, sweep].forEach(e => { e.style.webkitMaskImage = e.style.maskImage = `url(${NM})`; });
+const host = document.getElementById('tiles');
+const TL = R.cells.map(c => { const e = document.createElement('div'); e.className = 'tile'; Object.assign(e.style, {left: c.x + 'px', top: c.y + 'px', width: R.tw + 'px', height: R.th + 'px', backgroundImage: `url(${P}${c.img})`}); host.appendChild(e); return Object.assign({e, yn: (c.y - R.by0) / (R.by1 - R.by0)}, c); });
+const H0 = R.cells[R.hero], HX = H0.x + R.tw / 2, HY = H0.y + R.th / 2;
+const S0 = 600 / R.tw;
+window.EVENTS = [{t: 0, role: 'hero_in'}, {t: T.z0, role: 'zoom'}, {t: T.flash, role: 'flash'}, {t: T.glow, role: 'sweep'}];
+
+window.seek = async function (t) {
+  show(st, eo(t / .2) * (1 - eio((t - T.out) / (T.end - T.out))));
+  // ── 카메라: 첫 장에 머물며 천천히 다가감 → 지수 곡선으로 훅 빠짐 → 살짝 더 밀려났다 섬 → 번쩍 뒤 다시 천천히 다가감
+  const hold = S0 * (1 + .07 * eio(t / T.z0));
+  const z = expo((t - T.z0) / (T.z1 - T.z0));
+  let s = Math.exp(Math.log(hold) * (1 - z));
+  s *= 1 - .045 * bump((t - T.z1 + .06) / .34);                       // 살짝 더 빠졌다 제자리
+  s *= 1 + .06 * eio((t - T.flash) / (T.end - T.flash));             // 실제 거리에서 천천히 다가감
+  const m = clamp((1 / Math.exp(Math.log(hold) * (1 - z)) - 1 / hold) / (1 - 1 / hold));
+  const fx = HX + (450 - HX) * m, fy = HY + (800 - HY) * m, sy = 520 + (800 - 520) * m;
+  w.style.transform = `translate(450px,${sy}px) scale(${s}) translate(${-fx}px,${-fy}px)`;
+  // ── 사진: 저마다 천천히 흐름(켄 번즈) · 줌아웃 끝에 빛 물결(아래 → 위) · 번쩍 때 아래부터 걷히며 실제 건물
+  TL.forEach(c => {
+    const px = 50 + 40 * Math.sin(t * .9 + c.ph), py = 50 + 40 * Math.cos(t * .7 + c.ph);
+    c.e.style.backgroundPosition = `${px}% ${py}%`;
+    const wv = bump((t - (T.z1 - .1 + (1 - c.yn) * .32)) / .2);
+    c.e.style.filter = `brightness(${1 + .55 * wv})`;
+    const gone = clamp((t - (T.flash - .02 + (1 - c.yn) * .22 + c.d * .05)) / .1);
+    c.e.style.transform = `scale(${(1 + .14 * wv) * (1 - .25 * gone)})`;
+    show(c.e, 1 - gone);
+  });
+  show(ns, eo((t - T.flash + .05) / .35));
+  show(fl, .5 * clamp((t - T.flash + .02) / .03) * (1 - clamp((t - T.flash - .02) / .16)));
+  // ── 6.50 금빛이 건물을 쓸고 지나감
+  const k = (t - T.glow) / .55;
+  show(sweep, k > 0 && k < 1 ? 1 : 0);
+  band.style.transform = `translateX(${(R.bx0 - R.ox - 300) + (R.bx1 - R.bx0 + 600) * eio(k)}px) skewX(-12deg)`;
+};
+</script></body></html>

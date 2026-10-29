@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-20 4번 «적어도 강남빌딩은 / 물가상승률보다 / 더 올라가잖아요» — 사장님 «년도그래프로 물가상승률이랑 비교그래프 %로 실질데이터로 표현해봐 굴곡진 점선 그래프로»
+     실질 데이터(2006 = 0%, 누적 상승률):
+       강남 꼬마빌딩 = 연금형부동산연구소 «빌딩거래량» 표의 토지금액(꼬마빌딩 기준, 평당 만원) 987(06) → 4,523(23) = +358%
+       소비자물가   = 통계청 소비자물가지수 연간 상승률(07~23) 누적 = +47%  (값은 r4g_build.py 머리)
+     900×1600 · 59.94 · 장면 0초 = 시퀀스 18.835. 사장님 안쪽 안전선 x 90~808 · 자막 밑. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:relative;width:900px;height:1600px;overflow:hidden;font-family:"HM GmarketSans","HM Pretendard",sans-serif}
+#pn{position:absolute;left:92px;top:990px;width:716px;height:470px;border-radius:30px;background:rgba(14,16,22,.78);box-shadow:0 18px 40px rgba(0,0,0,.35);will-change:transform,opacity}
+.t{position:absolute;white-space:nowrap;font-weight:700;letter-spacing:-.5px}
+</style></head>
+<body><div id="st">
+  <div id="pn" data-box="graph">
+    <div class="t" style="left:30px;top:22px;font-size:34px;color:#FFD43B">2006년 대비 상승률</div>
+    <div class="t" id="lgB" style="right:30px;top:20px;font-size:24px;color:#00FC00">— 강남 꼬마빌딩 땅값</div>
+    <div class="t" id="lgC" style="right:30px;top:52px;font-size:24px;color:#e9ecf2">— 소비자물가</div>
+    <svg id="g" width="716" height="470" style="position:absolute;left:0;top:0;overflow:visible"></svg>
+    <div class="t" style="left:30px;bottom:12px;font-size:17px;font-weight:500;color:#9aa0aa">출처: 연금형부동산연구소(꼬마빌딩 평당 토지가) · 통계청 소비자물가지수</div>
+  </div>
+</div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 3.387;
+window.PALETTE = ['#ffffff', '#00FC00', '#FFD43B'];
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = x => { x = clamp(x); const c = 1.8; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const O = 18.835, at = s => s - O;
+const YR = [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023];
+const BLD = [0, 8.2, 46.0, 21.1, 53.0, 39.9, 56.7, 51.1, 54.2, 64.7, 82.9, 124.2, 121.3, 148.2, 201.0, 290.5, 334.1, 358.3];
+const CPI = [0, 2.5, 7.3, 10.3, 13.5, 18.1, 20.7, 22.2, 23.8, 24.7, 25.9, 28.3, 30.2, 30.8, 31.4, 34.7, 41.6, 46.7];
+const X0 = 80, X1 = 640, Y0 = 400, Y1 = 110, YMAX = 400;   // 패널 안 좌표: 그래프 영역
+const px = i => X0 + (X1 - X0) * i / (YR.length - 1), py = v => Y0 - (Y0 - Y1) * v / YMAX;
+// 굴곡진 곡선 — Catmull-Rom → 베지어
+function curve(vals) {
+  const p = vals.map((v, i) => [px(i), py(v)]); let d = `M${p[0][0]},${p[0][1]}`;
+  for (let i = 0; i < p.length - 1; i++) { const a = p[i - 1] || p[i], b = p[i], c = p[i + 1], e = p[i + 2] || c;
+    d += ` C${b[0] + (c[0] - a[0]) / 6},${b[1] + (c[1] - a[1]) / 6} ${c[0] - (e[0] - b[0]) / 6},${c[1] - (e[1] - b[1]) / 6} ${c[0]},${c[1]}`; }
+  return d;
+}
+const g = $('g');
+let s = '<defs><clipPath id="cC"><rect id="rC" x="0" y="0" width="0" height="470"/></clipPath><clipPath id="cB"><rect id="rB" x="0" y="0" width="0" height="470"/></clipPath>' +
+  '<filter id="gl"><feGaussianBlur stdDeviation="4"/></filter></defs>';
+[0, 100, 200, 300, 400].forEach(v => { s += `<line x1="${X0}" x2="${X1}" y1="${py(v)}" y2="${py(v)}" stroke="rgba(255,255,255,${v ? .12 : .35})" stroke-width="${v ? 1.5 : 2}"/><text x="${X0 - 12}" y="${py(v) + 7}" text-anchor="end" font-size="20" fill="#9aa0aa" font-weight="700">${v}%</text>`; });
+[0, 4, 9, 14, 17].forEach(i => { s += `<text x="${px(i)}" y="${Y0 + 32}" text-anchor="middle" font-size="21" fill="#c9ced8" font-weight="700">${YR[i]}</text>`; });
+s += `<g clip-path="url(#cC)"><path d="${curve(CPI)}" fill="none" stroke="#e9ecf2" stroke-width="6" stroke-dasharray="14 10" stroke-linecap="round"/></g>`;
+s += `<g clip-path="url(#cB)"><path d="${curve(BLD)}" fill="none" stroke="#00FC00" stroke-width="10" stroke-dasharray="1 0" opacity=".25" filter="url(#gl)"/><path d="${curve(BLD)}" fill="none" stroke="#00FC00" stroke-width="7" stroke-dasharray="16 10" stroke-linecap="round"/></g>`;
+s += `<image id="dC" href="../../소재/db1/money/bill_front_a.png" width="100" height="45" style="filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))"/><image id="dB" href="../../소재/r4s/bldcut_1.png" width="58" height="87" style="filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))"/>`;   // 10-20 «물가상승률은 지폐모양 그리고 강남빌딩은 빌딩모양으로 저 큰색 원대신»
+s += `<text id="vC" font-size="36" font-weight="700" fill="#e9ecf2" text-anchor="start">+47%</text><text id="vB" font-size="54" font-weight="700" fill="#00FC00" text-anchor="start" stroke="#0b0b0d" stroke-width="6" paint-order="stroke">+358%</text>`;
+g.innerHTML = s;
+const T = {in: 0, cpi: at(19.987), bld: at(21.188), out: at(22.10), end: 3.387};
+window.EVENTS = [{t: T.in, role: 'panel'}, {t: T.cpi, role: 'cpi'}, {t: T.bld, role: 'bld'}, {t: T.bld + .72, role: 'pop'}];
+function interp(vals, k) { const f = k * (vals.length - 1), i = Math.min(vals.length - 2, Math.floor(f)), r = f - i; return [px(i + r), py(vals[i] + (vals[i + 1] - vals[i]) * r)]; }
+
+window.seek = async function (t) {
+  const pin = eo((t - T.in) / .35), fade = clamp((T.end - t) / (T.end - T.out));
+  $('pn').style.opacity = pin * fade; $('pn').style.transform = `translateY(${(1 - pin) * 60}px)`;
+  // 물가 — «물가상승률보다»에 왼쪽부터 그려짐
+  const kc = eio((t - T.cpi) / .9), kb = eio((t - T.bld) / .72);
+  $('rC').setAttribute('width', X0 + (X1 - X0) * kc + 12);
+  $('rB').setAttribute('width', t > T.bld ? X0 + (X1 - X0) * kb + 14 : 0);
+  const [cx, cy] = interp(CPI, kc), [bx, by] = interp(BLD, kb);
+  const dC = $('dC'), dB = $('dB');
+  dC.setAttribute('x', cx - 50); dC.setAttribute('y', cy - 22); dC.style.opacity = t > T.cpi ? 1 : 0;
+  dB.setAttribute('x', bx - 29); dB.setAttribute('y', by - 66); dB.style.opacity = t > T.bld ? 1 : 0;
+  $('lgC').style.opacity = .35 + .65 * clamp((t - T.cpi) / .2); $('lgB').style.opacity = .35 + .65 * clamp((t - T.bld) / .2);
+  const vC = $('vC'), vB = $('vB'), pc = back((t - T.cpi - .9) / .3), pb = back((t - T.bld - .72) / .35);
+  vC.setAttribute('x', X1 + 44); vC.setAttribute('y', py(46.7) + 12); vC.style.opacity = clamp((t - T.cpi - .9) / .08);
+  vC.setAttribute('transform', `translate(${X1 + 14},${py(46.7)}) scale(${pc}) translate(${-(X1 + 14)},${-py(46.7)})`);
+  vB.setAttribute('x', X1 - 240); vB.setAttribute('y', py(358.3) + 18);   // 점 왼쪽 — 범례와 안 겹치게 vB.style.opacity = clamp((t - T.bld - .72) / .08);
+  vB.setAttribute('transform', `translate(${X1 - 20},${py(358.3)}) scale(${pb}) translate(${-(X1 - 20)},${-py(358.3)})`);
+};
+</script></body></html>

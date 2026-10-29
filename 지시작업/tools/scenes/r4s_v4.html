@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-20 v4 — 사장님 «여기서 필름빼고 그냥 이미지 크게해서 왼쪽으로 가게해봐» (v3 필름 판에서 필름만 뺌) -->
+<!-- 10-20 v3 필름 — 사장님 «필름처럼 세미나사진이 왼쪽으로 쭉가다가 한번 접히고 … 건물만 세개 딱딱딱 자간맞춰서 정렬»
+     → «아니 세미나사진 처음부터 필름처럼 왼쪽으로 가게끔해달라고» «그리고 강남사진이 필릉이접히면서 정렬되게»
+     → «강남사진은 사진형태말고 그냥 누끼따서 하나씩 좀 크게 자막밑에 박아줘» (누끼: rembg birefnet-general, 지시작업/소재/r4s/bldcut_*.png)
+     15.649 필름이 오른쪽에서 들어와 계속 왼쪽으로 · 17.768 «강남빌딩이에요» 필름이 병풍처럼 접혀 가운데로 사라짐 · 18.19/18.33/18.47 누끼 건물 왼·오·가운데 딱·딱·딱(밑선 맞춤)
+     900×1600 · 59.94 · 이 장면 0초 = 시퀀스 15.649. 사장님 안쪽 안전선 x 90~808 · 자막 밑. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:relative;width:900px;height:1600px;overflow:hidden;perspective:1300px}
+#film{position:absolute;left:0;top:0;height:336px;transform-style:preserve-3d;will-change:transform,opacity}
+.seg{position:absolute;top:0;width:440px;height:336px;transform-origin:0 50%}
+.seg i{position:absolute;left:0;top:0;width:440px;height:336px;background-size:100% 100%;box-shadow:0 16px 28px rgba(0,0,0,.42)}
+.bd{position:absolute;left:0;top:0;background-size:100% 100%;transform-origin:50% 100%;filter:drop-shadow(0 16px 18px rgba(0,0,0,.45));will-change:transform,opacity}
+</style></head>
+<body><div id="st"><div id="film"></div></div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 3.186;
+window.PALETTE = ['#ffffff', '#121214'];
+const A = '../../소재/r4s/';
+const st = document.getElementById('st'), film = document.getElementById('film');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const wob = (x, f = 30, d = 9) => x <= 0 ? 0 : Math.cos(x * f) * Math.exp(-x * d);
+const O = 15.649, at = s => s - O;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+
+const SEMF = ['sem_4.jpg', 'sem_2.jpg', 'sem_1.jpg', 'sem_6.jpg', 'sem_0.jpg', 'sem_3.jpg', 'sem_5.jpg'];
+const FW = 464, FY = 1205, N = 9, V = 1420;   // v4: 사진 440×336 · 간격 24 · 처음부터 첫 장이 화면 안 · 접힐 때 7번째가 화면 왼쪽         // 칸 폭 · 필름 가운데 y · 칸 수 · 흐름 속도(px/초)   // 10-20 «필름이 좀더 빠르게 지나가자 7개가 다 보이게끔» 560 → 1050(접힐 때 7번째 칸이 화면 가운데)
+const SEG = Array.from({length: N}, (_, i) => { const s = document.createElement('div'); s.className = 'seg'; s.innerHTML = `<i style="background-image:url(${A}${SEMF[i % 7]})"></i>`; film.appendChild(s); return s; });
+const T = {fold: at(17.47), gone: at(17.75), b: [at(17.768), at(17.88), at(17.99)], out: at(18.74), end: 3.186};   // 10-20 «강남빌딩 자막나오는거랑 동시에 빌딩 나타나게해줘 너무 짧게나오고 사라지네» — 필름은 «찾는게»에 접히고 빌딩은 자막과 함께
+const filmX = t => 230 - V * Math.min(t, T.fold) + 440 * (1 - Math.min(1, t / .25)) * 1.5;   // 처음 0.25초는 오른쪽에서 빠르게 미끄러져 들어옴   // 필름 왼쪽 끝 화면 x
+
+// 누끼 건물 — 밑선 1430 에 맞춰 세움 · 가운데가 가장 크고 앞(사장님 안쪽 안전선 x 90~808)
+const BASE = 1430;
+const BD = [
+  {f: 'bldcut_3.png', w: 278, h: 400, x: 250, t: T.b[0], z: 1},   // 10-20 «왼쪽 너무 눕혀져있는데 … 안되면 다른건물로» → 아래에서 올려 찍어 바로 세우면 일그러짐 → 24차(연금형부동산연구소 자료 234)로 교체
+  {f: 'bldcut_2.png', w: 298, h: 400, x: 652, t: T.b[1], z: 1},
+  {f: 'bldcut_1.png', w: 298, h: 449, x: 450, t: T.b[2], z: 2},
+];
+BD.forEach((b, i) => { b.e = document.createElement('div'); b.e.className = 'bd'; Object.assign(b.e.style, {width: b.w + 'px', height: b.h + 'px', backgroundImage: `url(${A}${b.f})`, zIndex: b.z}); st.appendChild(b.e); });
+window.EVENTS = [{t: 0, role: 'film_in'}, {t: T.fold, role: 'fold'}, ...BD.map((b, i) => ({t: b.t, role: 'slam' + i}))];
+
+window.seek = async function (t) {
+  const fade = clamp((T.end - t) / (T.end - T.out));
+  // ① 필름 — 흐르다가 17.768 부터 병풍처럼 접힘: 칸마다 번갈아 ±로 꺾이며 가로로 오그라들어 화면 가운데로 모여 사라짐
+  const fk = eio((t - T.fold) / (T.gone - T.fold)), x0 = filmX(t);
+  const ang = 84 * fk, cw = FW * Math.cos(ang * Math.PI / 180);        // 꺾인 칸이 차지하는 가로 폭
+  const totalW = cw * N, startX = x0 + (450 - (x0 + totalW / 2)) * fk;  // 접히며 가운데로 모임
+  SEG.forEach((s, i) => {
+    const sx = startX + i * cw;
+    s.style.transform = `translate(${sx}px,0) rotateY(${i % 2 ? -ang : ang}deg)`;
+    s.style.filter = `brightness(${1 - (i % 2 ? .35 : .1) * fk})`;
+  });
+  film.style.transform = `translate(0,${FY - 168}px) scale(${1 - .25 * fk})`;
+  film.style.transformOrigin = '450px 168px';
+  show(film, clamp(t / .1) * (1 - clamp((t - T.gone + .06) / .06)));
+  // ② 누끼 건물 딱·딱·딱 — 위에서 떨어져 밑선에 박히며 찌그러졌다 섬
+  BD.forEach(b => {
+    const u = t - b.t; if (u < 0) { show(b.e, 0); return; }
+    const k = Math.min(1, Math.pow(u / .14, 2)), drop = (1 - k) * 160;
+    const sq = u > .14 ? .1 * wob(u - .14, 32, 10) : 0;
+    b.e.style.transform = `translate(${b.x - b.w / 2}px,${BASE - b.h - drop}px) scale(${1 + sq},${1 - sq})`;
+    show(b.e, clamp(u / .04) * fade);
+  });
+};
+</script></body></html>

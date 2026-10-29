@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-21 7번 23.54~28.145 «어떤 빌딩이 / 손해를 보는 / 빌딩이고 / (어떤 빌딩이) / 돈을 벌 수 있는 / 빌딩인지» — 빌딩숲 위 홀로그램 분석(알파 층).
+     사장님 «D:\26년 10월\261021 여기 있는 빌딩숲 영상을 활용해서 (원본 영상 한 2배속정도걸어줘) 각각 건물을 홀로그램 데이터처럼 가격지표 확인하는 듯한 연출 …
+     준공년도, 현재가치, 미래예상가치, 임차인정보 막 이런 정보들이 홀로그램 데이터로 각각 건물마다 분석되는 듯한 연출 … 미래시대에 존재할법한 홀로그램같은 그런느낌»
+     배경 = 빌딩숲 2.0~11.3초 2배속(_tmp/r7h/bg2x.mp4, r7h_build.py 가 청록 톤으로 깔고 이 층을 얹음). 추적 = tools/r7h_track.py → r7h_track.js.
+     ① 0~0.80 HUD 켜짐 · 스캔 빛 위→아래 · 빌딩 3곳 조준(BLD-01~03) ② 0.80~2.17 왼쪽 탑(L) 빨강 «손실 위험» 창 · 꼭대기 업체 간판은 경고 표지로 덮음
+     ③ 2.17~4.605 오른쪽(R) 금빛 «수익 우량» 창 · 얼굴 광고판은 «A+» 홀로그램으로 덮음. 수치는 연출용 예시.
+     900×1600 · 59.94 · 장면 0초 = 시퀀스 23.54(17:39 저장본). -->
+<script src="r7h_track.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent;font-family:"HM Pretendard"}
+#st{position:absolute;inset:0;overflow:hidden}
+:root{--c:#6ff6ff;--r:#ff4d5e;--g:#ffd36b}
+#scan{position:absolute;left:0;width:900px;height:160px;margin-top:-140px;background:linear-gradient(rgba(111,246,255,0),rgba(111,246,255,.22) 80%,rgba(200,255,255,.9) 99%,rgba(111,246,255,0));mix-blend-mode:screen}
+#lines{position:absolute;inset:0;background:repeating-linear-gradient(rgba(111,246,255,.05) 0 2px,transparent 2px 5px);mix-blend-mode:screen}
+.cor{position:absolute;width:90px;height:90px;border:4px solid var(--c);filter:drop-shadow(0 0 8px rgba(111,246,255,.8))}
+#c0{left:26px;top:26px;border-right:0;border-bottom:0}#c1{right:26px;top:26px;border-left:0;border-bottom:0}
+#c2{left:26px;bottom:26px;border-right:0;border-top:0}#c3{right:26px;bottom:26px;border-left:0;border-top:0}
+#bar{position:absolute;left:60px;top:40px;width:780px;height:44px;font:700 22px/44px "HM Mono";color:var(--c);letter-spacing:2px;text-shadow:0 0 8px rgba(111,246,255,.9)}
+#bar b{color:#fff}
+.br{position:absolute;pointer-events:none}
+.br i{position:absolute;width:26px;height:26px;border:4px solid currentColor}
+.br i:nth-child(1){left:-4px;top:-4px;border-right:0;border-bottom:0}.br i:nth-child(2){right:-4px;top:-4px;border-left:0;border-bottom:0}
+.br i:nth-child(3){left:-4px;bottom:-4px;border-right:0;border-top:0}.br i:nth-child(4){right:-4px;bottom:-4px;border-left:0;border-top:0}
+.br .tg{position:absolute;left:-4px;top:-38px;font:700 20px/30px "HM Mono";padding:0 8px;background:rgba(5,20,30,.75);border:2px solid currentColor;white-space:nowrap}
+.br .hatch{position:absolute;inset:0;background:repeating-linear-gradient(0deg,currentColor 0 2px,transparent 2px 9px);opacity:.18}
+.pn{position:absolute;width:350px;border-radius:10px;background:linear-gradient(160deg,rgba(10,30,45,.82),rgba(5,15,25,.72));border:2px solid currentColor;
+  box-shadow:0 0 22px rgba(111,246,255,.35),inset 0 0 30px rgba(111,246,255,.12);padding:16px 18px 14px;overflow:hidden}
+.pn:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(rgba(255,255,255,.05) 0 1px,transparent 1px 4px);pointer-events:none}
+.pn .hd{font:800 26px/34px "HM Pretendard";color:#fff;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.pn .hd span{font:800 20px/30px "HM Pretendard";padding:0 12px;border-radius:15px;background:currentColor}
+.pn .hd span em{font-style:normal;color:#06121c}
+.pn .rw{display:flex;justify-content:space-between;font:600 22px/40px "HM Pretendard";color:rgba(220,250,255,.85);border-bottom:1px solid rgba(111,246,255,.22)}
+.pn .rw b{font:800 26px/40px "HM Mono";color:#fff;text-shadow:0 0 10px currentColor}
+.pn .rw b.up{color:var(--g)}.pn .rw b.dn{color:var(--r)}
+.pn svg{display:block;margin-top:10px}
+#pL{color:var(--r)}#pR{color:var(--g)}
+.lead{position:absolute;height:3px;transform-origin:0 50%;background:currentColor;box-shadow:0 0 8px currentColor}
+#cov{position:absolute;border-radius:6px;overflow:hidden;background:linear-gradient(160deg,rgba(8,24,36,.96),rgba(4,12,20,.94));border:3px solid var(--g);box-shadow:0 0 26px rgba(255,211,107,.6)}
+#cov .gr{position:absolute;left:0;right:0;top:50%;transform:translateY(-55%);text-align:center;font:900 96px/1 "HM Pretendard";color:var(--g);text-shadow:0 0 18px rgba(255,211,107,.9)}
+#cov .gs{position:absolute;left:0;right:0;bottom:10%;text-align:center;font:800 26px/1 "HM Pretendard";color:#fff;letter-spacing:2px}
+#cov .rg{position:absolute;left:50%;top:46%;width:150%;aspect-ratio:1;transform:translate(-50%,-50%);border:2px dashed rgba(255,211,107,.45);border-radius:50%}
+#vb{position:absolute;border-radius:4px;background:rgba(5,16,26,.96);border:2px solid var(--c);box-shadow:0 0 12px rgba(111,246,255,.6);overflow:hidden}
+#vb i{position:absolute;left:18%;right:18%;bottom:6%;background:linear-gradient(var(--c),rgba(111,246,255,.3));box-shadow:0 0 10px var(--c)}
+#sgn{position:absolute;border-radius:4px;background:rgba(40,6,10,.95);border:3px solid var(--r);color:var(--r);font:900 26px/1 "HM Pretendard";display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(255,77,94,.7)}
+</style></head>
+<body><div id="st">
+  <div id="lines"></div><div id="scan"></div>
+  <div class="cor" id="c0"></div><div class="cor" id="c1"></div><div class="cor" id="c2"></div><div class="cor" id="c3"></div>
+  <div id="bar"></div>
+  <div id="brs"></div>
+  <div id="sgn">⚠ 위험</div><div id="vb"><i></i></div>
+  <div id="cov"><div class="rg"></div><div class="gr">A+</div><div class="gs">우량 등급</div></div>
+  <div class="lead" id="lL" style="color:var(--r)"></div><div class="lead" id="lR" style="color:var(--g)"></div>
+  <div class="pn" id="pL"><div class="hd">BLD-01 분석<span><em>손실 위험</em></span></div>
+    <div class="rw">준공년도<b data-v="1994" data-y="1">1994</b></div><div class="rw">현재가치<b class="dn" data-v="412" data-u="억 ▼">412억 ▼</b></div>
+    <div class="rw">미래예상<b class="dn" data-v="-11" data-u="% ▼">-11% ▼</b></div><div class="rw">임차인<b class="dn" data-v="38" data-p="공실 " data-u="%">공실 38%</b></div>
+    <svg width="314" height="70"><path id="sgL" fill="none" stroke="#ff4d5e" stroke-width="4" stroke-linejoin="round"/></svg></div>
+  <div class="pn" id="pR"><div class="hd">BLD-02 분석<span><em>수익 우량</em></span></div>
+    <div class="rw">준공년도<b data-v="2019" data-y="1">2019</b></div><div class="rw">현재가치<b data-v="1280" data-u="억">1,280억</b></div>
+    <div class="rw">미래예상<b class="up" data-v="42" data-p="+" data-u="% ▲">+42% ▲</b></div><div class="rw">임차인<b class="up" data-v="0" data-p="대기업 · 공실 " data-u="%">대기업 · 공실 0%</b></div>
+    <svg width="314" height="70"><path id="sgR" fill="none" stroke="#ffd36b" stroke-width="4" stroke-linejoin="round"/></svg></div>
+</div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 4.605;
+window.PALETTE = ['#6ff6ff', '#ff4d5e', '#ffd36b'];
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const O = 23.54, at = s => s - O;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+const T = {scan: .06, lock: .30, loss: at(24.341), bad: at(25.025), gain0: at(25.709), gain: at(26.476), fin: at(27.344), end: 4.605};
+const $ = id => document.getElementById(id);
+const TR = window.TRK;
+const box = (k, t) => { const a = TR[k], f = t * 59.94, i = Math.floor(f), j = Math.min(a.length - 1, i + 1), u = f - i;
+  const A = a[Math.min(i, a.length - 1)], B = a[j]; if (!A) return B || null; if (!B) return A; return A.map((v, c) => v + (B[c] - v) * u); };
+// 홀로그램 켜짐 깜빡임(정해진 무늬 — t 로만 정해짐)
+const flick = (t, t0) => { const u = t - t0; if (u < 0) return 0; if (u > .22) return 1; return [0, .9, .2, 1, .5, 1, .8, 1][Math.floor(u / .028)] ?? 1; };
+const BR = {};
+[['C', 'BLD-03', '#6ff6ff'], ['L', 'BLD-01', '#6ff6ff'], ['R', 'BLD-02', '#6ff6ff']].forEach(([k, tg, c]) => {
+  const e = document.createElement('div'); e.className = 'br'; e.innerHTML = `<i></i><i></i><i></i><i></i><div class="hatch"></div><div class="tg">${tg} · SCAN</div>`; e.style.color = c; $('brs').appendChild(e); BR[k] = e; });
+const spark = (id, up) => { const p = []; for (let i = 0; i <= 20; i++) { const u = i / 20; const y = up ? 58 - 46 * Math.pow(u, 1.6) - 5 * Math.sin(u * 13) * (1 - u) : 14 + 44 * Math.pow(u, 1.3) - 6 * Math.sin(u * 11) * (1 - u); p.push([6 + 300 * u, y]); } return p; };
+const SP = {L: spark('sgL', false), R: spark('sgR', true)};
+window.EVENTS = [{t: T.scan, role: 'scan'}, {t: T.lock, role: 'lock'}, {t: T.loss, role: 'loss'}, {t: T.gain0, role: 'gain_lock'}, {t: T.gain, role: 'gain'}, {t: T.fin, role: 'grade'}];
+
+function rows(p, t0, t) {                                                 // 줄마다 차례로 켜지며 숫자가 굴러감
+  p.querySelectorAll('.rw').forEach((r, i) => {
+    const k = clamp((t - t0 - .12 - i * .1) / .25);
+    r.style.opacity = flick(t, t0 + .12 + i * .1);
+    const b = r.querySelector('b'), v = +b.dataset.v, pre = b.dataset.p || '', u = b.dataset.u || '';
+    const n = Math.round(v * eo(k));
+    b.textContent = pre + (Math.abs(v) >= 1000 && !b.dataset.y ? n.toLocaleString() : n) + u;
+  });
+}
+function place(p, ln, bx, side, t0, t, sp, spid) {
+  const o = flick(t, t0);
+  show(p, o); show(ln, o);
+  if (!bx || o <= 0) return;
+  const pw = 350, ph = p.offsetHeight || 330;
+  let x = side > 0 ? bx[2] + 46 : bx[0] - 46 - pw, y = Math.max(110, Math.min(700 - ph, bx[1] + 30));
+  x = Math.max(24, Math.min(900 - 24 - pw, x));
+  p.style.left = x + 'px'; p.style.top = y + 'px';
+  p.style.transform = `perspective(900px) rotateY(${side > 0 ? -10 : 10}deg) scale(${.85 + .15 * eo((t - t0) / .3)})`;
+  // 지시선: 조준 상자 옆 가운데 → 창
+  const ax = side > 0 ? bx[2] : bx[0], ay = (bx[1] + bx[3]) / 2 - 60, bx2 = side > 0 ? x : x + pw, by = y + 40;
+  const len = Math.hypot(bx2 - ax, by - ay) * eo((t - t0) / .25);
+  Object.assign(ln.style, {left: ax + 'px', top: ay + 'px', width: len + 'px', transform: `rotate(${Math.atan2(by - ay, bx2 - ax)}rad)`});
+  rows(p, t0, t);
+  const k = eio((t - t0 - .45) / .6), n = Math.max(1, Math.round(sp.length * k));
+  $(spid).setAttribute('d', 'M' + sp.slice(0, n).map(q => q.join(',')).join('L'));
+}
+
+window.seek = async function (t) {
+  // ── HUD 틀 · 스캔
+  ['c0', 'c1', 'c2', 'c3'].forEach((id, i) => { const e = $(id), k = eo((t - i * .04) / .3); e.style.transform = `scale(${1.25 - .25 * k})`; show(e, flick(t, i * .04) * (1 - clamp((t - T.end + .2) / .2))); });
+  show($('lines'), .9 * flick(t, 0));
+  const sk = (t - T.scan) / .6;
+  $('scan').style.top = 1600 * eio(sk) + 'px'; show($('scan'), sk > 0 && sk < 1 ? 1 : 0);
+  const pct = Math.min(100, Math.round(100 * clamp((t - T.scan) / 1.2)));
+  const mode = t < T.loss ? `강남 빌딩 스캔 중 <b>${pct}%</b>` : t < T.gain0 ? `분석 · <b style="color:#ff4d5e">BLD-01 손실 위험</b>` : `분석 · <b style="color:#ffd36b">BLD-02 수익 우량</b>`;
+  $('bar').innerHTML = `◉ AI BUILDING SCAN &nbsp;|&nbsp; ${mode}`;
+  show($('bar'), flick(t, .05) * (1 - clamp((t - T.end + .2) / .2)));
+  // ── 조준 상자(추적) — L 은 «손해», R 은 «돈을 벌» 때 색이 바뀌고 빗금
+  const lockT = {C: T.lock, L: T.lock + .1, R: T.lock + .2};
+  Object.entries(BR).forEach(([k, e]) => {
+    const b = box(k, t);
+    let o = flick(t, lockT[k]);
+    if (k === 'C') o *= 1 - clamp((t - T.loss) / .2);
+    if (k === 'L') o *= 1 - clamp((t - T.gain0 - .1) / .25);
+    if (!b || o <= 0) { show(e, 0); return; }
+    const pad = 10, sc = 1 + .4 * (1 - eo((t - lockT[k]) / .25));              // 크게 → 조여 들며 잠김
+    const cx = (b[0] + b[2]) / 2, cy = (b[1] + b[3]) / 2, w = (b[2] - b[0] + 2 * pad) * sc, h = (b[3] - b[1] + 2 * pad) * sc;
+    Object.assign(e.style, {left: cx - w / 2 + 'px', top: cy - h / 2 + 'px', width: w + 'px', height: h + 'px'});
+    const red = k === 'L' && t > T.loss, gold = k === 'R' && t > T.gain0;
+    e.style.color = red ? '#ff4d5e' : gold ? '#ffd36b' : '#6ff6ff';
+    e.querySelector('.tg').textContent = red ? 'BLD-01 · 손실 위험' : gold ? 'BLD-02 · 수익 우량' : `${k === 'C' ? 'BLD-03' : k === 'L' ? 'BLD-01' : 'BLD-02'} · SCAN`;
+    e.querySelector('.hatch').style.opacity = (red || gold) ? .22 : .08;
+    e.querySelector('.tg').style.display = k === 'R' && !gold ? 'none' : 'block';
+    show(e, o);
+  });
+  // ── 왼쪽 탑 꼭대기 업체 간판 → 경고 표지로 덮음(보이는 동안 늘)
+  const lb = box('L', t), sb = box('LS', t), vb = box('LV', t);
+  if (sb) {
+    const w = sb[2] - sb[0], h = sb[3] - sb[1];
+    Object.assign($('sgn').style, {left: sb[0] + 'px', top: sb[1] + 'px', width: w + 'px', height: h + 'px', fontSize: Math.max(16, Math.min(30, w / 6)) + 'px'});
+    show($('sgn'), 1);
+  } else show($('sgn'), 0);
+  if (vb) {                                                              // 외벽 세로 간판 → 세로 게이지(L 이 빨개지면 빨강·낮아짐)
+    Object.assign($('vb').style, {left: vb[0] + 'px', top: vb[1] + 'px', width: vb[2] - vb[0] + 'px', height: vb[3] - vb[1] + 'px', borderColor: t > T.loss ? '#ff4d5e' : '#6ff6ff'});
+    const g = $('vb').firstElementChild, lv = t > T.loss ? .25 + .5 * (1 - eo((t - T.loss) / .5)) : .4 + .35 * Math.abs(Math.sin(t * 5));
+    Object.assign(g.style, {height: 88 * lv + '%', background: t > T.loss ? 'linear-gradient(#ff4d5e,rgba(255,77,94,.3))' : ''});
+    show($('vb'), 1);
+  } else show($('vb'), 0);
+  // ── 오른쪽 얼굴 광고판 → «A+» 홀로그램으로 덮음(보이는 동안 늘 · 처음엔 등급 대신 스캔 무늬)
+  const rb = box('R', t);
+  if (rb) {
+    const w = rb[2] - rb[0], h = rb[3] - rb[1];
+    Object.assign($('cov').style, {left: rb[0] - 6 + 'px', top: rb[1] - 6 + 'px', width: w + 12 + 'px', height: h + 12 + 'px'});
+    const gk = eo((t - T.gain0 - .1) / .3);
+    $('cov').querySelector('.gr').style.fontSize = Math.min(w, h) * (t > T.gain0 ? .62 : .3) + 'px';
+    const gr = $('cov').querySelector('.gr'), gs = $('cov').querySelector('.gs');
+    gr.textContent = gk > 0 ? 'A+' : 'SCAN'; gs.textContent = gk > 0 ? '우량 등급' : '분석 중…';
+    gr.style.color = gk > 0 ? '#ffd36b' : '#6ff6ff'; gs.style.color = gk > 0 ? '#fff' : '#6ff6ff';
+    gr.style.opacity = gk > 0 ? gk : .55 + .45 * Math.abs(Math.sin(t * 9)); gs.style.opacity = gk > 0 ? gk : .9;
+    $('cov').querySelector('.gs').style.fontSize = Math.max(14, Math.min(30, w / 7)) + 'px';
+    $('cov').querySelector('.rg').style.transform = `translate(-50%,-50%) rotate(${t * 60}deg)`;
+    $('cov').style.borderColor = t > T.gain0 ? '#ffd36b' : '#6ff6ff';
+    show($('cov'), 1);
+  } else show($('cov'), 0);
+  // ── 분석 창
+  place($('pL'), $('lL'), lb, 1, T.loss, t, SP.L, 'sgL');
+  if (t > T.gain0 - .05) { show($('pL'), (1 - clamp((t - T.gain0 + .05) / .2)) * ($('pL').style.opacity || 0)); show($('lL'), $('pL').style.opacity); }
+  place($('pR'), $('lR'), rb, -1, T.gain, t, SP.R, 'sgR');
+  if (t < T.gain) { show($('pR'), 0); show($('lR'), 0); }
+  // «빌딩인지»: 금빛 맥박
+  const pu = (t - T.fin) / .5;
+  $('pR').style.boxShadow = pu > 0 && pu < 1 ? `0 0 ${20 + 40 * Math.sin(Math.PI * pu)}px rgba(255,211,107,.9),inset 0 0 30px rgba(255,211,107,.2)` : '';
+};
+</script></body></html>

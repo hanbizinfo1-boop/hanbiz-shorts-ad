@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-20 4번 «그런 경험을 한 사람에게 / 배우고싶다 / 들어보고 싶다 / 하는 분이라면» — 수강생 세미나 사진 그리드 채움.
+     사장님 원문은 지시작업/tools/r4c_build.py 머리. 900×1600 · 59.94 · 장면 0초 = 시퀀스 52.986.
+     4×8 칸(225×200) · 하나씩 채워지다 점점 빨라져 «슉슉슉» → 55.70 꽉 참 · 56.707 «아래링크를» 직전 빠짐. 소재 = tools/r4c_assets.py -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:relative;width:900px;height:1600px;overflow:hidden}
+.c{position:absolute;width:225px;height:200px;border:3px solid #0b0b0d;background-size:cover;background-position:center;will-change:transform,opacity}
+.c .fl{position:absolute;inset:0;background:#fff;opacity:0}
+#all{position:absolute;inset:0;background:#fff;opacity:0}
+</style></head>
+<body><div id="st"><div id="all"></div></div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 3.72;
+window.PALETTE = ['#ffffff'];
+const st = document.getElementById('st'), all = document.getElementById('all');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const O = 52.986, at = s => s - O;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+const C = '../../소재/r4c/';
+const N = 32, FULL = at(55.70), OUT = at(56.60), END = 3.72;
+
+// 채우는 순서 — 고정 난수(매 렌더 같음), 첫 칸은 가운데 근처
+let sd = 7; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+const order = [...Array(N).keys()].sort((a, b) => rnd() - .5);
+order.splice(order.indexOf(13), 1); order.unshift(13);
+// 간격: t = span·(k/31)^0.55 — 첫 간격 ≈0.40초 → 마지막 ≈0.05초(3프레임), FULL 에 32번째. 하나씩 → 슉슉슉
+const P = .55, span = FULL - 0.02, r = .9;
+const TT = [...Array(N).keys()].map(k => 0.02 + span * Math.pow(k / (N - 1), P));
+const DIRS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+const CELLS = order.map((idx, k) => {
+  const e = document.createElement('div'); e.className = 'c'; const col = idx % 4, row = Math.floor(idx / 4);
+  e.style.left = col * 225 + 'px'; e.style.top = row * 200 + 'px'; e.style.backgroundImage = `url(${C}c_${String(k).padStart(2, '0')}.jpg)`;
+  e.innerHTML = '<div class="fl"></div>'; e.dataset.box = 'cell'; e.dataset.boxGroup = 'grid'; e.dataset.boxBleed = ''; st.insertBefore(e, all);   // 풀블리드 그리드
+  const d = DIRS[Math.floor(rnd() * 4)], dur = Math.max(.1, .24 * Math.pow(r, k));   // 빨라질수록 들어오는 시간도 짧게
+  return {e, fl: e.firstChild, t: TT[k], d, dur};
+});
+window.EVENTS = CELLS.map((c, k) => ({t: c.t, role: k < 4 ? 'cell' : 'cell_fast'})).concat([{t: FULL, role: 'full'}, {t: OUT, role: 'out'}]);
+window.CELL_T = TT;   // 효과음 배치용(r4c_build.py 가 읽음)
+
+window.seek = async function (t) {
+  const o = clamp((END - t) / (END - OUT));
+  const pk = t > FULL ? 1 + .035 * Math.sin(clamp((t - FULL) / .22) * Math.PI) : 1;   // 꽉 찬 순간 살짝 «툭»
+  st.style.transform = `scale(${pk})`;
+  CELLS.forEach(c => {
+    const u = (t - c.t) / c.dur;
+    if (u < 0) { show(c.e, 0); return; }
+    const k = eo(u), dx = c.d[0] * 140 * (1 - k), dy = c.d[1] * 130 * (1 - k), sc = 1.12 - .12 * k;
+    c.e.style.transform = `translate(${dx}px,${dy}px) scale(${sc})`; c.e.style.zIndex = u < 1 ? 2 : 1;
+    show(c.e, clamp(u * 3) * o);
+    c.fl.style.opacity = .55 * clamp(1 - (t - c.t - c.dur) / .12) * (u >= 1 ? 1 : 0);
+  });
+  show(all, .45 * clamp(1 - (t - FULL) / .18) * (t >= FULL ? 1 : 0));
+};
+</script></body></html>

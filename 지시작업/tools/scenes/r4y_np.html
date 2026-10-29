@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-20 4번 «30억으로 100억 만드려고 하는데 예금하려는 분들은 없죠?» 달팽이 경주(C안) — 사장님 원문·시각 근거는 지시작업/tools/r4y_build.py 머리.
+     900×1600 · 59.94 · 이 장면의 0초 = 사장님 시퀀스 6.123초. 자막(900~950px) 밑. 글자색은 사장님 자막처럼 흰·초록(0,252,0)만. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:relative;width:900px;height:1600px;overflow:hidden;font-family:"HM GmarketSans","HM Pretendard",sans-serif}
+.a{position:absolute;left:0;top:0;will-change:transform,opacity}
+.lbl{position:absolute;font-weight:700;color:#00FC00;-webkit-text-stroke:7px #0b0b0d;paint-order:stroke fill;white-space:nowrap;transform-origin:50% 100%;letter-spacing:-1px}
+</style></head>
+<body><div id="st">
+  <div id="panel" class="a" data-box="panel" data-box-group="track" style="left:40px;top:1150px;width:820px;height:330px;border-radius:34px;background:transparent;overflow:hidden">   <!-- 10-20 «달팽이경주 … 그 검은판 뺀버전» -->
+    <div id="lane" style="position:absolute;left:30px;right:30px;top:150px;height:96px;border-radius:20px;background:linear-gradient(#3a3d45,#2c2f36);overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.45)">
+      <div id="dash" style="position:absolute;left:0;right:0;top:45px;height:6px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.75) 0 34px,transparent 34px 64px)"></div>
+      <div id="start" style="position:absolute;left:90px;top:0;bottom:0;width:10px;background:#fff"></div>
+      <div id="finish" style="position:absolute;top:0;bottom:0;width:30px;background:conic-gradient(#fff 25%,#111 0 50%,#fff 0 75%,#111 0) 0 0/15px 15px"></div>
+    </div>
+    <div id="rate" style="position:absolute;left:0;right:0;top:262px;text-align:center;font-size:42px;font-weight:700;color:#fff;-webkit-text-stroke:7px #0b0b0d;paint-order:stroke fill;white-space:nowrap;letter-spacing:-1px">예금 연 3% → 100억까지 <span style="color:#00FC00">약 41년</span></div>
+    <div id="goal" style="position:absolute;left:140px;top:132px;height:6px;border-radius:3px;background:#00FC00;transform-origin:0 50%;opacity:.9"></div>
+  </div>
+  <svg id="flag" class="a" width="130" height="180" viewBox="0 0 130 180" style="transform-origin:8px 180px;overflow:visible">
+    <defs><pattern id="chk" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="20" fill="#fff"/><rect width="10" height="10" fill="#111"/><rect x="10" y="10" width="10" height="10" fill="#111"/></pattern>
+    <linearGradient id="pole" x1="0" x2="1"><stop offset="0" stop-color="#9aa0aa"/><stop offset=".5" stop-color="#f2f4f7"/><stop offset="1" stop-color="#8a909a"/></linearGradient></defs>
+    <rect x="4" y="2" width="8" height="178" rx="4" fill="url(#pole)"/><circle cx="8" cy="4" r="7" fill="#e8ebef"/>
+    <path id="cloth" fill="url(#chk)" stroke="rgba(0,0,0,.25)" stroke-width="1.5" d=""/>
+  </svg>
+  <div id="l30" class="lbl" data-box="l30" data-box-group="track" style="font-size:68px;color:#fff">30억</div>
+  <div id="l100" class="lbl" data-box="l100" data-box-group="track" data-box-bleed style="font-size:76px">100억</div>
+  <div id="snail" class="a" style="width:260px;height:144px;transform-origin:50% 100%">
+    <img src="../../소재/codex/r4y_snail_a.png" style="width:100%;height:100%;object-fit:contain">
+    <svg id="crack" width="260" height="144" viewBox="0 0 260 144" style="position:absolute;left:0;top:0;overflow:visible"></svg>
+    <div id="tag" style="position:absolute;left:33%;top:42%;transform:translate(-50%,-50%) rotate(-6deg);font-weight:700;font-size:40px;color:#2a2f3a;opacity:.9">예금</div>
+  </div>
+  <div id="dots" class="lbl" style="font-size:54px;color:#fff">…</div>
+  <div id="frag" class="a" style="width:260px;height:144px"></div>
+  <div id="slime" class="a" style="height:10px;border-radius:5px;background:rgba(200,230,255,.55)"></div>
+  <svg id="spark" class="a" width="220" height="220" viewBox="-110 -110 220 220"></svg>
+</div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 3.42;
+window.PALETTE = ['#ffffff', '#00FC00', '#0b0b0d'];
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = x => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const wob = (x, f = 30, d = 8) => x <= 0 ? 0 : Math.cos(x * f) * Math.exp(-x * d);
+const show = (e, o) => { e.style.display = o > 0.001 ? 'block' : 'none'; e.style.opacity = o; };
+// 불꽃 선(도착 «100억» 반짝)
+const SP = $('spark'); SP.innerHTML = Array.from({length: 10}, (_, i) => `<line x1="0" y1="0" x2="0" y2="-60" stroke="${i % 2 ? '#00FC00' : '#fff'}" stroke-width="7" stroke-linecap="round" transform="rotate(${i * 36})"/>`).join('');
+// 시각(이 장면 초 · 사장님 시퀀스 = +6.123)
+const T = {in: 0.0, s30: 0.10, s100: 0.684, goal: 0.72, snail: 1.735, stretch: 99, stone: 2.72, crack: 2.80, brk: 2.96, out: 3.30, end: 3.42};   /* 10-20 «달팽이 연출 마무리를 약간 돌이되서 깨지는느낌» → «깃발이 멀어지거나 그런거없이 그냥 트랙은 가만히있고 달팽이만 깨지면서 디졸브로 사라지게» */
+const PX = 40, PY = 1150;                      // 판 왼쪽 위
+const START_X = PX + 30 + 95, LANE_Y = PY + 150; // 출발선 화면 x · 길 위 끝 y
+window.EVENTS = [{t: T.in, role: 'track_in'}, {t: T.s100, role: 'goal'}, {t: T.snail, role: 'snail_in'}, {t: T.stone, role: 'stone'}, {t: T.brk, role: 'break'}];
+
+// 균열 — 등껍질 가운데에서 갈라져 퍼지는 선
+const CR = $('crack'); const CRL = [[[85, 60], [70, 30], [78, 8]], [[85, 60], [120, 48], [150, 26]], [[85, 60], [60, 90], [40, 128]], [[85, 60], [118, 92], [170, 112], [210, 100]], [[118, 92], [128, 132]], [[120, 48], [135, 70]]];
+CR.innerHTML = CRL.map(l => `<path d="M${l.map(p => p.join(',')).join('L')}" fill="none" stroke="#2b2b2e" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`).join('');
+const CRP = [...CR.children].map(p => { const L = p.getTotalLength(); p.style.strokeDasharray = L; return [p, L]; });
+// 조각 — 달팽이 그림을 들쭉날쭉한 칸(4×3)으로 잘라 둔 12장
+const FR = $('frag'); let fs = 9; const fr = () => (fs = (fs * 16807) % 2147483647) / 2147483647;
+const GX = [0, 70, 135, 200, 260], GY = [0, 52, 98, 144], J = (v, m) => v + (fr() - .5) * m;
+const PTS = GY.map((y, j) => GX.map((x, i) => [i % 4 ? J(x, 26) : x, j % 3 ? J(y, 20) : y]));
+const PIECES = [];
+for (let j = 0; j < 3; j++) for (let i = 0; i < 4; i++) {
+  const q = [PTS[j][i], PTS[j][i + 1], PTS[j + 1][i + 1], PTS[j + 1][i]];
+  const d = document.createElement('div'); d.style.cssText = `position:absolute;left:0;top:0;width:260px;height:144px;clip-path:polygon(${q.map(p => p[0] + 'px ' + p[1] + 'px').join(',')});transform-origin:${(q[0][0] + q[2][0]) / 2}px ${(q[0][1] + q[2][1]) / 2}px`;
+  d.innerHTML = '<img src="../../소재/codex/r4y_snail_a.png" style="width:100%;height:100%;object-fit:contain;filter:grayscale(1) contrast(1.2) brightness(.86) sepia(.12)">';
+  const cx = (q[0][0] + q[2][0]) / 2 - 130, cy = (q[0][1] + q[2][1]) / 2 - 80;
+  PIECES.push({d, vx: cx * 5.5 + (fr() - .5) * 120, vy: -260 - fr() * 380 + cy * 2, vr: (fr() - .5) * 900}); FR.appendChild(d);
+}
+
+window.seek = async function (t) {
+  const fade = clamp((T.end - t) / (T.end - T.out));
+  // 판: 아래에서 올라오며 왼쪽부터 길이 그려짐
+  const pin = eo((t - T.in) / .35);
+  const panel = $('panel'); show(panel, pin * fade); panel.style.transform = `translateY(${(1 - pin) * 60}px)`;
+  panel.style.clipPath = `inset(0 ${(1 - eo((t - T.in - .05) / .4)) * 100}% 0 0 round 34px)`;
+  { const rk = eo((t - (T.snail + .25)) / .3); const r = $('rate'); r.style.opacity = rk; r.style.transform = `translateY(${(1 - rk) * 16}px)`; }
+  // 도착선 — «멀어지는» 순간 길이 쭉 늘어나며 화면 밖으로
+  const far = eio((t - T.stretch) / .45);
+  const finX = 650 + far * 420;                                   // 판 안 x(길 기준)
+  $('finish').style.left = finX + 'px';
+  $('dash').style.transform = `translateX(${-far * 120}px)`;
+  // 목표선(초록) — 출발에서 도착까지 그어짐
+  const gk = eo((t - T.goal) / .35);
+  $('goal').style.width = Math.max(0, gk * (finX - 110)) + 'px'; $('goal').style.opacity = .9 * clamp((t - T.goal) / .05);
+  // 깃발
+  const fx = PX + 30 + finX + 6, fo = clamp((t - .2) / .2) * fade;
+  { const ph = t * 9, pts = []; for (let i = 0; i <= 12; i++) { const x = 12 + i * 9.5, w = Math.sin(ph - i * .55) * (2 + i * .9); pts.push([x, 8 + w]); }
+    const bot = pts.map(([x, y]) => [x, y + 74]).reverse(); $('cloth').setAttribute('d', 'M' + pts.concat(bot).map(p => p.map(v => v.toFixed(1)).join(',')).join('L') + 'Z'); }
+  show($('flag'), fo); $('flag').style.transform = `translate(${fx - 24}px,${LANE_Y - 168}px) rotate(${Math.sin(t * 7) * 3 + 6 * wob(t - T.s100, 22, 6)}deg) scale(${1 + .12 * wob(t - T.s100, 18, 5)})`;
+  // 라벨 «30억»(출발) · «100억»(도착, 크게 튐)
+  const l30 = $('l30'), k30 = back((t - T.s30) / .3); show(l30, clamp((t - T.s30) / .05) * fade);
+  l30.style.transform = `translate(${START_X - 70}px,${PY + 30}px) scale(${k30})`;
+  const l100 = $('l100'), k100 = back((t - T.s100) / .35); show(l100, clamp((t - T.s100) / .05) * fade);
+  l100.style.transform = `translate(${fx - 225}px,${PY + 20}px) scale(${k100 * (1 + .25 * wob(t - T.s100, 20, 6))})`;
+  const sk = (t - T.s100) / .35; show(SP, sk > 0 && sk < 1 ? 1 - sk : 0);
+  SP.style.transform = `translate(${fx - 80}px,${PY - 20}px) scale(${.6 + sk * .8})`;
+  // 달팽이 — 출발선에 «툭» 떨어져 찌그러졌다 펴진 뒤 아주 조금만 기어감
+  const sn = $('snail'), u = t - T.snail;
+  if (u > 0) {
+    const drop = eo(u / .18), y = LANE_Y + 74 - 144 - (1 - drop) * 160;
+    const crawl = Math.max(0, u - .35) * 9 + Math.sin(Math.max(0, u - .35) * 9) * 1.5;  // 초당 9px — 거의 못 감
+    const sq = 1 - .18 * wob(u - .18, 34, 9);
+    const sk = clamp((t - T.stone) / .18), still = t > T.stone ? T.stone - T.snail - .35 : u - .35;   // 돌이 되면 그 자리에 멈춤
+    const cx = Math.max(0, still) * 9, px = START_X - 80 + (t > T.stone ? cx : crawl);
+    const pulse = t > T.stone ? 1 + .05 * wob(t - T.stone, 40, 12) : 1;
+    sn.querySelector('img').style.filter = `grayscale(${sk}) contrast(${1 + .2 * sk}) brightness(${1 - .14 * sk}) sepia(${.12 * sk})`;
+    $('tag').style.color = sk > .5 ? '#3b3b3e' : '#2a2f3a';
+    CRP.forEach(([p, L], i) => { const k = clamp((t - T.crack - i * .018) / .07); p.style.strokeDashoffset = L * (1 - k); p.style.opacity = k > 0 ? 1 : 0; });
+    show(sn, t < T.brk ? fade : 0); sn.style.transform = `translate(${px}px,${y}px) scale(${(2 - sq) * pulse},${sq * pulse})`;
+    // 깨짐 — 조각이 튀어 떨어지며 사라짐
+    const bk = t - T.brk; show(FR, bk > 0 && bk < .36 ? 1 : 0);
+    if (bk > 0) { FR.style.transform = `translate(${px}px,${y}px)`; PIECES.forEach(P => { const k = eo(bk / .36); P.d.style.transform = `translate(${P.vx * .045 * k}px,${P.vy * .03 * k + 14 * k}px) rotate(${P.vr * .03 * k}deg)`; P.d.style.opacity = 1 - eio(bk / .34); });   /* 살짝 벌어지며 디졸브 */ }
+    const sl = $('slime'); show(sl, clamp((u - .4) / .2) * fade); sl.style.width = Math.max(0, Math.min(crawl, (T.stone - T.snail - .35) * 9) + 20) + 'px'; sl.style.transform = `translate(${START_X - 40}px,${LANE_Y + 62}px)`;
+    const d = $('dots'); show(d, 0);
+    d.style.transform = `translate(${START_X + 10 + crawl}px,${LANE_Y - 150 + Math.sin(t * 6) * 4}px)`;
+    $('tag').style.transform = `translate(-50%,-50%) rotate(${-6 + Math.sin(u * 5) * 2}deg)`;
+  } else { show(sn, 0); show($('slime'), 0); show($('dots'), 0); show(FR, 0); }
+};
+</script></body></html>

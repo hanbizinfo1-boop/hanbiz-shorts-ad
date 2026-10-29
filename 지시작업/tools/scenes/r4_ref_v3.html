@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-20 v3 — 사장님 «강남빌딩할떄 자막 밑에 크게 강남빌딩이 레이저쏘듯이와서 펑 박히면» «확실한투자가 있다 할때 물음표를 약간 띵띵띵 이렇게 3개» «아 말도 안돼요 그거는 << 연출이 너무 부족함» «이 영상보지마세요 할때 x자 하잖아 이때 짧게 흔들리는 연출 (효과음동반)» «30억으로 100억만드려고하는데 → 통장에 30억이 찍혀있고 이게 대표머리위에서 실시간으로 계좌잔액이 100억으로 바뀌는 연출» «예금하려는 분들없죠? → 밑에 사람이 예금? 하면서 의문을 품는듯한 연출» -->
+<!-- 10-19 4번 레퍼연출 v2 — 사장님 «효과음도 부족하고 연출도구도 부족하고 레퍼런스의 효과음좀 재현해줬으면좋겠고 넘 연출이없는 장면들이 많은데?»
+     «좀더 빡빡하게 연출도구 넣어주고 연출도구좀 ai티안나게 짜치지않게» «글짜 강조하는거도 저쪽은 많은데 넌 글자 강조도없고 색깔도 딱히 강조색이없어»
+     → 사장님 자막 한 줄마다 연출 하나 이상 · Codex 3D 그림 대신 이모지·그래픽(카드·그래프·형광펜·동그라미·도장·체크) · 색 역할 숫자 초록 · 강조 노랑 · 결론 빨강.
+     레퍼런스(DeolaEOtysF) 큰 자막은 굵은 고딕·명조를 섞는다 → 고딕 Pretendard 900 · 명조 Noto Serif KR 900. -->
+<style>
+@font-face{font-family:"R4 Serif";src:url("file:///C:/Windows/Fonts/NotoSerifKR-VF.ttf");font-weight:200 900}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+#st{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:"HM Pretendard",sans-serif;word-break:keep-all;
+  --y:#FFD43B;--g:#3DDC84;--r:#FF4D4F}
+.emo{font-family:"Segoe UI Emoji","HM Pretendard";line-height:1}
+/* 큰 자막 */
+.big{position:absolute;left:0;width:1080px;text-align:center;white-space:nowrap;z-index:6}
+.big .l{display:block}
+.row{display:inline-block;position:relative}
+.seg{display:inline-block;position:relative;font-weight:900;letter-spacing:-2px;line-height:1.16}
+.seg .s{position:absolute;left:0;top:0;color:#0d0d0f;-webkit-text-stroke:15px #0d0d0f;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45))}
+.seg .f{position:relative;color:#fff}
+.serif .seg{font-family:"R4 Serif",serif;font-weight:900;letter-spacing:-1px}
+.c-y{color:var(--y)!important}.c-g{color:var(--g)!important}.c-r{color:var(--r)!important}
+.hl{position:absolute;left:-10px;right:-10px;bottom:10%;height:38%;background:var(--y);border-radius:6px;transform-origin:0 50%;opacity:.95}
+.hl+.s,.hl~.f{}
+.ring{position:absolute;overflow:visible;pointer-events:none}
+/* 카드(위쪽) — 어두운 유리판 + 흰 글 */
+.card{position:absolute;left:190px;width:700px;top:96px;height:300px;border-radius:30px;background:rgba(16,18,24,.80);
+  box-shadow:0 18px 40px rgba(0,0,0,.35);color:#fff;z-index:4;overflow:hidden}
+.card .ttl{position:absolute;left:34px;top:24px;font-size:30px;font-weight:600;color:#c9ced8;letter-spacing:-.5px}
+.lowcard{position:absolute;left:110px;width:860px;border-radius:30px;background:rgba(16,18,24,.82);box-shadow:0 18px 40px rgba(0,0,0,.35);color:#fff;z-index:4}
+.bub{position:absolute;background:#fff;border-radius:36px;padding:30px 42px 34px;color:#16181d;z-index:5;
+  font-weight:600;font-size:52px;line-height:1.3;letter-spacing:-1px;text-align:left;white-space:nowrap;
+  box-shadow:0 22px 44px rgba(0,0,0,.30),0 3px 8px rgba(0,0,0,.12)}
+.bub small{display:block;font-weight:500;font-size:32px;color:#8a8f99;letter-spacing:-.3px;margin-bottom:6px}
+.bub b{font-weight:800;color:#16181d;background:linear-gradient(transparent 58%, #FFD43B 58%)}
+.bub .tail{position:absolute;width:48px;height:48px;background:#fff;border-radius:6px;bottom:-14px;transform:rotate(45deg)}
+</style></head>
+<body><div id="st"></div>
+<script>
+window.W = 1080; window.H = 1920; window.FPS = 29.97; window.DURATION = 57.69;
+window.PALETTE = ['#ffffff', '#0d0d0f', '#FFD43B', '#3DDC84', '#FF4D4F'];   // 사장님 «강조색이 없어» → 색 역할 3색 + 흰·검정
+const A = '../../소재/codex/';
+const st = document.getElementById('st');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = x => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const vis = (t, t0, t1, fi = 0.12, fo = 0.12) => clamp((t - t0) / fi) * clamp((t1 - t) / fo);
+function el(tag, cls, html, box, group, parent) {
+  const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html;
+  if (box) e.dataset.box = box; if (group) e.dataset.boxGroup = group; (parent || st).appendChild(e); return e;
+}
+const show = (e, o) => { e.style.display = o > 0.001 ? 'block' : 'none'; e.style.opacity = o; };
+const EV = [];   // 효과음 계기
+const ev = (t, role, id) => EV.push({t, role, id});
+
+/* ───────── 큰 자막 ─────────
+   조각 문법: '흰 글 {y:노랑} {g:초록} {r:빨강} {h:형광펜 밑줄}' — 조각마다 [글, 크기, 시각] */
+const BIG = [
+  {id: 'b_red', t0: 5.00, t1: 6.26, y: 1150, rows: [[['{y:이 영상 보지마세요}', 88, 5.00]]]},
+  {id: 'b_val', t0: 13.50, t1: 14.30, y: 1110, rows: [[['{y:돈의 가치}는', 116, 13.50]]]},
+  {id: 'b_drop', t0: 14.30, t1: 15.78, y: 1110, rows: [[['{y:급격히} 떨어지고 있어요', 92, 14.30]]]},
+  {id: 'b_mis', t0: 24.44, t1: 25.49, y: 1110, serif: true, rows: [[['{y:착각}하는게 있어요', 104, 24.44]]], ring: 0},
+  {id: 'b_ten', t0: 29.58, t1: 30.86, y: 1120, rows: [[['{h:임차인}이 있어야 됩니다', 94, 29.58]]]},
+  {id: 'b_way', t0: 35.37, t1: 38.76, y: 1090, rows: [[['{g:100%} 임차인을', 62, 35.37], ['채우고 나서', 62, 36.59]], [['{h:건물을 사는 방법!}', 112, 37.59]]]},
+  {id: 'b_18', t0: 42.48, t1: 43.64, y: 1110, rows: [[['제가 {g:18년}동안', 104, 42.48]]]},
+  {id: 'b_45', t0: 43.64, t1: 45.34, y: 1110, rows: [[['{g:#45번}을 그걸 했습니다', 96, 43.64]]]},
+  {id: 'b_none', t0: 46.56, t1: 47.63, y: 1110, serif: true, rows: [[['{y:존재치 않아요}', 116, 46.56]]]},
+  {id: 'b_cta', t0: 55.14, t1: 57.69, y: 1090, rows: [[['아래 링크를 눌러서', 62, 55.14]], [['{y:상담신청}을 남겨주세요', 100, 56.26]]]},
+];
+function parseSeg(src) {   // → [{txt, cls, hl, count}]
+  const out = []; const re = /\{(y|g|r|h):(#?)([^}]+)\}|([^{]+)/g; let m;
+  while ((m = re.exec(src))) {
+    if (m[4]) out.push({txt: m[4]});
+    else out.push({txt: m[3], cls: m[1] === 'h' ? '' : 'c-' + m[1], hl: m[1] === 'h', count: m[2] === '#'});
+  }
+  return out;
+}
+for (const b of BIG) {
+  b.e = el('div', 'big' + (b.serif ? ' serif' : '')); b.e.style.top = b.y + 'px'; b.parts = [];
+  b.rows.forEach((r, ri) => {
+    const line = el('span', 'l', null, null, null, b.e);
+    const row = el('span', 'row', null, b.id + '_' + ri, b.id, line);
+    r.forEach(([src, size, t], i) => {
+      const seg = el('span', 'seg', null, null, null, row);
+      seg.style.fontSize = size + 'px'; if (i) seg.style.marginLeft = '.3em';
+      const bits = parseSeg(src);
+      const mk = cls => bits.map(x => `<span class="${cls}x${x.cls && cls === 'f' ? ' ' + x.cls : ''}" style="position:${cls === 's' ? 'static' : 'relative'}">${x.hl && cls === 'f' ? '<i class="hl"></i>' : ''}<span class="tx" ${x.count ? 'data-count="' + parseInt(x.txt) + '"' : ''} style="position:relative">${x.txt}</span></span>`).join('');
+      seg.innerHTML = `<span class="s">${mk('s')}</span><span class="f">${mk('f')}</span>`;
+      b.parts.push({e: seg, t, hl: [...seg.querySelectorAll('.hl')], cnt: [...seg.querySelectorAll('[data-count]')]});
+    });
+  });
+  if (b.ring != null) {   // 손으로 그린 빨간 동그라미 — 첫 줄 첫 강조 말 둘레
+    b.ringE = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); b.ringE.setAttribute('class', 'ring');
+    b.ringE.innerHTML = '<path fill="none" stroke="#FF4D4F" stroke-width="9" stroke-linecap="round" d=""/>'; b.e.appendChild(b.ringE);
+  }
+}
+function drawBig(t) {
+  for (const b of BIG) {
+    const o = vis(t, b.t0, b.t1, 0.01, 0.12); b.e.style.display = o > 0 ? 'block' : 'none'; b.e.style.opacity = o;
+    if (o <= 0) continue;
+    for (const p of b.parts) {
+      const k = clamp((t - p.t) / 0.26);
+      p.e.style.opacity = eo(k);
+      p.e.style.transform = `translateY(${(1 - eo(k)) * 22}px) scale(${0.9 + 0.1 * back(k) + 0.02 * clamp((t - p.t - 0.3) / 1.4)})`;
+      p.e.style.filter = `blur(${(1 - eo(k)) * 5}px)`;
+      for (const h of p.hl) h.style.transform = `scaleX(${eio((t - p.t - 0.18) / 0.32)})`;
+      for (const c of p.cnt) { const n = Math.round(+c.dataset.count * eo((t - p.t) / 0.7)); c.textContent = n + '번'; }
+    }
+    if (b.ringE) {
+      const tx = b.parts[0].e.querySelector('.f .c-y'); const rb = tx.getBoundingClientRect(), pb = b.e.getBoundingClientRect();
+      const cx = rb.left - pb.left + rb.width / 2, cy = rb.top - pb.top + rb.height / 2, rx = rb.width / 2 + 34, ry = rb.height / 2 + 14;
+      b.ringE.style.left = '0px'; b.ringE.style.top = '0px'; b.ringE.setAttribute('width', 1080); b.ringE.setAttribute('height', 300);
+      const k = eio((t - b.t0 - 0.25) / 0.4), N = 40, pts = [];
+      for (let i = 0; i <= N * k; i++) { const a = -2.2 + i / N * Math.PI * 2.15; pts.push([cx + Math.cos(a) * rx * (1 + .04 * Math.sin(i)), cy + Math.sin(a) * ry]); }
+      b.ringE.firstChild.setAttribute('d', pts.length > 1 ? 'M' + pts.map(p => p.map(v => v.toFixed(1)).join(',')).join('L') : '');
+    }
+  }
+}
+for (const b of BIG) for (const p of b.parts) if (p.hl.length) ev(p.t + 0.18, 'marker', b.id);
+ev(24.65, 'marker', 'ring');
+
+/* ───────── 이모지 (레퍼런스: 자막 바로 위에 작은 진짜 이모지 💵🏢) ───────── */
+const EMO = [
+  {id: 'e_bag1', ch: '💰', t0: 6.30, t1: 7.99, x: 300, y: 1040},
+  {id: 'e_bag2', ch: '💰', t0: 16.62, t1: 18.97, x: 660, y: 1040},
+  {id: 'e_bld2', ch: '🏢', t0: 17.46, t1: 18.97, x: 860, y: 1040},
+  {id: 'e_ok', ch: '😉', t0: 22.40, t1: 23.67, x: 880, y: 1040},
+  {id: 'e_up', ch: '📈', t0: 27.17, t1: 28.78, x: 860, y: 1040},
+  {id: 'e_good', ch: '👍', t0: 28.82, t1: 29.58, x: 760, y: 1040},
+  {id: 'e_coin', ch: '💵', t0: 33.47, t1: 34.52, x: 830, y: 1040},
+  {id: 'e_bld3', ch: '🏢', t0: 38.80, t1: 41.44, x: 260, y: 1040},
+  {id: 'e_key', ch: '🔑', t0: 39.80, t1: 41.44, x: 830, y: 1040},
+  {id: 'e_idea', ch: '💡', t0: 41.48, t1: 42.48, x: 810, y: 1040},
+];
+for (const m of EMO) { m.e = el('div', 'emo', m.ch, m.id); Object.assign(m.e.style, {position: 'absolute', fontSize: '104px', zIndex: 5, filter: 'drop-shadow(0 6px 10px rgba(0,0,0,.35))'}); ev(m.t0, 'pop', m.id); }
+function drawEmo(t) {
+  for (const m of EMO) {
+    const o = vis(t, m.t0, m.t1, 0.05, 0.12); show(m.e, o); if (o <= 0) continue;
+    const k = back((t - m.t0) / 0.3);
+    m.e.style.left = (m.x - 52) + 'px'; m.e.style.top = (m.y - 104 + Math.sin((t - m.t0) * 4) * 5) + 'px';
+    m.e.style.transform = `scale(${k}) rotate(${(1 - clamp((t - m.t0) / .3)) * -14}deg)`;
+  }
+}
+
+/* ───────── 통장 잔액 30억 → 100억, 머리 위에서 실시간으로 (6.26~7.99) ─────────
+   10-20 사장님 «통장에 30억이 찍혀있고 이게 대표머리위에서 실시간으로 계좌잔액이 100억으로 바뀌는 연출» — 은행 이름 없는 일반 통장 화면 */
+const C1 = {t0: 6.26, t1: 7.99, a: 3e9, b: 1e10, r0: 6.94, r1: 7.62};
+C1.e = el('div', null, `<div style="position:absolute;left:34px;top:26px;display:flex;align-items:center;gap:14px">
+    <span style="width:46px;height:46px;border-radius:50%;background:#1f6feb;color:#fff;font-weight:900;font-size:28px;display:flex;align-items:center;justify-content:center">₩</span>
+    <span style="font-size:32px;font-weight:800;color:#16181d">내 통장</span><span style="font-size:26px;color:#8a8f99;font-weight:500">입출금</span></div>
+  <div style="position:absolute;left:36px;top:96px;font-size:28px;color:#8a8f99;font-weight:600">잔액</div>
+  <div id="c1n" style="position:absolute;left:30px;top:132px;height:96px;overflow:hidden;font-size:76px;font-weight:900;letter-spacing:-2px;color:#16181d;white-space:nowrap;display:flex"></div>
+  <div id="c1k" style="position:absolute;right:36px;top:30px;padding:6px 18px;border-radius:20px;background:#eef1f5;color:#3a3f4a;font-size:30px;font-weight:800">30억</div>
+  <div id="c1d" style="position:absolute;left:34px;right:34px;bottom:-78px;height:64px;border-radius:32px;background:#16a34a;color:#fff;font-size:34px;font-weight:800;display:flex;align-items:center;justify-content:center">입금 +7,000,000,000원</div>`, 'c_bank');
+Object.assign(C1.e.style, {position: 'absolute', left: '150px', width: '780px', top: '96px', height: '250px', borderRadius: '32px', background: '#fff',
+  boxShadow: '0 22px 46px rgba(0,0,0,.35)', zIndex: 4});
+// 자리마다 숫자 기둥(0~9,0) — 잔액이 오르는 동안 아랫자리일수록 빨리 돈다
+const C1N = C1.e.querySelector('#c1n'); const LH = 96; const COLS = [];
+for (const ch of '10,000,000,000원') {
+  const w = document.createElement('span'); w.style.cssText = 'display:inline-block;position:relative;height:' + LH + 'px;overflow:hidden;line-height:' + LH + 'px';
+  if (/\d/.test(ch)) { w.innerHTML = '<span style="display:block">' + [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(d => '<div style="height:' + LH + 'px">' + d + '</div>').join('') + '</span>'; COLS.push(w); }
+  else w.textContent = ch;
+  C1N.appendChild(w);
+}
+ev(6.30, 'card', 'c_bank'); ev(6.94, 'roll', 'c_bank_roll'); ev(7.64, 'chime', 'c_bank_in');
+function drawC1(t) {
+  const o = vis(t, C1.t0, C1.t1, 0.1, 0.15); show(C1.e, o); if (o <= 0) return;
+  C1.e.style.transform = `translateY(${(1 - eo((t - C1.t0) / .3)) * -40}px) scale(${1 + .03 * Math.sin(Math.PI * clamp((t - C1.r1) / .25))})`;
+  const k = clamp((t - C1.r0) / (C1.r1 - C1.r0)), v = C1.a + (C1.b - C1.a) * k * k * (3 - 2 * k);
+  const n = COLS.length;   // 11 자리 — 맨 앞이 10^10
+  const rolling = k > 0 && k < 1;
+  COLS.forEach((c, i) => {
+    const pw = n - 1 - i, d = (v / Math.pow(10, pw)) % 10;
+    const pos = rolling && pw < 9 ? d : Math.floor(d + 1e-6);            // 오르는 동안 아랫자리는 연속으로 굴러감
+    c.firstChild.style.transform = `translateY(${-pos * LH}px)`;
+    c.firstChild.style.filter = rolling && pw < 8 ? 'blur(1.5px)' : 'none';
+  });
+  const lead = v >= 1e10 - 0.5;   // 100억이 되기 전엔 맨 앞 «1» 숨김
+  C1N.children[0].style.display = lead ? 'inline-block' : 'none';   // 맨 앞 «1»(10^10 자리)만 — 30억은 «3,000,000,000원»
+  const kk = C1.e.querySelector('#c1k'); kk.textContent = (k >= 1 ? 100 : Math.floor(v / 1e8)) + '억';
+  kk.style.background = k >= 1 ? '#dcfce7' : '#eef1f5'; kk.style.color = k >= 1 ? '#16a34a' : '#3a3f4a';
+  C1N.style.color = k >= 1 ? '#16a34a' : '#16181d';
+  const dd = C1.e.querySelector('#c1d'), u = (t - C1.r1) / .3; dd.style.opacity = clamp(u * 2); dd.style.transform = `translateY(${(1 - back(u)) * -30}px)`;
+}
+
+/* ───────── 예금 ✕ (7.99~9.68) + 흰 인형 으쓱 ───────── */
+const C2 = {t0: 7.99, t1: 9.68};
+C2.e = el('div', 'card', `<div style="position:absolute;left:0;right:0;top:70px;text-align:center;font-weight:900;font-size:150px;letter-spacing:-4px">예금
+  <i id="c2x" style="position:absolute;left:180px;right:180px;top:50%;height:16px;background:var(--r);border-radius:8px;transform-origin:0 50%"></i></div>`, 'c_dep');
+const FIG = {t0: 7.99, t1: 9.68};
+FIG.e = el('img', null, null, 'fig'); FIG.e.src = A + 'r4_figure_puzzled_a.png';   // 10-20 «밑에 사람이 예금? 하면서 의문을 품는듯한 연출»
+const FQ = el('div', 'bub', '예금…<b>?</b>', 'fig_q');
+Object.assign(FQ.style, {left: '372px', top: '1330px', fontSize: '58px', padding: '22px 36px 26px', transformOrigin: '0% 100%'});
+const FQt = el('span', 'tail', null, null, null, FQ); FQt.style.left = '30px';
+const FQm = [0, 1].map(i => { const q = el('div', null, '?'); Object.assign(q.style, {position: 'absolute', fontSize: '84px', fontWeight: 900, color: '#FFD43B', WebkitTextStroke: '6px #0d0d0f', paintOrder: 'stroke fill', zIndex: 6}); return q; });
+function drawFQ(t) {
+  const oq = vis(t, 8.55, FIG.t1, .05, .15); show(FQ, oq);
+  if (oq > 0) FQ.style.transform = `scale(${.6 + .4 * back((t - 8.55) / .3)})`;
+  FQm.forEach((q, i) => { const t0 = 8.85 + i * .22, oo = vis(t, t0, FIG.t1, .05, .15); show(q, oo);
+    q.style.left = (250 + i * 80) + 'px'; q.style.top = (1200 - i * 34 + Math.sin((t - t0) * 5) * 8) + 'px'; q.style.transform = `scale(${back((t - t0) / .3)}) rotate(${i ? 14 : -10}deg)`; });
+}
+
+FIG.e.style.cssText = 'position:absolute;width:280px;height:420px;object-fit:contain;filter:drop-shadow(0 14px 18px rgba(0,0,0,.4));z-index:5;left:84px';
+ev(8.30, 'strike', 'c_dep'); ev(7.99, 'card', 'fig'); ev(8.55, 'pop', 'fig_q');
+function drawC2(t) {
+  const o = vis(t, C2.t0, C2.t1, 0.1, 0.15); show(C2.e, o);
+  if (o > 0) { C2.e.style.transform = `translateY(${(1 - eo((t - C2.t0) / .3)) * -40}px)`; C2.e.querySelector('#c2x').style.transform = `rotate(-8deg) scaleX(${eio((t - 8.30) / .25)})`; }
+  const of = vis(t, FIG.t0, FIG.t1, 0.06, 0.15); show(FIG.e, of);
+  if (of > 0) { const k = back((t - FIG.t0) / .35); FIG.e.style.top = (1300 + (1 - k) * 120) + 'px'; FIG.e.style.transform = `scale(${0.6 + .4 * k}) rotate(${-4 + Math.sin((t - FIG.t0) * 3) * 3 * clamp((t - FIG.t0 - .3) / .2)}deg)`; FIG.e.style.transformOrigin = '50% 100%'; }
+  drawFQ(t);
+}
+
+/* ───────── 카드 3: 최저시급 6천 원 → 1만 원+ (9.68~13.03) ───────── */
+const C3 = {t0: 9.68, t1: 13.03};
+C3.e = el('div', 'card', `<div class="ttl">최저시급</div>
+  <div id="c3b1" style="position:absolute;left:150px;bottom:62px;width:150px;background:#5b606b;border-radius:14px 14px 4px 4px"></div>
+  <div id="c3b2" style="position:absolute;left:400px;bottom:62px;width:150px;background:var(--y);border-radius:14px 14px 4px 4px"></div>
+  <div style="position:absolute;left:150px;width:150px;bottom:16px;text-align:center;font-size:30px;color:#c9ced8;font-weight:600">10년 전</div>
+  <div style="position:absolute;left:400px;width:150px;bottom:16px;text-align:center;font-size:30px;color:#c9ced8;font-weight:600">지금</div>
+  <div id="c3v1" style="position:absolute;left:110px;width:230px;text-align:center;font-size:46px;font-weight:900">6천 원</div>
+  <div id="c3v2" style="position:absolute;left:360px;width:230px;text-align:center;font-size:46px;font-weight:900;color:var(--y)">1만 원+</div>
+  <div id="c3u" class="emo" style="position:absolute;left:600px;top:96px;font-size:84px">📈</div>`, 'c_wage');
+ev(9.70, 'card', 'c_wage'); ev(11.00, 'graph', 'c_wage_1'); ev(11.78, 'chime', 'c_wage_2');
+function drawC3(t) {
+  const o = vis(t, C3.t0, C3.t1, 0.1, 0.15); show(C3.e, o); if (o <= 0) return;
+  C3.e.style.transform = `translateY(${(1 - eo((t - C3.t0) / .3)) * -40}px)`;
+  const h1 = 90 * eo((t - 10.98) / .35), h2 = 160 * back((t - 11.76) / .4);
+  const q = s => C3.e.querySelector(s);
+  q('#c3b1').style.height = h1 + 'px'; q('#c3b2').style.height = h2 + 'px';
+  q('#c3v1').style.bottom = (70 + h1) + 'px'; q('#c3v1').style.opacity = clamp((t - 11.1) / .15);
+  q('#c3v2').style.bottom = (70 + Math.max(0, h2)) + 'px'; q('#c3v2').style.opacity = clamp((t - 11.9) / .15);
+  q('#c3u').style.opacity = clamp((t - 12.0) / .15); q('#c3u').style.transform = `scale(${back((t - 12.0) / .3)})`;
+}
+
+/* ───────── 카드 4: 돈의 가치 ↓ 그래프 + 💸 비 (13.50~15.78) ───────── */
+const C4 = {t0: 13.03, t1: 15.78};
+C4.e = el('div', 'card', `<div class="ttl">돈의 가치</div><svg width="700" height="300" style="position:absolute;left:0;top:0">
+  <path id="c4p" fill="none" stroke="#FF4D4F" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" d="M60 110 L200 120 L300 105 L400 150 L470 140 L560 230 L640 262"/>
+  <path id="c4h" fill="#FF4D4F" d="M0 0 L-34 -18 L-26 0 L-34 18 Z"/></svg>`, 'c_val');
+const c4p = C4.e.querySelector('#c4p'); const c4len = c4p.getTotalLength();
+ev(13.05, 'card', 'c_val'); ev(14.30, 'sad', 'c_val_drop');
+const RAIN = []; let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+for (let i = 0; i < 14; i++) { const r = {x: 40 + rnd() * 1000, d: rnd() * .9, v: 700 + rnd() * 450, r0: rnd() * 60 - 30, rv: (rnd() - .5) * 200, ph: rnd() * 6, s: 70 + rnd() * 50}; r.e = el('div', 'emo', '💸'); Object.assign(r.e.style, {position: 'absolute', fontSize: r.s + 'px', zIndex: 3}); RAIN.push(r); }
+ev(13.50, 'rain', 'rain');
+function drawC4(t) {
+  const o = vis(t, C4.t0, C4.t1, 0.1, 0.15); show(C4.e, o);
+  if (o > 0) {
+    C4.e.style.transform = `translateY(${(1 - eo((t - C4.t0) / .3)) * -40}px)`;
+    const k = 0.45 * eio((t - 13.5) / .6) + 0.55 * eio((t - 14.3) / .5);
+    c4p.style.strokeDasharray = c4len; c4p.style.strokeDashoffset = c4len * (1 - k);
+    const pt = c4p.getPointAtLength(c4len * Math.max(k, .001)), p2 = c4p.getPointAtLength(Math.max(0, c4len * k - 4));
+    C4.e.querySelector('#c4h').setAttribute('transform', `translate(${pt.x},${pt.y}) rotate(${Math.atan2(pt.y - p2.y, pt.x - p2.x) * 180 / Math.PI})`);
+  }
+  for (const r of RAIN) { const u = t - 13.5 - r.d, oo = vis(t, 13.5 + r.d, 15.9, .05, .3); show(r.e, u > 0 ? oo : 0); if (u <= 0) continue;
+    r.e.style.left = (r.x - r.s / 2 + Math.sin(u * 2.4 + r.ph) * 40) + 'px'; r.e.style.top = (380 + u * r.v) + 'px'; r.e.style.transform = `rotate(${r.r0 + u * r.rv}deg)`; }
+}
+
+/* ───────── 카드 5: 물가 vs 강남빌딩 (18.97~22.36) ───────── */
+const C5 = {t0: 18.97, t1: 22.36};
+C5.e = el('div', 'card', `<svg width="700" height="300" style="position:absolute;left:0;top:0">
+  <line x1="60" y1="250" x2="660" y2="250" stroke="#3a3f4a" stroke-width="4"/>
+  <path id="c5a" fill="none" stroke="#8b919c" stroke-width="10" stroke-linecap="round" d="M70 230 C 250 215, 450 190, 640 160"/>
+  <path id="c5b" fill="none" stroke="#FFD43B" stroke-width="12" stroke-linecap="round" d="M70 236 C 260 220, 420 150, 640 70"/></svg>
+  <div id="c5la" style="position:absolute;left:560px;top:168px;font-size:30px;font-weight:700;color:#aeb3bd">물가</div>
+  <div id="c5lb" style="position:absolute;left:470px;top:30px;font-size:36px;font-weight:900;color:var(--y)">🏢 강남빌딩</div>`, 'c_cmp');
+const c5a = C5.e.querySelector('#c5a'), c5b = C5.e.querySelector('#c5b'); const la = c5a.getTotalLength(), lb = c5b.getTotalLength();
+C5.e.querySelector('#c5lb').classList.add('emo'); C5.e.querySelector('#c5lb').style.fontFamily = '"HM Pretendard","Segoe UI Emoji"';
+ev(19.00, 'card', 'c_cmp'); ev(20.14, 'graph', 'c_cmp_a'); ev(21.34, 'chime', 'c_cmp_b');
+function drawC5(t) {
+  const o = vis(t, C5.t0, C5.t1, 0.1, 0.15); show(C5.e, o); if (o <= 0) return;
+  C5.e.style.transform = `translateY(${(1 - eo((t - C5.t0) / .3)) * -40}px)`;
+  const ka = eio((t - 20.12) / .7), kb = 0.35 * eio((t - 19.1) / .5) + 0.65 * eio((t - 21.32) / .6);
+  c5a.style.strokeDasharray = la; c5a.style.strokeDashoffset = la * (1 - ka); c5b.style.strokeDasharray = lb; c5b.style.strokeDashoffset = lb * (1 - kb);
+  C5.e.querySelector('#c5la').style.opacity = clamp((t - 20.7) / .15); C5.e.querySelector('#c5lb').style.opacity = clamp((t - 21.7) / .15);
+}
+
+/* ───────── 말풍선 (25.49 · 31.83) ───────── */
+const BUB = [
+  {id: 'bub1', t0: 25.49, t1: 27.13, x: 40, y: 170, side: 'r', html: '<small>많이들 이렇게 생각하죠</small>건물만 사면<br><b>돈 버는 거</b> 아냐? <span class="emo">🤔</span>'},
+  {id: 'bub2', t0: 31.83, t1: 33.43, r: 40, y: 170, side: 'l', html: '<small>임차인 없는 건물주</small>이번 달 월세…<br><b>또 안 들어왔네</b> <span class="emo">😥</span>'},
+];
+for (const b of BUB) {
+  b.e = el('div', 'bub', b.html, b.id); const tl = el('span', 'tail', null, null, null, b.e); tl.style[b.side === 'r' ? 'right' : 'left'] = '56px';
+  if (b.r != null) b.e.style.right = b.r + 'px'; else b.e.style.left = b.x + 'px'; b.e.style.top = b.y + 'px';
+  b.e.style.transformOrigin = b.side === 'r' ? '85% 100%' : '15% 100%'; ev(b.t0, 'bubble', b.id);
+}
+function drawBub(t) { for (const b of BUB) { const o = vis(t, b.t0, b.t1, .05, .14); show(b.e, o); if (o <= 0) continue; const k = back((t - b.t0) / .34); b.e.style.transform = `translateY(${(1 - k) * 30}px) scale(${.7 + .3 * k})`; } }
+
+/* ───────── 카드 6: 확실한 임차인 (30.86~31.83) — 위쪽 꼬리표 ───────── */
+const C6 = {t0: 30.86, t1: 31.83};
+C6.e = el('div', 'card', `<div style="position:absolute;left:0;right:0;top:86px;text-align:center;font-size:96px;font-weight:900;letter-spacing:-3px"><span class="emo" style="font-size:86px">✅</span> 확실한 <span style="color:var(--y)">임차인</span></div>`, 'c_tenant');
+C6.e.style.height = '260px'; ev(30.88, 'card', 'c_tenant');
+function drawC6(t) { const o = vis(t, C6.t0, C6.t1, .1, .12); show(C6.e, o); if (o > 0) C6.e.style.transform = `translateY(${(1 - eo((t - C6.t0) / .3)) * -40}px)`; }
+
+/* ───────── 아래 카드: 임차인 채움 막대 + «만실» 도장 (35.37~38.76) ───────── */
+const L1 = {t0: 35.37, t1: 38.76};
+L1.e = el('div', 'lowcard', `<div style="position:absolute;left:44px;top:34px;font-size:34px;font-weight:700;color:#c9ced8">임차인</div>
+  <div style="position:absolute;left:44px;right:250px;top:96px;height:46px;border-radius:23px;background:#2b2f38;overflow:hidden"><i id="l1f" style="position:absolute;left:0;top:0;bottom:0;background:var(--g);border-radius:23px"></i></div>
+  <div id="l1n" style="position:absolute;right:34px;top:78px;font-size:66px;font-weight:900;color:var(--g)">0%</div>
+  <div id="l1s" style="position:absolute;right:260px;top:-62px;padding:6px 26px;border:9px solid var(--g);border-radius:18px;color:#16a34a;font-size:78px;font-weight:900;letter-spacing:4px;background:rgba(255,255,255,.92)">만실</div>`, 'l_full');
+Object.assign(L1.e.style, {top: '1400px', height: '180px'}); ev(35.40, 'card', 'l_full'); ev(36.62, 'stamp', 'l_full_stamp');
+function drawL1(t) {
+  const o = vis(t, L1.t0, L1.t1, .1, .15); show(L1.e, o); if (o <= 0) return;
+  L1.e.style.transform = `translateY(${(1 - eo((t - L1.t0) / .3)) * 40}px)`;
+  const k = eio((t - 35.5) / 1.0); L1.e.querySelector('#l1f').style.width = (k * 100) + '%'; L1.e.querySelector('#l1n').textContent = Math.round(k * 100) + '%';
+  const s = L1.e.querySelector('#l1s'), u = (t - 36.59) / .18; s.style.opacity = clamp(u * 3); s.style.transform = `rotate(-12deg) scale(${u < 1 ? 2.2 - 1.2 * clamp(u) : 1})`;
+}
+
+/* ───────── 아래 카드: 체크리스트 (47.63~55.14) ───────── */
+const CK = {t0: 47.63, t1: 55.14, items: [[47.63, '강남에서 건물 사기'], [48.92, '손해 없이 확실한 건물'], [51.42, '경험자에게 배우기'], [53.67, '직접 들어보기']]};
+CK.e = el('div', 'lowcard', CK.items.map(([t, s], i) => `<div class="ck" style="position:absolute;left:44px;top:${30 + i * 82}px;font-size:46px;font-weight:700;white-space:nowrap">
+  <span class="bx" style="display:inline-block;width:48px;height:48px;border-radius:12px;border:5px solid #8b919c;vertical-align:-6px;margin-right:22px;position:relative"><i style="position:absolute;left:8px;top:-6px;width:20px;height:38px;border:solid var(--g);border-width:0 9px 9px 0;transform:rotate(40deg) scale(0);transform-origin:50% 60%"></i></span>${s}</div>`).join(''), 'l_check');
+Object.assign(CK.e.style, {top: '1330px', height: '370px'});
+CK.items.forEach(([t], i) => ev(t + 0.45, 'tick', 'ck' + i));
+function drawCK(t) {
+  const o = vis(t, CK.t0, CK.t1, .1, .15); show(CK.e, o); if (o <= 0) return;
+  CK.e.style.transform = `translateY(${(1 - eo((t - CK.t0) / .3)) * 40}px)`;
+  [...CK.e.querySelectorAll('.ck')].forEach((r, i) => { const t0 = CK.items[i][0]; r.style.opacity = clamp((t - t0) / .15); r.style.transform = `translateX(${(1 - eo((t - t0) / .3)) * -30}px)`;
+    const k = back((t - t0 - .45) / .25); r.querySelector('i').style.transform = `rotate(40deg) scale(${k})`; r.querySelector('.bx').style.borderColor = k > .5 ? '#3DDC84' : '#8b919c'; r.style.color = k > .5 ? '#fff' : '#c9ced8'; });
+}
+
+/* ───────── 상담 버튼 + 손가락 (55.14~57.69) ───────── */
+const CTA = {t0: 55.14, t1: 57.69};
+CTA.e = el('div', null, `<div id="ctb" data-box="cta" style="position:absolute;left:190px;width:700px;top:0;height:132px;border-radius:66px;background:var(--y);color:#141414;font-size:58px;font-weight:900;text-align:center;line-height:132px;box-shadow:0 14px 30px rgba(0,0,0,.35)">상담 신청하기 ›</div>
+  <div id="ctf" class="emo" style="position:absolute;left:640px;top:70px;font-size:120px">👆</div>
+  <div id="cta" class="emo" style="position:absolute;left:490px;top:-150px;font-size:96px">⬇️</div>`);
+Object.assign(CTA.e.style, {position: 'absolute', left: 0, width: '1080px', top: '1430px', height: '260px', zIndex: 5});
+ev(55.16, 'card', 'cta'); ev(56.30, 'tap', 'cta_tap'); ev(56.50, 'shine', 'cta_shine');
+function drawCTA(t) {
+  const o = vis(t, CTA.t0, CTA.t1, .1, .1); show(CTA.e, o); if (o <= 0) return;
+  const b = CTA.e.querySelector('#ctb'), f = CTA.e.querySelector('#ctf'), a = CTA.e.querySelector('#cta');
+  b.style.transform = `scale(${back((t - CTA.t0) / .35) * (1 - .06 * Math.sin(Math.PI * clamp((t - 56.26) / .2)))})`;
+  f.style.opacity = clamp((t - 55.8) / .15); f.style.transform = `translate(${(1 - eo((t - 55.8) / .4)) * 120}px,${(1 - eo((t - 55.8) / .4)) * 120 + 18 * Math.sin(Math.PI * clamp((t - 56.16) / .2))}px)`;
+  a.style.opacity = clamp((t - 55.3) / .15); a.style.transform = `translateY(${Math.abs(Math.sin((t - 55.3) * 5)) * 20}px)`;
+}
+
+
+/* ───────── 0.00 «강남 빌딩보다» — 자막 밑에 큰 «강남빌딩»이 레이저처럼 날아와 펑 박힌다(10-20) ───────── */
+const LZ = {t0: 0.04, hit: 0.30, t1: 1.97, y: 1262};
+LZ.beam = el('div'); Object.assign(LZ.beam.style, {position: 'absolute', left: 0, top: (LZ.y + 82) + 'px', height: '10px', width: '1080px', zIndex: 7,
+  background: 'linear-gradient(90deg, rgba(255,212,59,0), #fff 70%, #fff)', boxShadow: '0 0 18px 6px rgba(255,212,59,.9), 0 0 40px 14px rgba(255,140,0,.45)', transformOrigin: '0 50%'});
+LZ.ghost = [0, 1, 2].map(i => { const g = el('div', 'big'); g.style.top = LZ.y + 'px'; g.innerHTML = '<span class="seg" style="font-size:156px"><span class="f" style="color:rgba(255,212,59,' + (.35 - i * .1) + ')">강남빌딩</span></span>'; return g; });
+LZ.e = el('div', 'big'); LZ.e.style.top = LZ.y + 'px';
+LZ.e.innerHTML = '<span class="row" data-box="lz_txt" data-box-bleed><span class="seg" style="font-size:156px"><span class="s">강남빌딩</span><span class="f" style="color:var(--y)">강남빌딩</span></span></span>';
+LZ.ring = el('div'); Object.assign(LZ.ring.style, {position: 'absolute', left: '540px', top: (LZ.y + 92) + 'px', width: '12px', height: '12px', borderRadius: '50%', border: '3px solid #fff', zIndex: 6});
+LZ.flash = el('div'); Object.assign(LZ.flash.style, {position: 'absolute', left: 0, top: 0, width: '1080px', height: '1920px', background: '#fff', zIndex: 8});
+LZ.sp = Array.from({length: 14}, (_, i) => { const s = el('div'); Object.assign(s.style, {position: 'absolute', height: '8px', borderRadius: '4px', background: i % 2 ? '#FFD43B' : '#fff', zIndex: 6, transformOrigin: '0 50%'}); s.a = i / 14 * Math.PI * 2 + .2; s.l = 70 + (i * 37) % 60; return s; });
+ev(LZ.t0, 'laser', 'lz'); ev(LZ.hit, 'boom', 'lz_hit');
+function drawLZ(t) {
+  const hk = t - LZ.hit;
+  show(LZ.beam, t >= LZ.t0 && hk < .08 ? clamp((LZ.hit + .08 - t) / .08) : 0);
+  LZ.beam.style.transform = `scaleX(${eo((t - LZ.t0) / .12)}) scaleY(${1 - clamp(hk / .08)})`;
+  const fly = clamp((t - (LZ.t0 + .08)) / (LZ.hit - LZ.t0 - .08)), x = (1 - fly * fly) * -1150;
+  show(LZ.e, vis(t, LZ.t0 + .08, LZ.t1, .02, .15));
+  const jig = hk > 0 ? Math.sin(hk * 70) * 14 * Math.exp(-hk * 12) : 0;
+  const sc = hk < 0 ? 1 : 1 + .28 * Math.exp(-hk * 10) * Math.cos(hk * 30);
+  LZ.e.style.transform = `translateX(${x + jig}px) skewX(${hk < 0 ? -18 : -18 * Math.exp(-hk * 25)}deg) scale(${sc * (1 + .015 * Math.sin(t * 4))})`;
+  LZ.ghost.forEach((g, i) => { show(g, hk < 0 && fly > 0 ? 1 : 0); g.style.transform = `translateX(${x - (i + 1) * 120 * (1 - fly)}px) skewX(-18deg)`; });
+  const rk = clamp(hk / .35); show(LZ.ring, hk > 0 && hk < .35 ? 1 - rk : 0);
+  LZ.ring.style.transform = `translate(-50%,-50%) scale(${1 + rk * 60}, ${(1 + rk * 60) * .45})`;
+  show(LZ.flash, hk > 0 && hk < .1 ? .5 * (1 - hk / .1) : 0);
+  LZ.sp.forEach(s => { const u = clamp(hk / .4); show(s, hk > 0 && hk < .4 ? 1 : 0); const r = 250 + u * 260;
+    s.style.left = (540 + Math.cos(s.a) * r) + 'px'; s.style.top = (LZ.y + 92 + Math.sin(s.a) * r * .45) + 'px'; s.style.width = s.l * (1 - u) + 'px'; s.style.transform = `rotate(${s.a}rad)`; });
+}
+
+/* ───────── 0.88 «확실한 투자가 있다?» — 물음표 3개 띵·띵·띵(10-20) ───────── */
+const QM = [{t: 0.98, x: 760, y: 280, r: -12, s: 150}, {t: 1.22, x: 880, y: 190, r: 8, s: 175}, {t: 1.46, x: 990, y: 310, r: 18, s: 135}];
+QM.forEach((q, i) => { q.e = el('div', 'big'); q.e.style.left = (q.x - 540) + 'px'; q.e.style.top = q.y + 'px';
+  q.e.innerHTML = '<span class="row" data-box="qm' + i + '" data-box-group="qm"><span class="seg" style="font-size:' + q.s + 'px"><span class="s">?</span><span class="f" style="color:var(--y)">?</span></span></span>'; ev(q.t, 'ding', 'qm' + i); });
+function drawQM(t) { for (const q of QM) { const o = vis(t, q.t, 1.97, .02, .12); show(q.e, o); if (o <= 0) continue;
+  q.e.style.transform = `translateY(${Math.sin((t - q.t) * 5) * 8}px) rotate(${q.r + Math.sin((t - q.t) * 7) * 4}deg) scale(${back((t - q.t) / .25)})`; } }
+
+/* ───────── 1.97 «아, 말도 안돼요» · 2.72 «그거는»(10-20 «연출이 너무 부족함») ─────────
+   작아진 화면이 절레절레(바탕 r4_build_v3) + 큰 빨간 «말도 안 돼!» + 🙅 + 빨간 강조선 / «그거는»에서 집중선이 몰리며 당김 */
+const NO = {t0: 1.97, t1: 2.72};
+NO.emo = el('div', 'emo', '🙅‍♂️', 'no_emo'); Object.assign(NO.emo.style, {position: 'absolute', fontSize: '180px', left: '780px', top: '300px', zIndex: 6});
+NO.lines = [0, 1, 2].map(() => { const l = el('div'); Object.assign(l.style, {position: 'absolute', width: '80px', height: '14px', borderRadius: '7px', background: '#FF4D4F', zIndex: 6, transformOrigin: '0 50%'}); return l; });
+NO.big = el('div', 'big'); NO.big.style.top = '1290px';
+NO.big.innerHTML = '<span class="row" data-box="no_txt"><span class="seg" style="font-size:120px"><span class="s">말도 안 돼!</span><span class="f" style="color:var(--y)">말도 안 돼!</span></span></span>';
+ev(2.02, 'buzz', 'no'); ev(2.20, 'pop', 'no_emo');
+const FOC = {t0: 2.72, t1: 3.47}; FOC.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+Object.assign(FOC.svg.style, {position: 'absolute', left: 0, top: 0, zIndex: 3}); FOC.svg.setAttribute('width', 1080); FOC.svg.setAttribute('height', 1920); st.appendChild(FOC.svg);
+let fs = 5; const fr = () => (fs = (fs * 16807) % 2147483647) / 2147483647;
+FOC.rays = Array.from({length: 46}, (_, i) => { const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('fill', '#fff'); FOC.svg.appendChild(p); return {p, a: i / 46 * Math.PI * 2 + fr() * .1, w: 6 + fr() * 14, l: .3 + fr() * .2}; });
+ev(2.72, 'focus', 'foc');
+function drawNO(t) {
+  show(NO.emo, vis(t, NO.t0 + .2, NO.t1, .04, .1)); show(NO.big, vis(t, NO.t0 + .05, NO.t1, .04, .1));
+  NO.emo.style.transform = `scale(${back((t - NO.t0 - .2) / .3)}) rotate(${Math.sin((t - NO.t0) * 22) * 10}deg)`;
+  NO.big.style.transform = `translateX(${Math.sin((t - NO.t0) * 40) * 9 * Math.exp(-(t - NO.t0) * 3)}px) scale(${back((t - NO.t0 - .05) / .25)})`;
+  NO.lines.forEach((l, i) => { show(l, vis(t, NO.t0 + .1 + i * .05, NO.t1, .03, .1)); l.style.left = (330 - i * 10) + 'px'; l.style.top = (400 + i * 44) + 'px';
+    l.style.transform = `rotate(${195 + i * 15}deg) scaleX(${eo((t - NO.t0 - .1 - i * .05) / .15)})`; });
+  const fo = vis(t, FOC.t0, FOC.t1, .06, .12); FOC.svg.style.display = fo > 0 ? 'block' : 'none'; FOC.svg.style.opacity = fo * .8;
+  if (fo > 0) { const cx = 540, cy = 560, R = 1300, k = eo((t - FOC.t0) / .2), fl = Math.sin(t * 40) * .03;
+    for (const r of FOC.rays) { const r0 = R * (r.l + (1 - k) * .5 + fl), a1 = r.a - r.w / R, a2 = r.a + r.w / R;
+      r.p.setAttribute('d', `M${cx + Math.cos(r.a) * r0},${cy + Math.sin(r.a) * r0} L${cx + Math.cos(a1) * R * 1.4},${cy + Math.sin(a1) * R * 1.4} L${cx + Math.cos(a2) * R * 1.4},${cy + Math.sin(a2) * R * 1.4}Z`); } }
+}
+
+window.EVENTS = EV.sort((a, b) => a.t - b.t);
+let first = true;
+window.seek = async function (t) {
+  if (first) { first = false; await document.fonts.load('900 100px "R4 Serif"').catch(() => 0); await Promise.all([...st.querySelectorAll('img')].map(i => i.decode().catch(() => 0))); }
+  drawLZ(t); drawQM(t); drawNO(t); drawBig(t); drawEmo(t); drawC1(t); drawC2(t); drawC3(t); drawC4(t); drawC5(t); drawBub(t); drawC6(t); drawL1(t); drawCK(t); drawCTA(t);
+};
+</script></body></html>

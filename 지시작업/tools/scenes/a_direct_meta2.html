@@ -1,0 +1,376 @@
+<!doctype html>
+<!-- 메타v2(10-14) — a_direct.html 사본. 사람·자막·판·버튼을 크기 그대로 124px 위로(사람 = 위 124px 자른 사본, ad_build AD_VER=meta2) -->
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 한비즈 DB 광고 1 — A지시판(10-14 사장님 직접 지시) 자료 층. 지시작업/기록/작업기록.md «요구 대장» R1~R17.
+     사람 밑(자막 1075~1205 아래, y 1215~) 판 하나에 말 덩어리마다 화면 사건 하나 · R7(4조 7천억)만 전체화면.
+     시각은 전부 시퀀스 초(사장님 «한비즈 DB 광고 1» 21컷 48.131초) · 단어 시각 = a_times.js(words.txt).
+     HUD 잔글씨 없음(10-14 «어떤 작품에도 넣지마») · 장면마다 배경 색 계열이 다르고 단색 없음 · 앞 작품(3안·A3) 연출 재사용 없음. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+#st{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:"HM Pretendard",sans-serif;word-break:keep-all;color:#fff}
+#R{position:absolute;left:0;top:1091px;width:1080px;height:705px;overflow:hidden}   /* 메타v2: 판 원래 크기 60~1020 × 1111~1731 — 사장님 프리미어 안쪽 안전선(아래 ≈1734) 안 */   /* 10-14 «아래판 밑에까지 다 나올까?» — 프리미어 안쪽 안전선(가로 133~997 · 아래 ≈1734) 안으로: 판 156~924 × 1231~1727 */
+.mo{position:absolute;will-change:transform,opacity;opacity:0}
+/* 사진 판 — 흰 테두리 6px · 반경 14 · 알파 255 */
+.card{left:60px;top:20px;width:960px;height:620px;border-radius:14px;overflow:hidden;background:#fff;border:6px solid #fff;box-shadow:0 22px 48px rgba(0,0,0,.5)}
+.card>.ph{position:absolute;inset:0;overflow:hidden;border-radius:9px}
+.card>.ph>img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;will-change:transform}
+.cut{position:absolute;left:0;top:0;will-change:transform;filter:drop-shadow(0 18px 22px rgba(0,0,0,.55))}
+/* 반반 판 — 쪽마다 색 하나(빨강 카드론 · 파랑 정책자금) */
+.half{top:20px;width:468px;height:620px;border-radius:14px;overflow:hidden;box-shadow:0 22px 48px rgba(0,0,0,.5)}
+.half>.ph{position:absolute;inset:6px;overflow:hidden;border-radius:9px;background:#000}
+.half>.ph>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tag{position:absolute;top:26px;height:72px;padding:0 30px;border-radius:12px;font:900 44px/72px "HM Pretendard";letter-spacing:-.5px;color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.45);z-index:3}
+/* 도장(빨간 인주) */
+.stamp{color:#E0262B;border:12px solid #E0262B;border-radius:50%;text-align:center;filter:url(#ink);background:rgba(255,255,255,.08)}
+/* 경제 느낌 복합 판(R8) — 청록→남색 그라디언트 + 보안무늬 + 금테 */
+.eco{border-radius:16px;overflow:hidden;background:radial-gradient(120% 90% at 85% 0%,#0F6A72 0%,rgba(15,106,114,0) 55%),linear-gradient(160deg,#06343F 0%,#0A2A52 55%,#0A1B3D 100%);box-shadow:0 22px 50px rgba(0,0,0,.55),inset 0 0 0 2px rgba(222,186,104,.9)}
+.eco::before{content:"";position:absolute;inset:0;opacity:.13;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='90'><g fill='none' stroke='%23F0D08A' stroke-width='1'><path d='M0 45 C30 5 60 85 90 45 S150 5 180 45'/><path d='M0 45 C30 85 60 5 90 45 S150 85 180 45'/><path d='M0 25 C30 -15 60 65 90 25 S150 -15 180 25'/><path d='M0 65 C30 105 60 25 90 65 S150 105 180 65'/></g></svg>")}
+/* 2D 심사장(R11~R14) */
+#world{position:absolute;left:0;top:0;width:3300px;height:620px;transform-origin:0 0}
+#world .bg{position:absolute;left:0;top:0;width:3300px;height:620px;background-repeat:repeat-x;background-size:auto 620px}
+#world .belt{position:absolute;left:0;width:3300px;background-repeat:repeat-x}
+.sign{position:absolute;display:flex;align-items:center;justify-content:center;font:900 30px "HM Pretendard";color:#fff;letter-spacing:-.5px;white-space:nowrap}
+/* 전체화면(R7) */
+#FS{position:absolute;inset:0;opacity:0;background:radial-gradient(90% 60% at 50% 35%,#24345E 0%,#101B36 60%,#070C1C 100%)}
+#pg{position:absolute;left:70px;top:190px;width:940px;height:1500px;background:#fbfaf6;border-radius:4px;box-shadow:0 40px 90px rgba(0,0,0,.6);transform-origin:0 0;color:#1d1d1f;font-family:"HM NotoSansKR",sans-serif;padding:70px 70px 0}
+#pg .dim{transition:none}
+#pg table{border-collapse:collapse;width:100%;font-size:27px}
+#pg td,#pg th{border:1.5px solid #6b6b6b;padding:14px 12px;text-align:center}
+#pg th{background:#e9edf3;font-weight:700}
+#hlbox{position:absolute;border:7px solid #E8262B;border-radius:8px;opacity:0}
+#hlbg{position:absolute;background:#FFE14D;opacity:0;border-radius:4px}
+/* CTA 버튼 */
+#cta{left:120px;top:1346px;width:840px;height:176px;border-radius:88px;background:linear-gradient(180deg,#2B6BFF 0%,#1238B8 100%);box-shadow:0 18px 40px rgba(0,0,0,.5),inset 0 0 0 4px #F3CF6E,inset 0 6px 0 rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;gap:26px;font:900 68px "HM Pretendard";letter-spacing:-1px;color:#fff}
+</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute"><filter id="ink" x="-10%" y="-10%" width="120%" height="120%">
+ <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"/>
+ <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -0.9 1.18" result="m"/>
+ <feComposite in="SourceGraphic" in2="m" operator="in" result="c"/>
+ <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="3" result="w"/>
+ <feDisplacementMap in="c" in2="w" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+<div id="st">
+<div id="R" data-box="R" data-box-group="layer" data-box-bleed>
+ <!-- R1 공장 + 돈다발 10억 -->
+ <div class="mo card" id="c1"><div class="ph"><img id="c1i" src="../../소재/codex/s1_factory.png"></div></div>
+ <div class="mo" id="m1" style="left:190px;top:40px;width:700px;height:600px">
+  <img class="cut" id="m1i" src="../../소재/codex/s1_money_a.png" style="left:70px;top:40px;width:560px">
+  <div id="m1t" style="position:absolute;left:0;right:0;top:330px;text-align:center;font:900 230px/1 'HM Pretendard';letter-spacing:-8px;color:#FFD54A;
+     background:linear-gradient(180deg,#FFF3B0 0%,#FFD54A 45%,#E39A12 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+     -webkit-text-stroke:9px #3A1F00;paint-order:stroke fill;filter:drop-shadow(0 10px 0 #5A3000) drop-shadow(0 22px 26px rgba(0,0,0,.6))">10억</div>
+ </div>
+ <div class="mo" id="burst1" style="left:240px;top:120px;width:600px;height:420px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,240,190,.95),rgba(255,214,90,.35) 45%,rgba(255,214,90,0) 70%)"></div>
+
+ <!-- R2·R3 공장 영상(AI 자리) + 카드론 물건 -->
+ <div class="mo card" id="c2"><div class="ph"><img id="c2i" src="../../소재/codex/s2_start.png"><div id="c2f"></div></div></div>
+ <img class="mo cut" id="m3" src="../../소재/codex/s3_card_a.png" style="width:600px">
+ <div class="mo" id="red3" style="left:60px;top:20px;width:960px;height:620px;border-radius:14px;background:radial-gradient(80% 70% at 50% 50%,rgba(180,10,20,0) 40%,rgba(150,0,10,.55) 100%)"></div>
+
+ <!-- R4 반반: 같은 1억 → 다른 결말 -->
+ <div class="mo half" id="hL" style="left:60px;background:#E5484D"><div class="ph"><img id="hLa" src="../../소재/codex/s4_L_start.png"><img id="hLb" src="../../소재/codex/s4_L_end.png" style="opacity:0"></div>
+  <div class="tag" id="tL" style="left:26px;background:#E5484D;opacity:0">카드론</div></div>
+ <div class="mo half" id="hR" style="left:552px;background:#2F7BF6"><div class="ph"><img id="hRa" src="../../소재/codex/s4_R_start.png"><img id="hRb" src="../../소재/codex/s4_R_end.png" style="opacity:0"></div>
+  <div class="tag" id="tR" style="right:26px;background:#2F7BF6;opacity:0">정책자금</div></div>
+
+ <!-- R5·R6 위탁 생산 대표 -->
+<!-- R5+R6 (10-14 사장님 «A피드로 진행하자») 휴대폰 피드: 넘김 → 다시 멈춤 → 탭 → 신청 대상 → 가능 -->
+ <div class="mo card" id="c5"><div class="ph" style="background:#222"><div id="cam5" style="position:absolute;left:0;top:0;width:1536px;height:1024px;transform-origin:0 0"><img src="../../소재/codex/r5a_phone.png" style="position:absolute;left:0;top:0;width:1536px;height:1024px"><div style="position:absolute;left:0;top:0;width:1536px;height:1024px;-webkit-mask-image:url(../../소재/codex/r5a_phone_matte.png);-webkit-mask-size:1536px 1024px;-webkit-mask-repeat:no-repeat"><div style="position:absolute;left:555px;top:52px;width:423px;height:881px;background:#fff;overflow:hidden"><div id="feed5" style="position:absolute;left:0;top:0;width:423px"><div style="height:470px;padding:18px 0 0;border-bottom:8px solid #EEF0F4;background:#fff"><div style="display:flex;align-items:center;gap:12px;padding:0 18px 14px;font:700 26px 'HM Pretendard';color:#1B2A4A"><i style="width:44px;height:44px;border-radius:50%;background:#C9CED8;display:inline-block"></i></div><div style="position:relative;height:290px;overflow:hidden"><img src="../../소재/db1/site/field/field_14.jpg" style="width:100%;height:100%;object-fit:cover"></div></div><div style="height:470px;padding:18px 0 0;border-bottom:8px solid #EEF0F4;background:#fff"><div style="display:flex;align-items:center;gap:12px;padding:0 18px 14px;font:700 26px 'HM Pretendard';color:#1B2A4A"><i style="width:44px;height:44px;border-radius:50%;background:#0B2A5E;display:inline-block"></i>한국중소기업비즈니스센터</div><div style="position:relative;height:290px;overflow:hidden"><img src="../../소재/codex/s1_factory.png" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;right:16px;bottom:12px;font:900 78px/1 'HM Pretendard';color:#FFD54A;-webkit-text-stroke:5px #3A1F00;paint-order:stroke fill">10억</div></div><div style="padding:16px 18px 0;font:800 32px 'HM Pretendard';color:#111">제조업 하시면 최대 10억</div></div><div style="height:470px;padding:18px 0 0;border-bottom:8px solid #EEF0F4;background:#fff"><div style="display:flex;align-items:center;gap:12px;padding:0 18px 14px;font:700 26px 'HM Pretendard';color:#1B2A4A"><i style="width:44px;height:44px;border-radius:50%;background:#C9CED8;display:inline-block"></i></div><div style="position:relative;height:290px;overflow:hidden"><img src="../../소재/codex/s16_report.png" style="width:100%;height:100%;object-fit:cover"></div></div><div style="height:470px;padding:18px 0 0;border-bottom:8px solid #EEF0F4;background:#fff"><div style="display:flex;align-items:center;gap:12px;padding:0 18px 14px;font:700 26px 'HM Pretendard';color:#1B2A4A"><i style="width:44px;height:44px;border-radius:50%;background:#C9CED8;display:inline-block"></i></div><div style="position:relative;height:290px;overflow:hidden"><img src="../../소재/db1/site/field/field_32.jpg" style="width:100%;height:100%;object-fit:cover"></div></div></div><div id="ring5" style="position:absolute;left:211px;top:330px;width:10px;height:10px;border-radius:50%;border:4px solid rgba(11,42,94,.6);opacity:0"></div><div id="sheet5" style="position:absolute;left:0;top:881px;width:423px;height:881px;background:#fff;border-radius:28px 28px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.25);padding:46px 28px 0"><div style="width:70px;height:7px;border-radius:4px;background:#D5D9E1;margin:0 auto 34px"></div><div style="font:900 44px 'HM Pretendard';color:#0B2A5E;margin-bottom:10px">신청 대상</div><div style="font:600 26px 'HM Pretendard';color:#6A7487;margin-bottom:34px">제조업 정책자금</div><div style="position:relative;display:flex;align-items:center;justify-content:space-between;height:120px;margin-bottom:22px;padding:0 22px;border-radius:18px;background:#F3F5F9;font:800 31px 'HM Pretendard';color:#1B2A4A;white-space:nowrap"><span style="position:relative;z-index:1">직접 공장 운영</span><b id="q1p" style="position:relative;z-index:1;padding:8px 20px;border-radius:30px;background:#16A34A;color:#fff;font:900 32px 'HM Pretendard';opacity:0">가능 ✓</b><i id="q1h" style="position:absolute;left:0;top:0;bottom:0;width:0;border-radius:18px;background:#FFE58A"></i></div><div style="position:relative;display:flex;align-items:center;justify-content:space-between;height:120px;margin-bottom:22px;padding:0 22px;border-radius:18px;background:#F3F5F9;font:800 31px 'HM Pretendard';color:#1B2A4A;white-space:nowrap"><span style="position:relative;z-index:1">위탁 생산 (OEM)</span><b id="q2p" style="position:relative;z-index:1;padding:8px 20px;border-radius:30px;background:#16A34A;color:#fff;font:900 32px 'HM Pretendard';opacity:0">가능 ✓</b><i id="q2h" style="position:absolute;left:0;top:0;bottom:0;width:0;border-radius:18px;background:#FFE58A"></i></div></div></div></div></div></div></div>
+
+ <!-- R8 실시간 소진 -->
+ <div class="mo eco" id="c8" style="left:60px;top:20px;width:960px;height:620px">
+  <div style="position:absolute;left:52px;top:54px;font:800 36px 'HM Pretendard';color:#F0D08A;display:flex;align-items:center;gap:14px"><i id="dot8" style="width:18px;height:18px;border-radius:50%;background:#FF4B4B;display:inline-block"></i>소진 가능 금액</div>
+  <div id="n8a" style="position:absolute;left:52px;top:104px;font:900 92px/1.1 'HM Pretendard';letter-spacing:-2px;font-variant-numeric:tabular-nums"></div>
+  <div style="position:absolute;left:52px;top:228px;width:856px;height:22px;border-radius:11px;background:rgba(255,255,255,.12)"><div id="g8a" style="height:100%;border-radius:11px;background:linear-gradient(90deg,#B98A2E,#F5D98A)"></div></div>
+  <div style="position:absolute;left:52px;top:300px;font:800 36px 'HM Pretendard';color:#F0D08A">정책자금 대출 금액</div>
+  <div id="n8b" style="position:absolute;left:52px;top:350px;font:900 92px/1.1 'HM Pretendard';letter-spacing:-2px;font-variant-numeric:tabular-nums"></div>
+  <div style="position:absolute;left:52px;top:474px;width:856px;height:22px;border-radius:11px;background:rgba(255,255,255,.12)"><div id="g8b" style="height:100%;border-radius:11px;background:linear-gradient(90deg,#F5D98A,#FFFFFF)"></div></div>
+  <div style="position:absolute;left:52px;bottom:30px;font:500 22px 'HM Pretendard';color:rgba(240,208,138,.75)">※ 소진 흐름은 연출 · 총액 4조 7,143억원: 중소벤처기업부 공고 제2026-574호</div>
+ </div>
+
+ <!-- R9 작은 공장 -->
+ <div class="mo card" id="c9"><div class="ph"><img id="c9i" src="../../소재/codex/s9_small.png" style="object-position:70% 50%"></div></div>
+
+ <!-- R11~R14 2D 심사장(한 장면 · 카메라) -->
+ <div class="mo card" id="c11" style="border-color:#fff;background:#F4EBD9"><div class="ph" id="cam">
+  <div id="world">
+   <div class="bg" style="background-image:url('../../소재/codex/2d_bg.png')"></div>
+   <img id="win1" src="../../소재/codex/2d_window_a.png" style="position:absolute">
+   <img id="win2" src="../../소재/codex/2d_window2_a.png" style="position:absolute">
+   <div class="sign" id="sg1">기계대출 전용</div>
+   <div class="sign" id="sg2" style="border-radius:6px;font-size:34px">위탁생산</div>
+   <div id="glow2" style="position:absolute;opacity:0;border-radius:50%;background:radial-gradient(closest-side,rgba(255,226,120,.85),rgba(255,200,60,.35) 50%,rgba(255,200,60,0) 75%)"></div>
+   <div id="board1" style="position:absolute;overflow:hidden;opacity:0"></div>
+   <div class="belt" id="belt" style="background-image:url('../../소재/codex/2d_belt_a.png')"></div>
+   <img id="scan" src="../../소재/codex/2d_scanner_a.png" style="position:absolute">
+   <div id="doc" style="position:absolute">
+    <img src="../../소재/codex/2d_doc_a.png" style="width:100%;display:block">
+    <div id="docT" style="position:absolute;display:flex;align-items:center;justify-content:center;font:900 15px 'HM Pretendard';color:#1B2A4A;white-space:nowrap">소규모 공장</div>
+    <div class="stamp" id="docS" style="position:absolute;opacity:0;border-width:3px;border-radius:6px;font:900 15px/1 'HM Pretendard';padding:5px 6px;white-space:nowrap;background:rgba(255,255,255,.85)">신청 가능</div>
+   </div>
+   <div id="mon" style="position:absolute;opacity:0;border-radius:4px;box-shadow:0 0 18px rgba(69,227,213,.9)"></div>
+   <div id="beam" style="position:absolute;opacity:0;background:linear-gradient(90deg,rgba(80,255,230,0),rgba(80,255,230,.75),rgba(80,255,230,0))"></div>
+  </div></div></div>
+
+ <!-- R15 한비즈 실제 사례 · 사업계획서 -->
+ <div class="mo" id="p1" style="width:430px;height:560px;border-radius:12px;overflow:hidden;border:8px solid #fff;box-shadow:0 20px 40px rgba(0,0,0,.5);background:#fff"><img src="../../소재/db1/site/field/field_23.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+ <div class="mo" id="p2" style="width:430px;height:560px;border-radius:12px;overflow:hidden;border:8px solid #fff;box-shadow:0 20px 40px rgba(0,0,0,.5);background:#fff"><img src="../../소재/db1/site/field/field_09.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+ <div class="mo" id="lg15" style="left:330px;top:556px;width:420px;height:118px;border-radius:14px;background:#fff;box-shadow:0 12px 26px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center"><img src="../../../소재/브랜드/logo_horizontal.png" style="width:370px"></div>
+ <div class="mo" id="ch1" style="width:300px;height:600px;border-radius:16px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.5)"><img src="../../소재/db1/site/chat/chat_14.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top"></div>
+ <div class="mo" id="ch2" style="width:300px;height:600px;border-radius:16px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.5)"><img src="../../소재/db1/site/chat/chat_02.jpg" style="width:100%;height:100%;object-fit:cover;object-position:bottom"></div>
+ <div class="mo" id="ch3" style="width:300px;height:600px;border-radius:16px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.5)"><img src="../../소재/db1/site/chat/chat_18.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top"></div>
+ <div class="mo" id="gl15" style="top:-60px;width:160px;height:820px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,246,210,.6),rgba(255,255,255,0));transform:rotate(16deg)"></div>
+ <script>window.COVER={x:297,y:230,w:345};</script><div class="mo card" id="c15"><div class="ph"><img src="../../소재/codex/s15_plan.png"></div>
+  <div id="cov" style="position:absolute;text-align:center;color:#1B2A4A"><div style="font:900 50px 'HM Pretendard';letter-spacing:4px">사업계획서</div><div style="font:600 21px 'HM Pretendard';margin-top:12px;color:#4A5A78">○○정밀 · 정책자금 신청용</div></div></div>
+
+ <!-- R16 매달 리포트 · 전달 -->
+ <div class="mo" id="rp0" style="width:520px;height:540px;border-radius:10px;overflow:hidden;border:6px solid #fff;box-shadow:0 18px 36px rgba(0,0,0,.5);background:#fff"><img src="../../소재/codex/s16_report.png" style="width:100%;height:100%;object-fit:cover"><div class="mtab" style="position:absolute;left:24px;top:22px;padding:6px 22px;border-radius:10px;background:#0B2A5E;font:900 44px 'HM Pretendard';color:#F5D98A">10월</div></div>
+ <div class="mo" id="rp1" style="width:520px;height:540px;border-radius:10px;overflow:hidden;border:6px solid #fff;box-shadow:0 18px 36px rgba(0,0,0,.5);background:#fff"><img src="../../소재/codex/s16_report.png" style="width:100%;height:100%;object-fit:cover;object-position:30% 50%;transform:scaleX(-1)"><div style="position:absolute;left:24px;top:22px;padding:6px 22px;border-radius:10px;background:#0B2A5E;font:900 44px 'HM Pretendard';color:#F5D98A">11월</div></div>
+ <div class="mo" id="rp2" style="width:520px;height:540px;border-radius:10px;overflow:hidden;border:6px solid #fff;box-shadow:0 18px 36px rgba(0,0,0,.5);background:#fff"><img src="../../소재/codex/s16_report.png" style="width:100%;height:100%;object-fit:cover;object-position:70% 50%"><div style="position:absolute;left:24px;top:22px;padding:6px 22px;border-radius:10px;background:#0B2A5E;font:900 44px 'HM Pretendard';color:#F5D98A">12월</div></div>
+ <div class="mo card" id="c16"><div class="ph"><img id="c16i" src="../../소재/codex/s16_handover.png"></div></div>
+
+ <!-- R17 번 돈 → 카드로 빨려 감 -->
+ <div class="mo" id="c17" style="left:60px;top:20px;width:960px;height:620px;border-radius:16px;overflow:hidden;background:radial-gradient(90% 80% at 20% 30%,#7A3A12 0%,rgba(122,58,18,0) 60%),linear-gradient(150deg,#3A160A 0%,#1E0C1A 60%,#120818 100%);box-shadow:0 22px 50px rgba(0,0,0,.55),inset 0 0 0 2px rgba(222,186,104,.85)"></div>
+ <img class="mo cut" id="m17" src="../../소재/codex/s1_money_a.png" style="width:470px">
+ <img class="mo cut" id="k17" src="../../소재/codex/s3_card_a.png" style="width:420px">
+ <div id="bills"></div>
+</div>
+
+<!-- R7 전체화면: 공고 원문 판 -->
+<div id="FS" data-box="FS" data-box-group="layer" data-box-bleed>
+ <div id="pg">
+  <div class="dim" style="display:flex;justify-content:space-between;font-size:24px;color:#444"><span>중소벤처기업부 공고 제2026-574호</span><span>2026. 10. 1.</span></div>
+  <div class="dim" style="margin:46px 0 54px;text-align:center;font:800 46px/1.35 'HM NotoSansKR'">2026년도 중소기업 정책자금<br>융자계획 변경공고</div>
+  <div class="dim" style="font:800 34px 'HM NotoSansKR';margin-bottom:26px">Ⅰ. 지원규모</div>
+  <div id="line" style="position:relative;font:500 33px/1.6 'HM NotoSansKR';margin-left:14px">□ (지원규모) <span id="tgt" style="position:relative;font-weight:800;z-index:1"><i id="hlbg" style="position:absolute;left:-8px;top:-2px;height:calc(100% + 4px);width:0;z-index:-1"></i>융자(4조 7,143억원)<i id="hlbox" style="position:absolute;left:-14px;right:-14px;top:-8px;bottom:-8px"></i></span><span class="dim">, 이차보전(3,670억원)</span></div>
+  <div class="dim" style="font:500 26px 'HM NotoSansKR';margin:40px 0 14px 14px;color:#333">○ 자금별 지원규모 <span style="font-size:22px">(단위 : 억원)</span></div>
+  <table class="dim"><tr><th>혁신창업사업화</th><th>신성장기반</th><th>재도약</th></tr><tr><td>17,558</td><td>12,851</td><td>6,625</td></tr>
+   <tr><th>긴급경영안정</th><th>신시장진출</th><th>밸류체인안정화</th></tr><tr><td>6,000</td><td>5,794</td><td>1,985</td></tr></table>
+  <div class="dim" style="font:500 27px/1.6 'HM NotoSansKR';margin:46px 0 0 14px">□ (신청기간) ’26.1.5. ~ 연간 계획된 예산소진 시까지</div>
+  <div class="dim" style="position:absolute;left:0;right:0;bottom:90px;text-align:center;font:700 34px 'HM NotoSansKR';letter-spacing:6px">중소벤처기업부장관</div>
+ </div>
+</div>
+<!-- CTA 버튼 -->
+<div class="mo" id="cta" data-box="cta" data-box-group="layer"><span>공장 한도 확인하기</span><svg id="arw" width="54" height="64" viewBox="0 0 54 64"><path d="M27 4 V52 M6 34 L27 58 L48 34" fill="none" stroke="#F3CF6E" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+</div>
+<script src="a_times.js"></script>
+<script>
+window.W=1080; window.H=1920; window.FPS=30; window.DURATION=48.131;
+window.PALETTE=['#0B1F44','#FFFFFF','#E8C77A'];   // 판 공통(남색 계열·흰 글·금) — 사진·비교 쪽 색(빨강/파랑)·도장 빨강은 장면별
+const el=id=>document.getElementById(id);
+const cl=(x,a,b)=>Math.min(b,Math.max(a,x));
+const lin=(t,a,b)=>cl((t-a)/(b-a),0,1);
+const eo=x=>1-Math.pow(1-cl(x,0,1),3);
+const ei=x=>Math.pow(cl(x,0,1),3);
+const eio=x=>{x=cl(x,0,1);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;};
+const F=1/30;
+function tf(e,{x=0,y=0,s=1,r=0,ry=0,o=1,blur=0,filt=''}={}){e.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) rotateY(${ry}deg) scale(${s})`;e.style.opacity=o;e.style.filter=(blur>0.05?`blur(${blur}px) `:'')+filt;}
+// 판 등장(줌 블러 팝 6프레임 감속) · 퇴장(줌 스루 5프레임 / 아래로 빠짐)
+function life(t,tin,tout,mode){
+  if(t<tin||t>=tout+0.2) return null;
+  const a=eo(lin(t,tin,tin+0.2)); let s=0.84+0.16*a, o=cl((t-tin)/0.1,0,1), blur=(1-a)*10, y=0;
+  if(t>=tout){const b=lin(t,tout,tout+(mode==='drop'?0.28:0.17));
+    if(mode==='drop'){y=ei(b)*320;s*=1-0.1*b;o*=1-b;} else {s*=1+0.12*ei(b);o*=1-b;blur+=b*8;}}
+  return {s,o,blur,y};
+}
+function shake(t,t0,amp){if(t<t0||t>t0+0.32)return [0,0];const k=t-t0,d=Math.exp(-k*14)*amp;return [d*Math.sin(k*95),d*Math.cos(k*71)*0.6];}
+function card(id,t,tin,tout,mode,extra){const e=el(id),L=life(t,tin,tout,mode);if(!L){e.style.opacity=0;return null;}
+  const [sx,sy]=extra&&extra.shake?extra.shake:[0,0];tf(e,{x:sx,y:L.y+sy,s:L.s,o:L.o,blur:L.blur});return L;}
+// 숫자 표기 — 만원 단위 정수 → «4조 7,143억» + «3,800만원»
+function won(man){man=Math.max(0,Math.round(man));if(man===0)return '0원';const jo=Math.floor(man/1e8),eok=Math.floor(man%1e8/1e4),m=man%1e4;
+  let s='';if(jo)s+=`${jo}조 `;if(eok||jo)s+=`${eok.toLocaleString('en-US')}억 `;return s+`<span style="font-size:.5em;letter-spacing:0">${m?m.toLocaleString('en-US')+'만원':(s?'원':'0원')}</span>`;}
+
+// ── 시각표(시퀀스 초) ── 단어 시각: a_times.js WORDS
+const T={c1:[0.00,2.219], m1land:1.22, c2:[2.219,5.556], m3land:4.30, h:[5.60,9.243], tags:6.98, flip:7.92, half:8.42,
+  c5:[9.27,13.28], fs:[14.514,17.751], zoom:[15.32,16.30], box:16.28,
+  c8:[17.78,20.07], c9:[20.12,21.70], c11:[22.66,30.881], p1:31.30, p2:32.08, chats:33.38, glint:34.32, c15:[35.46,36.86], send:36.86,
+  rp:[38.54,38.96,39.44], c16:[40.46,42.276], c17:[42.62,45.36], m17:42.82, k17:43.72, suck:[43.98,45.20], cta:45.40, press:45.98, shine:46.86};
+// AI 영상 자리(R2): 받은 영상을 프레임 JPG 로 풀어 window.VID2 = {dir, n} 를 주면 정지+푸시 대신 그 프레임을 쓴다
+window.VID2=window.VID2||null;
+(function(){ if(window.VID2){let h='';for(let i=0;i<window.VID2.n;i++)h+=`<img id="v2_${i}" src="${window.VID2.dir}/f_${String(i+1).padStart(4,'0')}.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0">`;el('c2f').innerHTML=h;} })();
+// 지폐 12장(R17)
+(function(){let h='';for(let i=0;i<12;i++)h+=`<img class="mo cut" id="b${i}" src="../../소재/db1/money/${i%3===2?'bill_curved':'bill_front'}_a.png" style="width:170px">`;el('bills').innerHTML=h;})();
+const rnd=(i,k)=>{const v=Math.sin(i*12.9898+k*78.233)*43758.5453;return v-Math.floor(v);};
+
+// 2D 심사장 배치(월드 좌표 px) — 소재 크기에 맞춰 layout() 에서 계산
+const WD={belt:{y:428,h:74}, scan:{x:300,w:600}, win1:{x:1330,w:640}, win2:{x:2300,w:700}, doc:{w:120}};
+window.SIGN={x:.05,y:.03,w:.90,h:.10}; window.DOCT={x:.081,y:.067,w:.838,h:.141}; window.BOARD={x:.163,y:.234,w:.373,h:.258};
+let LAY=null;
+function layout(){
+  const im=id=>el(id).naturalWidth?[el(id).naturalWidth,el(id).naturalHeight]:[1,1];
+  const [sw,sh]=im('scan'),[ww,wh]=im('win1'),[dw,dh]=im('doc')?[1,1]:[1,1];
+  const scanH=WD.scan.w*sh/sw, winH=WD.win1.w*wh/ww; const [w2w,w2h]=im('win2'); const winH2=WD.win2.w*w2h/w2w;
+  const s=el('scan');s.style.width=WD.scan.w+'px';s.style.left=WD.scan.x+'px';s.style.top=(560-scanH)+'px';
+  for(const k of ['win1','win2']){const e=el(k);const hh=k==='win1'?winH:winH2;e.style.width=WD[k].w+'px';e.style.left=WD[k].x+'px';e.style.top=(560-hh)+'px';}
+  const b=el('belt');b.style.top=WD.belt.y+'px';b.style.height=WD.belt.h+'px';b.style.backgroundSize=`auto ${WD.belt.h}px`;
+  // 창구 그림 안 간판·안내판 자리(비율) — SIGN·BOARD 는 소재를 보고 맞춘다
+  const SIGN=window.SIGN||{x:.20,y:.06,w:.60,h:.12}, BOARD=window.BOARD||{x:.30,y:.30,w:.40,h:.30};
+  const put=(id,k,R)=>{const e=el(id);const hh=k==='win1'?winH:winH2;e.style.left=(WD[k].x+R.x*WD[k].w)+'px';e.style.top=(560-hh+R.y*hh)+'px';e.style.width=(R.w*WD[k].w)+'px';e.style.height=(R.h*hh)+'px';};
+  put('sg1','win1',SIGN);put('sg2','win2',{x:.214,y:.212,w:.572,h:.137});put('board1','win1',BOARD);
+  const g=el('glow2');g.style.left=(WD.win2.x-140)+'px';g.style.top=(560-winH2-120)+'px';g.style.width=(WD.win2.w+280)+'px';g.style.height=(winH2+160)+'px';
+  const dc=el('doc');dc.style.width=WD.doc.w+'px';
+  const DT=window.DOCT||{x:.14,y:.10,w:.72,h:.12};const t=el('docT');t.style.left=DT.x*100+'%';t.style.top=DT.y*100+'%';t.style.width=DT.w*100+'%';t.style.height=DT.h*100+'%';
+  el('docS').style.left='14%';el('docS').style.top='48%';
+  const bm=el('beam');bm.style.left=(WD.scan.x+WD.scan.w*0.3)+'px';bm.style.width='60px';bm.style.top=(WD.belt.y-150)+'px';bm.style.height='170px';
+  LAY={scanH,winH,winH2,docH:WD.doc.w*1.387};
+  // 안내판(R13): 시설자금 대출기간 띠
+  el('board1').innerHTML=`<div style="position:absolute;inset:0;background:#fff"></div>
+   <div style="position:absolute;left:6%;top:8%;font:900 13px 'HM Pretendard';color:#1B2A4A;white-space:nowrap">시설자금 대출기간</div>
+   <div id="rib" style="position:absolute;left:6%;top:42%;height:22%;width:0;border-radius:3px;background:linear-gradient(90deg,#F0B43C,#E8730C)"></div>
+   <div id="ticks" style="position:absolute;left:6%;right:6%;top:68%;height:14%;display:flex;justify-content:space-between;font:800 7px 'HM Pretendard';color:#1B2A4A"></div>
+   <div id="yr10" style="position:absolute;right:5%;top:10%;font:900 16px 'HM Pretendard';color:#E8730C;opacity:0;white-space:nowrap">10년 이내</div>`;
+  el('ticks').innerHTML=Array.from({length:10},(_,i)=>`<span style="opacity:0">${i+1}년</span>`).join('');
+}
+
+async function seek(t){
+  if(!LAY) layout();
+  // ── R1 ──
+  const sh1=shake(t,T.m1land,16);
+  const L1=card('c1',t,T.c1[0],T.c1[1],'zoom',{shake:sh1});
+  if(L1) el('c1i').style.filter=`brightness(${1-0.28*eo(lin(t,T.m1land,T.m1land+0.15))})`;
+  { const e=el('m1'); if(t>=T.m1land-0.18&&L1){const k=lin(t,T.m1land-0.18,T.m1land), s=2.1-1.1*ei(k), drift=1+0.025*lin(t,T.m1land,T.c1[1]);
+      tf(e,{x:sh1[0],y:-90*(1-ei(k))+L1.y+sh1[1],s:s*drift*(t>=T.c1[1]?L1.s:1),o:Math.min(L1.o,cl(k*4,0,1)),blur:L1.blur+(1-k)*6});} else e.style.opacity=0;
+    const b=el('burst1'),k=lin(t,T.m1land,T.m1land+0.35); b.style.opacity=(t>=T.m1land&&k<1)?(1-k)*0.9:0; b.style.transform=`scale(${0.6+0.9*eo(k)})`; }
+  // ── R2·R3 ──
+  const sh3=shake(t,T.m3land,14);
+  const L2=card('c2',t,T.c2[0],T.c2[1],'zoom',{shake:sh3});
+  if(L2){ const dark=1-0.38*eo(lin(t,T.m3land,T.m3land+0.12));
+    if(window.VID2){const f=Math.min(window.VID2.n-1,Math.max(0,Math.floor((t-T.c2[0])*30)));for(let i=0;i<window.VID2.n;i++)el('v2_'+i).style.opacity=i===f?1:0;el('c2f').style.filter=`brightness(${dark})`;el('c2i').style.opacity=0;}
+    else{el('c2i').style.transform=`scale(${1+0.09*lin(t,T.c2[0],T.c2[1])})`;el('c2i').style.filter=`brightness(${dark})`;} }
+  { const e=el('m3'); if(L2&&t>=T.m3land-0.16){const k=lin(t,T.m3land-0.16,T.m3land);
+      tf(e,{x:240+sh3[0],y:110+L2.y+sh3[1],s:(2.3-1.3*ei(k))*(1+0.02*lin(t,T.m3land,T.c2[1]))*(t>=T.c2[1]?L2.s:1),r:-20+12*ei(k),o:Math.min(L2.o,cl(k*4,0,1)),blur:L2.blur+(1-k)*5});}
+    else e.style.opacity=0;
+    el('red3').style.opacity=L2?L2.o*0.85*eo(lin(t,T.m3land,T.m3land+0.2)):0; }
+  // ── R4 반반 ──
+  { const on=t>=T.h[0]&&t<T.h[1]+0.25;
+    for(const [id,dir] of [['hL',-1],['hR',1]]){const e=el(id); if(!on){e.style.opacity=0;continue;}
+      const a=eo(lin(t,T.h[0],T.h[0]+0.22)), out=ei(lin(t,T.h[1],T.h[1]+0.22));
+      const fl=lin(t,T.flip,T.flip+0.32), ry=fl<0.5?-180*eio(fl)*(dir):-(180-180*eio(fl))*dir*0; // 반 바퀴: 0→90(앞 그림) / 90→0(뒤 그림)
+      const ang=fl<=0?0:(fl<0.5?90*eio(fl*2):90-90*eio((fl-0.5)*2));
+      const win=id==='hR'&&t>=T.half?1+0.035*eo(lin(t,T.half,T.half+0.25)):1;
+      tf(e,{x:dir*560*(1-a)+dir*560*out,s:win,ry:ang*dir,o:Math.min(1,a*1.6)*(1-out)});
+      const side=id==='hL'?'L':'R'; const back=fl>=0.5;
+      el('h'+side+'a').style.opacity=back?0:1; el('h'+side+'b').style.opacity=back?1:0;
+      if(id==='hL'){el('hLb').style.filter=`saturate(${1-0.45*lin(t,T.half,T.half+0.3)}) brightness(${1-0.15*lin(t,T.half,T.half+0.3)})`;}
+      else{e.style.boxShadow=`0 22px 48px rgba(0,0,0,.5),0 0 ${46*eo(lin(t,T.half,T.half+0.3))}px rgba(80,150,255,.9)`;}
+      const tg=el('t'+side), tk=lin(t,T.tags,T.tags+0.18); tg.style.opacity=tk>0?Math.min(1,tk*2):0; tg.style.transform=`scale(${0.7+0.3*eo(tk)})`; } }
+  // ── R5+R6 휴대폰 피드(10-14 A안) — 10.22 넘김 → 10.78 다시 멈춤 → 11.32 탭 → 시트 → 11.66 위탁 생산 → 12.62 가능 ──
+  { const L=card('c5',t,T.c5[0],T.c5[1],'zoom'); if(L){
+      const up=eio(lin(t,10.22,10.46)), back=eo(lin(t,10.78,11.04));
+      el('feed5').style.transform=`translateY(${-442-470*up*(1-back)}px)`;
+      const rk=lin(t,11.30,11.55); el('ring5').style.opacity=rk>0&&rk<1?1-rk:0; el('ring5').style.transform=`scale(${1+14*eo(rk)})`;
+      el('sheet5').style.transform=`translateY(${-881*eo(lin(t,11.40,11.66))}px)`;
+      el('q2h').style.width=(100*eo(lin(t,11.66,11.90)))+'%';
+      for(const id of ['q1p','q2p']){const k=lin(t,12.62,12.80);el(id).style.opacity=k>0?1:0;el(id).style.transform=`scale(${1.6-0.6*eo(k)})`;}
+      const KEY=[[9.27,[766,492,1.0]],[11.30,[766,492,1.0]],[11.80,[766,520,1.22]],[13.4,[766,520,1.27]]];
+      let c=KEY[0][1]; for(let i=0;i<KEY.length-1;i++){const [a,A]=KEY[i],[b,B]=KEY[i+1]; if(t<a){c=A;break;} if(t<b){const k=eio((t-a)/(b-a));c=A.map((v,j)=>v+(B[j]-v)*k);break;} c=B;}
+      const k=948/1536*c[2]; el('cam5').style.transform=`translate(${474-c[0]*k}px,${304-c[1]*k}px) scale(${k})`; } }
+  // ── R7 전체화면 공고 ──
+  { const fs=el('FS'), a=eo(lin(t,T.fs[0],T.fs[0]+0.3)), out=lin(t,T.fs[1],T.fs[1]+0.18);
+    if(t<T.fs[0]||t>=T.fs[1]+0.18){fs.style.opacity=0;} else {
+      fs.style.opacity=a*(1-out);
+      const pg=el('pg'), tg=el('tgt');
+      // 줌: 판 전체 → «융자(4조 7,143억원)» 를 화면 (540,760) 에
+      const tx=tg.offsetLeft+el('line').offsetLeft+tg.offsetWidth/2, ty=tg.offsetTop+el('line').offsetTop+tg.offsetHeight/2;
+      const z=eio(lin(t,T.zoom[0],T.zoom[1])), S=1+1.45*z+0.12*lin(t,T.zoom[1],T.fs[1])+0.25*out;
+      const px=70+tx, py=190+ty;                       // 판 안 목표점의 화면 좌표(줌 전)
+      const cx=px+(540-px)*z, cy=py+(636-py)*z;   // 메타v2: 124px 위로         // 줌하면서 목표점이 옮겨 갈 화면 자리
+      pg.style.transform=`translate(${cx-S*tx-70}px,${cy-S*ty-190+ (1-a)*180}px) scale(${S})`;
+      {const dk=eo(lin(t,T.zoom[0]+0.1,T.zoom[0]+0.6)); document.querySelectorAll('#pg .dim').forEach(d=>{d.style.opacity=1-0.85*dk; d.style.filter=dk>0.01?`blur(${3*dk}px)`:'';}); el('pg').style.background=`rgb(${251-120*dk},${250-118*dk},${246-110*dk})`;}
+      const bx=el('hlbox'), bg=el('hlbg'); const bk=lin(t,T.box,T.box+0.2);
+      bx.style.opacity=bk>0?1:0; bx.style.clipPath=`inset(0 ${100-100*eo(bk)}% 0 0)`;
+      bg.style.opacity=bk>0?0.85:0; bg.style.width=(tg.offsetWidth+16)*eo(bk)+'px'; } }
+  // ── R8 실시간 소진 ──
+  { const L=card('c8',t,T.c8[0],T.c8[1],'zoom'); if(L){
+      const TOT=471430000, p=0.42*Math.pow(lin(t,17.90,T.c8[1]),1.35);  // 만원 단위 · 소진 비율(연출)
+      const jit=Math.floor(rnd(Math.floor(t*30),3)*9999);           // 끝자리 굴림
+      const used=p>0?TOT*p+jit:0, left=TOT-used;
+      el('n8a').innerHTML=won(left); el('n8b').innerHTML=won(used);
+      el('g8a').style.width=(100*left/TOT)+'%'; el('g8b').style.width=(100*used/TOT)+'%';
+      el('dot8').style.opacity=0.35+0.65*(0.5+0.5*Math.cos(t*9)); } }
+  // ── R9 작은 공장 → R10 사라짐 ──
+  { const L=card('c9',t,T.c9[0],T.c9[1],'drop'); if(L) el('c9i').style.transform=`scale(${1+0.07*lin(t,T.c9[0],T.c9[1])})`; }
+  // ── R11~R14 2D 심사장 ──
+  { const L=card('c11',t,T.c11[0],T.c11[1],'zoom'); if(L){
+      const dh=LAY.docH, fy=560-LAY.scanH+0.80*LAY.scanH, ry=WD.belt.y+18, w1=WD.win1.x+WD.win1.w/2, sc=WD.scan.x+WD.scan.w/2;
+      // 서류(가운데 x · 바닥 y): 심사기 앞 레일 위로 떨어짐(22.80) → 빛 훑음(23.30~23.85) → 도장(24.16) → 큰 레일로(24.76~25.05) → 창구 앞(26.22)
+      const P=[[22.80,sc,fy-260],[23.00,sc,fy],[24.76,sc,fy],[25.05,sc+380,ry],[26.22,w1,ry],[31,w1,ry]];
+      let dx=P[0][1], dyb=P[0][2];
+      for(let i=0;i<P.length-1;i++){const [a,xa,ya]=P[i],[b,xb,yb]=P[i+1]; if(t<=a){dx=xa;dyb=ya;break;} if(t<b){const k=i===0?eo((t-a)/(b-a)):eio((t-a)/(b-a));dx=xa+(xb-xa)*k;dyb=ya+(yb-ya)*k;break;} dx=xb;dyb=yb;}
+      const rc=eio(lin(t,26.30,26.62)); const d=el('doc'); d.style.transform=`translate(${dx-WD.doc.w/2+rc*60}px,${dyb-dh-rc*90}px) scale(${1-0.45*rc})`; d.style.opacity=t>=22.80?(1-rc):0;  // 창구에 접수되며 들어감
+      const ds=el('docS'),sk=lin(t,24.04,24.16); ds.style.opacity=sk>0?cl(sk*3,0,0.95):0; ds.style.transform=`rotate(-10deg) scale(${2.4-1.4*ei(sk)})`;
+      // 심사기 빛 · 모니터
+      const bm=el('beam'),bk=lin(t,23.30,23.85); bm.style.left=(sc-30)+'px'; bm.style.top=(fy-dh-20)+'px'; bm.style.height=(dh+40)+'px';
+      bm.style.opacity=bk>0&&bk<1?0.9*Math.sin(Math.PI*bk):0; bm.style.transform=`translateX(${(bk-0.5)*170}px)`;
+      const mo=el('mon'),mk=lin(t,23.30,24.20); mo.style.left=(WD.scan.x+0.415*WD.scan.w)+'px'; mo.style.top=(560-LAY.scanH+0.03*LAY.scanH)+'px'; mo.style.width=(0.17*WD.scan.w)+'px'; mo.style.height=(0.10*LAY.scanH)+'px';
+      mo.style.opacity=mk>0&&mk<1?0.55+0.45*Math.sin(t*30):(t>=24.20&&t<24.9?1:0); mo.style.background=t>=24.16?'#3BD18A':'#45E3D5';
+      // 창구 간판 빛(R14)
+      const gk=eo(lin(t,28.90,29.30)); el('glow2').style.opacity=gk*(0.75+0.25*Math.sin((t-28.9)*6));
+      const g2=el('sg2'); g2.style.background=gk>0?`linear-gradient(180deg,rgba(255,236,140,${0.95*gk}),rgba(255,190,40,${0.95*gk}))`:'transparent'; g2.style.color=gk>0.5?'#5A2A00':'#fff';
+      g2.style.boxShadow=gk>0?`0 0 ${50*gk}px ${14*gk}px rgba(255,220,110,${0.85*gk})`:'none'; g2.style.borderRadius='6px';
+      // 안내판(R13) 띠
+      const rb=eo(lin(t,26.95,27.75)); el('board1').style.opacity=t>=26.72?1:0; el('rib').style.width=(88*rb)+'%';
+      [...el('ticks').children].forEach((c,i)=>c.style.opacity=rb*10>=i+0.5?1:0); el('yr10').style.opacity=cl((t-27.84)/0.12,0,1);
+      // 카메라(cx,cy = 화면 가운데에 둘 월드 점, s = 배율)
+      const winC1=[WD.win1.x+WD.win1.w/2, 560-LAY.winH*0.5], winC2=[WD.win2.x+WD.win2.w/2, 560-LAY.winH2*0.5];
+      const B1=window.BOARD||{x:.30,y:.30,w:.40,h:.30}; const brd=[WD.win1.x+(B1.x+B1.w/2)*WD.win1.w, 560-LAY.winH+(B1.y+B1.h/2)*LAY.winH];
+      const KEY=[[22.66,[sc,330,1.0]],[23.90,[sc,330,1.0]],[24.16,[sc,fy-dh/2,1.6]],[24.70,[sc,fy-dh/2,1.65]],[25.05,[sc+380,330,1.1]],[26.22,[w1,330,1.0]],[26.72,[w1,330,1.0]],
+                 [27.10,[brd[0],brd[1],2.6]],[28.32,[brd[0],brd[1],2.7]],[28.95,[winC2[0],330,1.15]],[29.42,[winC2[0],560-LAY.winH2*0.62,1.55]],[30.9,[winC2[0],560-LAY.winH2*0.62,1.68]]];
+      let cam=KEY[0][1]; for(let i=0;i<KEY.length-1;i++){const [a,A]=KEY[i],[b,Bv]=KEY[i+1]; if(t<a){cam=A;break;} if(t<b){const k=eio((t-a)/(b-a));cam=A.map((v,j)=>v+(Bv[j]-v)*k);break;} cam=Bv;}
+      if(t>=25.05&&t<26.22){cam=[dx,330,1.1-0.1*eio(lin(t,25.6,26.22))];}  // 서류를 따라감
+      const [cx,cy,s]=cam; el('world').style.transform=`translate(${474-cx*s}px,${304-cy*s}px) scale(${s})`; } }
+  // ── R15 사례 · 계획서 ──
+  { const out=lin(t,35.30,35.50);
+    const ph=(id,tin,x,y,r)=>{const e=el(id); if(t<tin||out>=1){e.style.opacity=0;return;} const k=eo(lin(t,tin,tin+0.24));
+      tf(e,{x:x+(1-k)*-40,y:y+(1-k)*240,r:r+(1-k)*-8,s:1.0+0.06*(1-k),o:Math.min(1,k*2)*(1-out)});};
+    ph('p1',T.p1,120,40,-5); ph('p2',T.p2,520,56,4);
+    { const e=el('lg15'); if(t<T.p1+0.3||out>=1) e.style.opacity=0; else {const k=eo(lin(t,T.p1+0.3,T.p1+0.55)); tf(e,{y:(1-k)*60,o:k*(1-out)});} }
+    const chs=[['ch1',90,-6],['ch2',390,0],['ch3',690,6]];
+    chs.forEach(([id,x,r],i)=>{const e=el(id),tin=T.chats+i*0.07; if(t<tin||out>=1){e.style.opacity=0;return;} const k=eo(lin(t,tin,tin+0.24));
+      tf(e,{x,y:40+(1-k)*300,r:r*k,o:Math.min(1,k*2)*(1-out)});});
+    if(t>=T.chats){ el('p1').style.opacity=Math.min(+el('p1').style.opacity,1-lin(t,T.chats,T.chats+0.2)); el('p2').style.opacity=Math.min(+el('p2').style.opacity,1-lin(t,T.chats,T.chats+0.2)); el('lg15').style.opacity=Math.min(+el('lg15').style.opacity,1-lin(t,T.chats,T.chats+0.2)); }
+    const g=el('gl15'),gk=lin(t,T.glint,T.glint+0.5); g.style.opacity=gk>0&&gk<1&&out<1?0.9:0; g.style.transform=`translateX(${-100+1200*gk}px) rotate(16deg)`;
+    const e=el('c15'); if(t<T.c15[0]||t>=T.send+0.4){e.style.opacity=0;} else { const k=eo(lin(t,T.c15[0],T.c15[0]+0.2)), sk=ei(lin(t,T.send,T.send+0.4));
+      tf(e,{x:sk*700,y:-sk*520,r:sk*18,s:(0.84+0.16*k)*(1-0.45*sk),o:Math.min(1,k*2)*(1-sk),blur:(1-k)*10+sk*4}); }
+    const cv=el('cov'); cv.style.left=(window.COVER||{x:330,y:180}).x+'px'; cv.style.top=(window.COVER||{x:330,y:180}).y+'px'; cv.style.width=(window.COVER||{w:300}).w+'px'; }
+  // ── R16 매달 리포트 → 전달 ──
+  { const out=lin(t,T.c16[0],T.c16[0]+0.18);
+    T.rp.forEach((tin,i)=>{const e=el('rp'+i); if(t<tin||out>=1){e.style.opacity=0;return;} const k=eo(lin(t,tin,tin+0.22));
+      tf(e,{x:80+i*170,y:(i===1?28:52)+(1-k)*260,r:(i-1)*7,s:1+(1-k)*0.12,o:Math.min(1,k*2)*(1-out),blur:(1-k)*6});});   // 10-14 «살짝 펼쳐진상태로 … 10월 11월 12월이 보이는 구도»
+    const L=card('c16',t,T.c16[0],T.c16[1],'zoom'); if(L) el('c16i').style.transform=`scale(${1+0.05*lin(t,T.c16[0],T.c16[1])})`; }
+  // ── R17 돈 → 카드 ──
+  { const L=life(t,T.c17[0],T.c17[1],'drop'), bgp=el('c17'); if(!L){bgp.style.opacity=0;} else tf(bgp,{y:L.y,s:L.s,o:L.o,blur:L.blur});
+    const on=!!L, ly=L?L.y:0, lo=L?L.o:0;
+    const m=el('m17'); if(!on||t<T.m17){m.style.opacity=0;} else {const k=eo(lin(t,T.m17,T.m17+0.22)), sk=lin(t,T.suck[0],T.suck[1]);
+      tf(m,{x:120,y:90+ly+(1-k)*120,s:(0.86+0.14*k)*(1-0.42*eio(sk)),o:Math.min(1,k*2)*lo,filt:`brightness(${1-0.35*sk})`});}
+    const c=el('k17'); if(!on||t<T.k17){c.style.opacity=0;} else {const k=eo(lin(t,T.k17,T.k17+0.24)), gl=lin(t,44.3,44.6);
+      tf(c,{x:560+(1-k)*500,y:150+ly,r:-8,o:Math.min(1,k*2)*lo,s:1+0.04*Math.sin(Math.max(0,t-44.3)*10)*(t<T.suck[1]?1:0),filt:gl>0?`drop-shadow(0 0 ${26*gl}px rgba(255,60,60,.9))`:''});}
+    for(let i=0;i<12;i++){const b=el('b'+i), t0=T.suck[0]+i*0.09, k=lin(t,t0,t0+0.55);
+      if(!on||k<=0||k>=1){b.style.opacity=0;continue;}
+      const sx=300+rnd(i,1)*120, sy=250+rnd(i,2)*80, ex=760, ey=300, mx=(sx+ex)/2+(rnd(i,3)-0.5)*200, my=60+rnd(i,4)*80, u=eio(k);
+      const x=(1-u)*(1-u)*sx+2*(1-u)*u*mx+u*u*ex, y=(1-u)*(1-u)*sy+2*(1-u)*u*my+u*u*ey;
+      tf(b,{x:x-85,y:y-40+ly,r:(rnd(i,5)-0.5)*80+u*120,s:1-0.65*u,o:lo*(k<0.85?1:(1-k)/0.15)});} }
+  // ── CTA ──
+  { const e=el('cta'); if(t<T.cta){e.style.opacity=0;} else { const k=eo(lin(t,T.cta,T.cta+0.25)), pk=lin(t,T.press,T.press+0.16), press=pk>0&&pk<1?1-0.06*Math.sin(Math.PI*pk):1;
+      tf(e,{y:(1-k)*320,s:press*(1+0.015*Math.sin(Math.max(0,t-46.4)*4)),o:Math.min(1,k*2)});
+      const sk=lin(t,T.shine,T.shine+0.5); e.style.boxShadow=`0 18px 40px rgba(0,0,0,.5),inset 0 0 0 4px #F3CF6E,inset 0 6px 0 rgba(255,255,255,.25),0 0 ${sk>0&&sk<1?60*Math.sin(Math.PI*sk):0}px rgba(243,207,110,.95)`;
+      el('arw').style.transform=`translateY(${6*Math.sin(Math.max(0,t-45.6)*6)}px)`; } }
+}
+// 효과음 계기(역할 = 화면 동작) · _in = 새 요소 등장(인지 텀 0.6초 검사)
+window.EVENTS=[
+ {t:0.03,role:'photo_in',id:'c1'},{t:1.22,role:'slam',id:'m1'},
+ {t:2.25,role:'card_in',id:'c2'},{t:4.30,role:'slam2',id:'m3'},
+ {t:5.70,role:'slide_in',id:'h'},{t:6.98,role:'tag',id:'tags'},{t:8.06,role:'flip',id:'flip'},{t:8.42,role:'good',id:'half'},
+ {t:9.30,role:'photo_in',id:'c5'},{t:10.30,role:'swipe_feed',id:'swipe'},{t:10.86,role:'swipe2',id:'back'},
+ {t:11.32,role:'tap5',id:'tap5'},{t:11.48,role:'card_in',id:'sheet5'},{t:11.70,role:'fill',id:'q2h'},{t:12.62,role:'good',id:'ok5'},
+ {t:14.60,role:'doc_in',id:'fs'},{t:15.40,role:'zoom',id:'zoom'},{t:16.28,role:'mark',id:'box'},
+ {t:17.81,role:'panel_in',id:'c8'},{t:17.93,role:'count',id:'count'},
+ {t:20.15,role:'photo_in',id:'c9'},{t:21.84,role:'drop',id:'c9out'},
+ {t:22.69,role:'panel_in',id:'c11'},{t:22.98,role:'doc_drop',id:'doc'},{t:23.30,role:'scan',id:'scan'},{t:24.16,role:'stamp',id:'docS'},
+ {t:24.80,role:'belt',id:'belt'},{t:26.80,role:'zoom',id:'zoom1'},{t:27.84,role:'ding',id:'yr10'},{t:28.40,role:'swipe',id:'pan2'},{t:28.95,role:'shine',id:'glow2'},
+ {t:31.33,role:'photo_in',id:'p1'},{t:32.11,role:'photo_in2',id:'p2'},{t:33.40,role:'chat',id:'chats'},{t:34.32,role:'glint',id:'glint'},
+ {t:35.49,role:'doc_in',id:'c15'},{t:36.90,role:'send',id:'send'},
+ {t:38.57,role:'page',id:'rp0'},{t:38.99,role:'page2',id:'rp1'},{t:39.47,role:'page',id:'rp2'},{t:40.49,role:'photo_in',id:'c16'},
+ {t:42.85,role:'coin',id:'m17'},{t:43.75,role:'swipe2',id:'k17'},{t:44.00,role:'suck',id:'suck'},
+ {t:45.45,role:'button',id:'cta'},{t:45.98,role:'tap',id:'press'}];
+</script></body></html>

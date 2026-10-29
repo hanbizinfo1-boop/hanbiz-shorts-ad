@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-20 4번 «최저시급 6천→1만 → 그렇기 때문에 돈의 가치는 급격히 떨어지고 있어요» — 사장님 원문·시각 근거는 지시작업/tools/r4z_build.py 머리.
+     900×1600 · 59.94 · 이 장면 0초 = 사장님 시퀀스 9.543초 · 자막(900~950px) 밑.
+     한 판의 앞면(최저시급 막대)과 뒷면(돈의 가치 막대)을 좌우로 뒤집어 잇는다 — 뒤집으면 긴 막대가 왼쪽(10년 전)으로 가니 같은 막대가 그대로 «가치 하락» 그래프가 된다. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:relative;width:900px;height:1600px;overflow:hidden;font-family:"HM GmarketSans","HM Pretendard",sans-serif;perspective:1600px}
+#card{position:absolute;left:90px;top:1090px;width:720px;height:380px;transform-style:preserve-3d}
+.face{position:absolute;inset:0;border-radius:34px;background:rgba(14,16,22,.76);box-shadow:0 18px 40px rgba(0,0,0,.35);backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.back{transform:rotateY(180deg)}
+.ttl{position:absolute;left:34px;top:26px;font-size:40px;font-weight:700;color:#FFD43B;letter-spacing:-1px}   /* 10-20 «최저시급이랑 돈의가치는 노란색으로 강조» */
+.base{position:absolute;left:40px;right:40px;top:316px;height:4px;border-radius:2px;background:rgba(255,255,255,.35)}
+.bar{position:absolute;bottom:64px;width:150px;border-radius:16px 16px 6px 6px;transform-origin:50% 100%}
+.xl{position:absolute;top:326px;width:150px;text-align:center;font-size:30px;font-weight:700;color:#fff}
+.val{position:absolute;width:220px;text-align:center;font-size:44px;font-weight:700;color:#00FC00;-webkit-text-stroke:6px #0b0b0d;paint-order:stroke fill;letter-spacing:-1px}
+</style></head>
+<body><div id="st">
+  <div id="card" data-box="card" data-box-bleed>
+    <div class="face front">
+      <div class="ttl">최저시급</div><div class="base"></div>
+      <div id="fb1" class="bar" style="left:145px;background:linear-gradient(#c9ced8,#8d939e)"></div>   <!-- 10-20 «6천원이랑 만원 / 10년전이랑 지금 이거 두개가 같은색이면안될거같아» → 10년 전 회색 · 지금 초록 -->
+      <div id="fb2" class="bar" style="left:425px;background:linear-gradient(#45ff85,#12c556)"></div>
+      <div class="xl" style="left:145px;color:#b8bec9">10년 전</div><div class="xl" style="left:425px;color:#00FC00">지금</div>
+      <div id="fv1" class="val" style="color:#fff">6천 원</div><div id="fv2" class="val">1만 원</div>
+      <svg id="upA" width="720" height="380" style="position:absolute;left:0;top:0;overflow:visible"><path id="upP" d="M308 178 C 340 150, 372 124, 410 108" fill="none" stroke="#00FC00" stroke-width="8" stroke-linecap="round"/><path id="upH" d="M0 0 L-24 -12 L-18 0 L-24 12Z" fill="#00FC00"/></svg>
+    </div>
+    <div class="face back">
+      <div class="ttl">돈의 가치</div><div class="base"></div>
+      <div id="bb1" class="bar" style="left:145px;background:linear-gradient(#f5f6f8,#c9ced8)"></div>
+      <div id="bb2" class="bar" style="left:425px;background:linear-gradient(#f5f6f8,#c9ced8)"></div>
+      <div class="xl" style="left:145px">10년 전</div><div class="xl" style="left:425px">지금</div>
+      <svg id="dnA" width="720" height="380" style="position:absolute;left:0;top:0;overflow:visible"><path id="dnP" d="" fill="none" stroke="#ff4d4f" stroke-width="9" stroke-linecap="round"/><path id="dnH" d="M0 0 L-26 -13 L-19 0 L-26 13Z" fill="#ff4d4f"/></svg>
+    </div>
+  </div>
+</div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 6.106;
+window.PALETTE = ['#ffffff', '#00FC00', '#ff4d4f', '#FFD43B'];
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = x => { x = clamp(x); const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const wob = (x, f = 30, d = 8) => x <= 0 ? 0 : Math.cos(x * f) * Math.exp(-x * d);
+// 시각(이 장면 초 · 사장님 시퀀스 = +9.543)
+const T = {in: 0, b1: 1.301, b2: 2.085, flip: 3.353, val: 3.82, drop: 4.621, out: 5.95, end: 6.106};
+const HMAX = 220, H6 = HMAX * .6;              // 1만 원 = 220px, 6천 원 = 132px
+window.EVENTS = [{t: T.in, role: 'card_in'}, {t: T.b1, role: 'bar1'}, {t: T.b2, role: 'bar2'}, {t: T.flip, role: 'flip'}, {t: T.drop, role: 'drop'}];
+const upP = $('upP'), upL = upP.getTotalLength(); upP.style.strokeDasharray = upL;
+
+window.seek = async function (t) {
+  const card = $('card');
+  const pin = eo((t - T.in) / .35), fade = clamp((T.end - t) / (T.end - T.out));
+  // 뒤집기 — 0.55초 동안 0→180도, 가운데에서 살짝 멀어졌다 돌아옴 · 다 돌면 작게 튕김
+  const fk = eio((t - T.flip) / .55), rot = 180 * fk + 6 * wob(t - T.flip - .55, 24, 7) * (t > T.flip + .55 ? 1 : 0);
+  const shake = t > T.drop ? Math.sin((t - T.drop) * 70) * 9 * Math.exp(-(t - T.drop) * 9) : 0;
+  card.style.opacity = 1;   /* 10-20 «마지막에 잔여 이상한거» — 부모 투명도가 3D 를 납작하게 만들어 사라질 때 앞면(거울)이 비쳤다 → 면마다 따로 */
+  const fr = card.querySelector('.front'), bk = card.querySelector('.back'), op = pin * fade;
+  fr.style.opacity = rot < 90 ? op : 0; bk.style.opacity = rot >= 90 ? op : 0;
+  card.style.transform = `translate(${shake}px,${(1 - pin) * 70 + Math.sin(t * 1.6) * 3}px) translateZ(${-140 * Math.sin(Math.PI * fk)}px) rotateY(${rot}deg) scale(${.94 + .06 * pin})`;
+  // 앞면: 막대 두 개가 차례로 자람(튕기며)
+  const g1 = H6 * back((t - T.b1) / .4), g2 = HMAX * back((t - T.b2) / .45);
+  $('fb1').style.height = Math.max(0, g1) + 'px'; $('fb2').style.height = Math.max(0, g2) + 'px';
+  const v1 = $('fv1'), v2 = $('fv2');
+  v1.style.left = (145 + 75 - 110) + 'px'; v1.style.top = (316 - Math.max(0, g1) - 64) + 'px'; v1.style.opacity = clamp((t - T.b1 - .15) / .12);
+  v1.style.transform = `scale(${back((t - T.b1 - .15) / .3)})`;
+  v2.style.left = (425 + 75 - 110) + 'px'; v2.style.top = (316 - Math.max(0, g2) - 64) + 'px'; v2.style.opacity = clamp((t - T.b2 - .2) / .12);
+  v2.style.transform = `scale(${back((t - T.b2 - .2) / .3) * (1 + .12 * wob(t - T.b2 - .5, 20, 6))})`;
+  // 오르는 초록 화살표(6천 → 1만)
+  const uk = eo((t - T.b2 - .15) / .45); upP.style.strokeDashoffset = upL * (1 - uk); $('upA').style.opacity = uk > 0 ? 1 : 0;
+  const up = upP.getPointAtLength(upL * Math.max(uk, .001)), up0 = upP.getPointAtLength(Math.max(0, upL * uk - 4));
+  $('upH').setAttribute('transform', `translate(${up.x},${up.y}) rotate(${Math.atan2(up.y - up0.y, up.x - up0.x) * 180 / Math.PI})`);
+  // 뒷면: 뒤집기 전에는 앞면 막대와 거울로 같은 높이(긴 것이 왼쪽 = 10년 전) — 뒤집히면 그대로 «돈의 가치» 막대
+  const dropK = back((t - T.drop) / .4);
+  const h2 = H6 - (H6 - 62) * Math.max(0, dropK);   // «급격히 떨어지고» — 지금 막대가 132 → 62 로 툭
+  $('bb1').style.height = HMAX + 'px'; $('bb2').style.height = h2 + 'px';
+  $('bb2').style.background = t > T.drop ? `linear-gradient(#ffb3b3,#ff6b6b)` : 'linear-gradient(#f5f6f8,#c9ced8)';
+  // 내리꽂는 빨간 화살표(10년 전 → 지금) — «돈의 가치는»에 그어지고 «급격히»에 더 깊이
+  const ax = 220, ay = 316 - HMAX - 40, bx = 470 + 16, by = 316 - h2 - 34;
+  $('dnP').setAttribute('d', `M${ax} ${ay} C ${ax + 90} ${ay + 6}, ${bx - 70} ${by - 50}, ${bx} ${by}`);
+  const dnP = $('dnP'), dL = dnP.getTotalLength(), dk = eo((t - T.val) / .45);
+  dnP.style.strokeDasharray = dL; dnP.style.strokeDashoffset = dL * (1 - dk); $('dnA').style.opacity = dk > 0 ? 1 : 0;
+  const pt = dnP.getPointAtLength(dL * Math.max(dk, .001)), p0 = dnP.getPointAtLength(Math.max(0, dL * dk - 4));
+  $('dnH').setAttribute('transform', `translate(${pt.x},${pt.y}) rotate(${Math.atan2(pt.y - p0.y, pt.x - p0.x) * 180 / Math.PI})`);
+};
+</script></body></html>

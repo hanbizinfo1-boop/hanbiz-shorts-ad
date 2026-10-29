@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>T8 자막-타이포 한 층 (dark)</title>
+<style>
+  html, body { margin:0; padding:0; width:1080px; height:1920px; overflow:hidden; background:transparent; }
+  .ln { position:absolute; left:540px; top:0; white-space:pre; text-align:center; word-break:keep-all;
+        font-family:"HM NotoSansKR","Noto Sans KR",sans-serif; color:#ffffff; text-shadow:0 3px 16px rgba(0,0,0,.6), 0 1px 3px rgba(0,0,0,.5); }
+  .row { display:block; line-height:1.22; }
+  .row.big { line-height:1.0; }
+  .w { display:inline-block; font-weight:600; }
+</style></head><body>
+<script>
+window.W = 1080; window.H = 1920; window.FPS = 29.97; window.DURATION = 7.0;
+const INK = '#ffffff', ACC = '#ffd60a';
+window.PALETTE = ['#ffffff', '#ffd60a', '#000000'];
+const F = 1001 / 30000, EASE_IN = 6 * F, RAMP = 8 * F;
+const CY = 1250, GAP = 40, BASE = 80, KEY_FILL = 0.74;
+const LINES = [
+  { t: 0, rows: [[{s:'정책자금', e:1}, {s:', 아직'}], [{s:'혼자 알아보세요?'}]] },
+  { t: 2, rows: [[{s:'조건만 맞으면'}], [{s:'길', e:1}, {s:'이 생각보다 많습니다'}]] },
+  { t: 4, key: 1, rows: [[{s:'한비즈', e:1, big:1}, {s:'가'}], [{s:'처음부터 같이 봅니다'}]] },
+];
+window.EVENTS = LINES.map((l, i) => ({ t: l.t, role: 'text_in', id: 'line' + i }));
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => { x = clamp(x); return 1 - Math.pow(1 - x, 3); };   // 감속, 오버슈트 0
+const hex = h => [1,3,5].map(i => parseInt(h.substr(i,2),16));
+const mix = (a, b, p) => { const A = hex(a), B = hex(b); return 'rgb(' + A.map((v,i) => Math.round(v + (B[i]-v)*p)).join(',') + ')'; };
+
+let built = false; const els = [], hs = [], emph = [];
+function build() {
+  if (built) return; built = true;
+  LINES.forEach((l, li) => {
+    const ln = document.createElement('div'); ln.className = 'ln'; ln.dataset.box = 'line' + li;
+    emph[li] = [];
+    l.rows.forEach(row => {
+      const r = document.createElement('div'); r.className = 'row';
+      row.forEach(sp => {
+        const w = document.createElement('span'); w.className = 'w'; w.textContent = sp.s; w.style.fontSize = BASE + 'px';
+        if (sp.big) { w.dataset.big = 1; r.className = 'row big'; }
+        if (sp.e) { emph[li].push(w); }
+        r.appendChild(w);
+      });
+      ln.appendChild(r);
+    });
+    document.body.appendChild(ln); els.push(ln);
+  });
+  // 핵심 줄: «한비즈» 폭 맞춤(화면 폭의 KEY_FILL) — 100px 로 재서 계산(한글 전각이라 굵기가 바뀌어도 폭 불변)
+  els.forEach((ln, li) => {
+    const big = ln.querySelector('[data-big]'); if (!big) return;
+    emph[li].forEach(w => w.style.fontWeight = 900);
+    big.style.fontSize = '100px';
+    const row = big.parentElement; const rowW = row.getBoundingClientRect().width, bigW = big.getBoundingClientRect().width;
+    const S = Math.round((1080 * KEY_FILL - (rowW - bigW)) / (bigW / 100));
+    big.style.fontSize = S + 'px';
+  });
+  els.forEach((ln, li) => { hs[li] = ln.getBoundingClientRect().height; });
+}
+
+async function seek(t) {
+  await document.fonts.ready; build();
+  const e = LINES.map(l => eo((t - l.t) / EASE_IN));           // T1: 줄 등장 6프레임 감속, 새 줄이 들어오면 블록 재중앙
+  let total = -GAP; e.forEach((v, i) => total += v * (hs[i] + GAP));
+  let cum = 0;
+  els.forEach((ln, i) => {
+    const y = CY - total / 2 + cum; cum += e[i] * (hs[i] + GAP);
+    ln.style.opacity = e[i]; ln.style.display = e[i] <= 0.001 ? 'none' : 'block';
+    ln.style.transform = 'translate(-50%,0) translateY(' + y.toFixed(2) + 'px) scale(' + (0.94 + 0.06 * e[i]).toFixed(4) + ')';
+    const p = eo((t - LINES[i].t) / RAMP);                      // T3: 강조어 굵기 300→900 + 색 켜짐 8프레임
+    emph[i].forEach(w => { w.style.fontWeight = Math.round(300 + 600 * p); w.style.color = mix(INK, ACC, p); });
+  });
+  return true;
+}
+window.seek = seek;
+</script></body></html>

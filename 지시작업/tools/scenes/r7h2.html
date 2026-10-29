@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-21 7번 23.54~28.145 홀로그램 빌딩 분석 2판 — 사장님 «약간 내가 말한 홀로그램은 이런느낌이야 저 영상으로하되 연출색감이나 느낌은 저런걸로 내가 말한 수치를 데이터화 하는걸해달라고»
+     (참고: 스마트시티 — 짙은 파란 밤 톤 · 빌딩을 잇는 빛나는 청록 그물(점·선·흐르는 빛) · 빌딩마다 회전하는 동심원 링 · 바닥 회로선 · 어두운 상자 대신 빛나는 선·글자)
+     → 배경은 r7h_build.py 가 짙은 파랑으로(curves·colorbalance) · 이 층(알파)은 하늘 남색 누름 + 그물 + 링 + 빛나는 데이터 글자(준공년도·현재가치·미래예상가치·임차인)
+     ① 0~0.80 «어떤 빌딩이» 스캔 빛 · 그물이 켜지며 빌딩 3곳에 링 ② 0.80~2.17 «손해를 보는 빌딩이고» 왼쪽 탑(L) 붉은 링 + 데이터 ③ 2.17~ «돈을 벌 수 있는 빌딩인지» 오른쪽(R) 금빛 링 + 데이터
+     3판 «멀리있는거랑 가까있는 건물들도 뭐 숫자가 보이진않더라도 작게라도 분석하는 듯한 느낌» → 빌딩 위 추적점 55개(r7h_micro.js, r7h_track.py micro)에 작은 조준 원·지시선·미니 데이터(막대·작은 숫자)가 켜졌다 꺼짐.
+     업체 간판(LS · LV)·얼굴 광고판(R) = 빛나는 원판·데이터 화면으로 덮음(추적 r7h_track.js). 수치는 연출용 예시. 900×1600 · 59.94 · 장면 0초 = 시퀀스 23.54. -->
+<script src="r7h_track.js"></script><script src="r7h_micro.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent;font-family:"HM Pretendard"}
+#st{position:absolute;inset:0;overflow:hidden}
+#sky{position:absolute;left:0;top:0;width:900px;height:900px;background:linear-gradient(rgba(4,12,40,.72),rgba(6,18,56,.38) 55%,rgba(6,18,56,0))}
+#flr{position:absolute;left:0;top:1000px;width:900px;height:600px;background:linear-gradient(rgba(4,12,40,0),rgba(4,12,40,.45))}
+svg.full{position:absolute;left:0;top:0;width:900px;height:1600px;overflow:visible}
+#glow{filter:drop-shadow(0 0 6px rgba(110,220,255,.95)) drop-shadow(0 0 14px rgba(60,170,255,.6))}
+#scan{position:absolute;left:0;width:900px;height:220px;margin-top:-200px;background:linear-gradient(rgba(90,200,255,0),rgba(90,200,255,.18) 80%,rgba(200,245,255,.85) 99%,rgba(90,200,255,0));mix-blend-mode:screen}
+.lb{position:absolute;white-space:nowrap;color:#dff7ff;text-shadow:0 0 6px rgba(0,10,30,.9),0 0 12px rgba(90,210,255,.95)}
+.lb small{display:block;font:700 22px/26px "HM Pretendard";color:rgba(160,225,255,.95);letter-spacing:1px}
+.lb b{display:block;font:900 40px/46px "HM Pretendard";letter-spacing:-.5px}
+.lb b em{font-style:normal;font-size:30px}
+.lb.r b{color:#ff8fa3;text-shadow:0 0 6px rgba(30,0,10,.9),0 0 14px rgba(255,80,110,.95)}
+.lb.g b{color:#ffe39a;text-shadow:0 0 6px rgba(30,20,0,.9),0 0 14px rgba(255,200,90,.95)}
+.mi{position:absolute;width:86px;padding:4px 6px;border-radius:4px;background:rgba(6,24,60,.55);border:1px solid rgba(140,230,255,.8);font:700 11px/13px "HM Mono";color:#bff3ff;text-shadow:0 0 4px rgba(90,210,255,.9);white-space:nowrap}
+.mi i{display:block;height:3px;margin-top:3px;background:#7fe3ff;box-shadow:0 0 4px #7fe3ff}
+.tag{position:absolute;white-space:nowrap;font:900 30px/52px "HM Pretendard";padding:0 22px;border-radius:26px;color:#fff;border:3px solid currentColor;background:rgba(5,20,50,.55)}
+#bar{position:absolute;left:0;right:0;top:58px;text-align:center;font:700 24px/30px "HM Pretendard";color:#bfefff;letter-spacing:3px;text-shadow:0 0 10px rgba(90,210,255,.95)}
+.cov{position:absolute;border-radius:14px;overflow:hidden;background:radial-gradient(circle at 50% 45%,rgba(30,90,170,.98),rgba(6,22,60,.98) 70%);box-shadow:0 0 0 3px rgba(130,225,255,.95),0 0 26px rgba(90,200,255,.9)}
+#covR .gr{position:absolute;left:0;right:0;top:46%;transform:translateY(-50%);text-align:center;font:900 90px/1 "HM Pretendard";color:#fff;text-shadow:0 0 18px rgba(255,220,120,.95)}
+#covR .gs{position:absolute;left:0;right:0;bottom:9%;text-align:center;font:800 24px/1 "HM Pretendard";color:#ffe39a;letter-spacing:2px}
+#covS{display:flex;align-items:center;justify-content:center;font:900 26px/1 "HM Pretendard";color:#fff;background:radial-gradient(circle,rgba(150,30,60,.98),rgba(40,6,20,.98) 75%);box-shadow:0 0 0 3px rgba(255,120,150,.95),0 0 22px rgba(255,80,110,.9)}
+#covV i{position:absolute;left:22%;right:22%;bottom:6%;border-radius:3px}
+</style></head>
+<body><div id="st">
+  <div id="sky"></div><div id="flr"></div><div id="scan"></div>
+  <svg class="full" id="glow"><g id="floor"></g><g id="net"></g><g id="micro"></g><g id="rings"></g><g id="leads"></g></svg>
+  <div class="cov" id="covS">⚠</div><div class="cov" id="covV"><i></i></div>
+  <div class="cov" id="covR"><div class="gr">A+</div><div class="gs">우량 등급</div></div>
+  <div id="mlab"></div><div id="labels"></div>
+  <div class="tag" id="tagL" style="color:#ff8fa3">손실 위험 ▼</div><div class="tag" id="tagR" style="color:#ffe39a">수익 우량 ▲</div>
+  <div id="bar"></div>
+</div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 4.605;
+window.PALETTE = ['#7fe3ff', '#ff8fa3', '#ffe39a'];
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const O = 23.54, at = s => s - O;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+const T = {scan: .06, net: .15, loss: at(24.341), gain0: at(25.709), gain: at(26.476), fin: at(27.344), end: 4.605};
+const $ = id => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
+const TR = window.TRK;
+const box = (k, t) => { const a = TR[k], f = t * 59.94, i = Math.floor(f), j = Math.min(a.length - 1, i + 1), u = f - i;
+  const A = a[Math.min(i, a.length - 1)], B = a[j]; if (!A) return B || null; if (!B) return A; return A.map((v, c) => v + (B[c] - v) * u); };
+const flick = (t, t0) => { const u = t - t0; if (u < 0) return 0; if (u > .22) return 1; return [0, .9, .2, 1, .5, 1, .8, 1][Math.floor(u / .028)] ?? 1; };
+const C1 = 'rgba(140,230,255,.85)';
+// ── 바닥 회로선(화면에 고정 · 천천히 아래로 흐름) — 45° 꺾임 + 끝 점
+const FL = [];
+let seed = 9; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+for (let i = 0; i < 14; i++) {
+  const x = 40 + rnd() * 820, y = 1080 + rnd() * 420, len = 60 + rnd() * 140, dir = rnd() < .5 ? -1 : 1, up = 40 + rnd() * 90;
+  const d = `M${x},${y} l${dir * len},0 l${dir * up},${-up} l${dir * len * .6},0`;
+  const p = mk('path', {d, fill: 'none', stroke: C1, 'stroke-width': 2.2}, $('floor'));
+  const L = p.getTotalLength(); p.setAttribute('stroke-dasharray', L);
+  const ex = x + dir * (len + up + len * .6), ey = y - up;
+  const c = mk('circle', {cx: ex, cy: ey, r: 7, fill: 'none', stroke: '#e6fbff', 'stroke-width': 2.5}, $('floor'));
+  FL.push({p, c, L, d0: .1 + rnd() * .6});
+}
+// ── 그물: 노드 = 추적 빌딩 꼭대기·모서리 + 하늘·거리의 떠 있는 점(화면 고정, 천천히 떠다님)
+const FREE = [];
+for (let i = 0; i < 16; i++) FREE.push([60 + rnd() * 780, 110 + rnd() * 900, rnd() * 6.28]);
+const NODE = [];
+const nodeAt = (t) => {
+  const pts = [];
+  ['L', 'C', 'R'].forEach(k => { const b = box(k, t); if (b) { pts.push([(b[0] + b[2]) / 2, b[1]], [b[0], b[1] + (b[3] - b[1]) * .35], [b[2], b[1] + (b[3] - b[1]) * .55]); } });
+  FREE.forEach(([x, y, ph]) => pts.push([x + 14 * Math.sin(t * .9 + ph), y - 50 * t]));
+  return pts;
+};
+const LINKS = [];
+for (let i = 0; i < 26; i++) { const ln = mk('line', {stroke: 'rgba(140,230,255,.55)', 'stroke-width': 1.8}, $('net')); LINKS.push(ln); }
+const DOTS = [];
+for (let i = 0; i < 25; i++) DOTS.push(mk('circle', {r: 5.5, fill: '#ffffff'}, $('net')));
+const PULSE = [];
+for (let i = 0; i < 10; i++) PULSE.push(mk('circle', {r: 4, fill: '#e6fbff'}, $('net')));
+// ── 링: 대상마다 3겹(가는 원 · 회전 점선 · 굵은 호)
+const RING = {};
+['C', 'L', 'R'].forEach(k => { const g = mk('g', {}, $('rings'));
+  RING[k] = {g, a: mk('circle', {fill: 'none', stroke: C1, 'stroke-width': 2}, g), b: mk('circle', {fill: 'none', stroke: C1, 'stroke-width': 3, 'stroke-dasharray': '6 10'}, g),
+    c: mk('circle', {fill: 'none', stroke: '#e6fbff', 'stroke-width': 6, 'stroke-linecap': 'round'}, g), d: mk('circle', {fill: 'rgba(90,200,255,.12)'}, g)}; });
+// ── 데이터 글자(빛나는 글자 + 지시선 + 끝 점)
+const DATA = {
+  L: {cls: 'r', t0: T.loss + .15, side: 1, rows: [['준공년도', 1994, '', '', 1], ['현재가치', 412, '', '<em>억</em> ▼'], ['미래예상가치', 368, '', '<em>억</em> ▼'], ['임차인', 38, '공실 ', '<em>%</em>']]},
+  R: {cls: 'g', t0: T.gain + .05, side: -1, rows: [['준공년도', 2019, '', '', 1], ['현재가치', 1280, '', '<em>억</em>'], ['미래예상가치', 1820, '', '<em>억</em> ▲'], ['임차인', 0, '대기업 · 공실 ', '<em>%</em>']]},
+};
+Object.entries(DATA).forEach(([k, D]) => { D.el = D.rows.map(() => { const e = document.createElement('div'); e.className = 'lb ' + D.cls; $('labels').appendChild(e); return e; });
+  D.ld = D.rows.map(() => mk('polyline', {fill: 'none', stroke: k === 'L' ? 'rgba(255,140,165,.9)' : 'rgba(255,225,150,.9)', 'stroke-width': 2.4}, $('leads'))); });
+// ── 작은 분석 표지(멀고 가까운 빌딩 전부)
+const MI = (window.MICRO || []).map((m, i) => {
+  const g = mk('g', {}, $('micro'));
+  const c = mk('circle', {r: 9, fill: 'none', stroke: C1, 'stroke-width': 1.8}, g), c2 = mk('circle', {r: 15, fill: 'none', stroke: 'rgba(140,230,255,.5)', 'stroke-width': 1.2, 'stroke-dasharray': '3 4'}, g);
+  const ln = mk('polyline', {fill: 'none', stroke: 'rgba(140,230,255,.75)', 'stroke-width': 1.3}, g);
+  const lb = document.createElement('div'); lb.className = 'mi'; $('mlab').appendChild(lb);
+  const r = n => ((i * 9301 + n * 49297) % 233280) / 233280;
+  lb.innerHTML = `BLD-${String(10 + i).padStart(3, '0')}<br>${['VAL', 'YR', 'OCC', 'ROI'][i % 4]} ${['₩', '', '', ''][i % 4]}${Math.round(100 + r(1) * 899)}<i></i>`;
+  return {m, g, c, c2, ln, lb, side: r(2) < .5 ? -1 : 1, up: 30 + r(3) * 40, bar: .2 + r(4) * .8};
+});
+window.EVENTS = [{t: T.scan, role: 'scan'}, {t: T.net, role: 'network'}, {t: T.loss, role: 'loss'}, {t: T.gain0, role: 'gain_lock'}, {t: T.gain, role: 'gain'}, {t: T.fin, role: 'pulse'}];
+
+function rings(k, b, t, col, o, big) {
+  const R = RING[k];
+  if (!b || o <= 0) { R.g.style.display = 'none'; return null; }
+  R.g.style.display = 'block'; R.g.style.opacity = o;
+  const cx = (b[0] + b[2]) / 2, cy = b[1] + (b[3] - b[1]) * (k === 'R' ? .5 : .32), r0 = Math.max(60, (b[2] - b[0]) * .62) * (big ? 1.15 : 1);
+  const pop = 1 + .35 * (1 - eo((t - (k === 'C' ? .3 : k === 'L' ? .4 : .5)) / .3));
+  [['a', 1], ['b', 1.22], ['c', .82], ['d', .7]].forEach(([n, f]) => { const c = R[n]; c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r0 * f * pop); });
+  R.a.setAttribute('stroke', col); R.b.setAttribute('stroke', col);
+  R.b.setAttribute('transform', `rotate(${t * 70 * (k === 'R' ? -1 : 1)} ${cx} ${cy})`);
+  const C = 2 * Math.PI * r0 * .82 * pop; R.c.setAttribute('stroke-dasharray', `${C * .28} ${C}`); R.c.setAttribute('transform', `rotate(${-90 + t * 140} ${cx} ${cy})`);
+  R.c.setAttribute('stroke', big ? col : '#e6fbff');
+  return [cx, cy, r0];
+}
+function data(k, ring, t) {
+  const D = DATA[k];
+  D.el.forEach((e, i) => {
+    const o = ring ? flick(t, D.t0 + i * .12) * (k === 'L' ? 1 - clamp((t - T.gain0 + .05) / .2) : 1) : 0;
+    show(e, o); D.ld[i].style.display = o > 0 ? 'block' : 'none'; D.ld[i].style.opacity = o;
+    if (o <= 0) return;
+    const [cx, cy, r] = ring, ang = (D.side > 0 ? -50 : -130) + (D.side > 0 ? 1 : -1) * i * 34;   // 링 둘레에서 바깥으로
+    const a = ang * Math.PI / 180, sx = cx + Math.cos(a) * r * 1.22, sy = cy + Math.sin(a) * r * 1.22;
+    let lx = D.side > 0 ? Math.max(sx + 40, cx + r * 1.4) : Math.min(sx - 40, cx - r * 1.4), ly = Math.max(150, Math.min(690, cy - 210 + i * 125));
+    const row = D.rows[i], kk = eo((t - D.t0 - i * .12) / .35), v = Math.round(row[1] * kk);
+    const num = row[4] ? v : v.toLocaleString();
+    e.innerHTML = `<small>${row[0]}</small><b>${row[2]}${num}${row[3]}</b>`;
+    const w = e.offsetWidth;
+    const x = D.side > 0 ? Math.min(lx, 880 - w) : Math.max(20, lx - w);
+    e.style.left = x + 'px'; e.style.top = ly - 30 + 'px';
+    const ex = D.side > 0 ? x - 8 : x + w + 8, len = eo((t - D.t0 - i * .12) / .2);
+    const mx = sx + (ex - sx) * .45;
+    D.ld[i].setAttribute('points', `${sx},${sy} ${sx + (mx - sx) * len},${sy + (ly - sy) * len} ${mx + (ex - mx) * clamp(len * 2 - 1)},${ly}`);
+  });
+}
+
+function micro(t, lb, rb) {
+  const f = t * 59.94;
+  MI.forEach((M, i) => {
+    const j = Math.floor(f) - M.m.k0, L = M.m.xy.length;
+    const life = (f - M.m.k0) / 59.94, dur = L / 59.94;
+    let o = j >= 0 && j < L - 1 ? flick(life, .05) * (1 - clamp((life - dur + .25) / .25)) * (t > .25 ? 1 : 0) : 0;
+    let p = o > 0 ? M.m.xy[j] : null;
+    const inside = (b, pad) => b && p && p[0] > b[0] - pad && p[0] < b[2] + pad && p[1] > b[1] - pad && p[1] < b[3] + pad;
+    if (inside(lb, 40) || inside(rb, 40)) o = 0;                        // 큰 분석 대상과 겹치면 숨김
+    if (o <= 0) { M.g.style.display = 'none'; show(M.lb, 0); return; }
+    M.g.style.display = 'block'; M.g.style.opacity = o * .9;
+    const [x, y] = p;
+    M.c.setAttribute('cx', x); M.c.setAttribute('cy', y); M.c2.setAttribute('cx', x); M.c2.setAttribute('cy', y);
+    M.c2.setAttribute('transform', `rotate(${t * 120} ${x} ${y})`);
+    const ex = x + M.side * 40, ey = y - M.up, lk = eo(life / .2);
+    M.ln.setAttribute('points', `${x},${y} ${x + (ex - x) * lk},${y + (ey - y) * lk} ${ex + M.side * 18 * lk},${ey}`);
+    const w = 86, lx = M.side > 0 ? ex + 18 : ex - 18 - w;
+    M.lb.style.left = lx + 'px'; M.lb.style.top = ey - 15 + 'px';
+    M.lb.querySelector('i').style.width = 100 * M.bar * eo((life - .15) / .4) + '%';
+    show(M.lb, o * .9);
+  });
+}
+window.seek = async function (t) {
+  const fade = 1 - clamp((t - T.end + .15) / .15);
+  show($('sky'), 1); show($('flr'), 1);
+  const sk = (t - T.scan) / .65;
+  $('scan').style.top = 1600 * eio(sk) + 'px'; show($('scan'), sk > 0 && sk < 1 ? 1 : 0);
+  // 바닥 회로선: 스캔 지나간 뒤 그려짐
+  FL.forEach(f => { const k = eo((t - f.d0) / .35); f.p.setAttribute('stroke-dashoffset', f.L * (1 - k)); f.c.style.opacity = k > .95 ? 1 : 0; f.p.setAttribute('transform', `translate(0 ${30 * t})`); f.c.setAttribute('transform', `translate(0 ${30 * t})`); });
+  // 그물
+  const pts = nodeAt(t), no = flick(t, T.net);
+  DOTS.forEach((d, i) => { const p = pts[i]; if (!p) { d.style.display = 'none'; return; } d.style.display = 'block'; d.setAttribute('cx', p[0]); d.setAttribute('cy', p[1]); d.style.opacity = no * flick(t, T.net + i * .02); });
+  const pairs = [];
+  for (let i = 0; i < pts.length && pairs.length < LINKS.length; i++) {          // 가까운 이웃 둘과 잇기
+    const nb = pts.map((q, j) => [Math.hypot(q[0] - pts[i][0], q[1] - pts[i][1]), j]).filter(x => x[1] > i).sort((a, b) => a[0] - b[0]).slice(0, 2);
+    nb.forEach(([dd, j]) => { if (dd < 520 && pairs.length < LINKS.length) pairs.push([i, j]); });
+  }
+  LINKS.forEach((ln, n) => { const pr = pairs[n]; if (!pr) { ln.style.display = 'none'; return; }
+    const [a, b] = pr, k = eo((t - T.net - n * .025) / .3), A = pts[a], B = pts[b];
+    ln.style.display = 'block'; ln.setAttribute('x1', A[0]); ln.setAttribute('y1', A[1]); ln.setAttribute('x2', A[0] + (B[0] - A[0]) * k); ln.setAttribute('y2', A[1] + (B[1] - A[1]) * k); ln.style.opacity = no; });
+  PULSE.forEach((p, n) => { const pr = pairs[(n * 3) % Math.max(1, pairs.length)]; if (!pr || t < T.net + .3) { p.style.display = 'none'; return; }
+    const u = ((t * 1.3 + n * .37) % 1), A = pts[pr[0]], B = pts[pr[1]]; p.style.display = 'block'; p.setAttribute('cx', A[0] + (B[0] - A[0]) * u); p.setAttribute('cy', A[1] + (B[1] - A[1]) * u); });
+  $('glow').style.opacity = fade;
+  // 링
+  const lb = box('L', t), rb = box('R', t), cb = box('C', t);
+  rings('C', cb, t, C1, flick(t, .3) * (1 - clamp((t - T.loss) / .25)), false);
+  const red = t > T.loss, gold = t > T.gain0;
+  const rL = rings('L', lb, t, red ? 'rgba(255,130,160,.95)' : C1, flick(t, .4) * (1 - clamp((t - T.gain0 - .1) / .25)), red);
+  const rR = rings('R', rb, t, gold ? 'rgba(255,225,140,.95)' : C1, flick(t, .5), gold);
+  data('L', rL, t); data('R', rR, t);
+  micro(t, lb, rb);
+  // 태그
+  [['tagL', rL, red && t < T.gain0 + .2, T.loss], ['tagR', rR, t > T.gain0, T.gain0]].forEach(([id, rg, on, t0]) => {
+    const e = $(id); if (!rg || !on) { show(e, 0); return; }
+    const w = e.offsetWidth; e.style.left = Math.max(20, Math.min(880 - w, rg[0] - w / 2)) + 'px'; e.style.top = Math.max(110, rg[1] - rg[2] * 1.3 - 70) + 'px';
+    e.style.transform = `scale(${.7 + .3 * eo((t - t0) / .25)})`; show(e, flick(t, t0) * (id === 'tagL' ? 1 - clamp((t - T.gain0) / .2) : 1));
+  });
+  // ── 업체 간판·광고판 덮개(빛나는 원판·데이터 화면)
+  const sb = box('LS', t), vb = box('LV', t);
+  if (sb) { Object.assign($('covS').style, {left: sb[0] + 'px', top: sb[1] + 'px', width: sb[2] - sb[0] + 'px', height: sb[3] - sb[1] + 'px', fontSize: Math.min(40, (sb[3] - sb[1]) * .6) + 'px', borderRadius: (sb[3] - sb[1]) / 2 + 'px'}); show($('covS'), 1); } else show($('covS'), 0);
+  if (vb) { Object.assign($('covV').style, {left: vb[0] + 'px', top: vb[1] + 'px', width: vb[2] - vb[0] + 'px', height: vb[3] - vb[1] + 'px'});
+    const g = $('covV').firstElementChild, lv = red ? .25 : .45 + .3 * Math.abs(Math.sin(t * 5));
+    Object.assign(g.style, {height: 88 * lv + '%', background: red ? 'linear-gradient(#ff8fa3,rgba(255,80,110,.3))' : 'linear-gradient(#bff3ff,rgba(90,200,255,.3))', boxShadow: red ? '0 0 10px #ff6080' : '0 0 10px #7fe3ff'}); show($('covV'), 1); } else show($('covV'), 0);
+  if (rb) { Object.assign($('covR').style, {left: rb[0] - 6 + 'px', top: rb[1] - 6 + 'px', width: rb[2] - rb[0] + 12 + 'px', height: rb[3] - rb[1] + 12 + 'px'});
+    const w = rb[2] - rb[0], h = rb[3] - rb[1], gk = eo((t - T.gain0 - .1) / .3);
+    const gr = $('covR').querySelector('.gr'), gs = $('covR').querySelector('.gs');
+    gr.textContent = gk > 0 ? 'A+' : 'SCAN'; gs.textContent = gk > 0 ? '우량 등급' : '분석 중…';
+    gr.style.fontSize = Math.min(w, h) * (gk > 0 ? .6 : .28) + 'px'; gs.style.fontSize = Math.max(14, Math.min(28, w / 7)) + 'px';
+    gr.style.opacity = gk > 0 ? gk : .55 + .45 * Math.abs(Math.sin(t * 9));
+    $('covR').style.boxShadow = gk > 0 ? '0 0 0 3px rgba(255,225,140,.95),0 0 30px rgba(255,200,90,.9)' : '';
+    show($('covR'), 1); } else show($('covR'), 0);
+  // 위쪽 상태 글
+  $('bar').textContent = t < T.loss ? `AI 강남 빌딩 분석 · 스캔 ${Math.min(100, Math.round(100 * clamp((t - T.scan) / 1.1)))}%` : t < T.gain0 ? 'AI 강남 빌딩 분석 · BLD-01 손실 위험' : 'AI 강남 빌딩 분석 · BLD-02 수익 우량';
+  show($('bar'), flick(t, .05) * fade);
+  // «빌딩인지» 금빛 맥박
+  const pu = (t - T.fin) / .5;
+  if (rR) RING.R.d.setAttribute('fill', `rgba(255,210,110,${pu > 0 && pu < 1 ? .35 * Math.sin(Math.PI * pu) : .1})`);
+};
+</script></body></html>

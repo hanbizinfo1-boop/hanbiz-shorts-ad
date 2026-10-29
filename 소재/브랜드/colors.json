@@ -1,0 +1,29 @@
+{
+  "_출처": "사장님 10-08 «로고 넣었어» — 로고/로고.png(심볼) · 로고/한비즈 로고.png(가로형)에서 픽셀로 뽑음. 공식 브랜드 가이드 값 아님(받으면 교체).",
+  "brand_name": "한국중소기업 비즈니스센터 (한비즈)",
+  "brand_name_en": "Korea Company Business Support Center",
+  "symbol": "S 자 두 획 — 위 파랑 그라디언트(남색→밝은 파랑), 아래 주황 그라디언트(노랑→빨강)",
+  "colors": {
+    "navy":   "#021D76",
+    "royal":  "#0639A4",
+    "blue":   "#1857D1",
+    "amber":  "#FDA608",
+    "orange": "#FA630F",
+    "red":    "#EB2320",
+    "ink":    "#060606"
+  },
+  "gradients": {
+    "blue_swoosh":  ["#021D76", "#0639A4", "#1857D1"],
+    "warm_swoosh":  ["#FDA608", "#FA630F", "#EB2320"]
+  },
+  "proposal_for_motion": {
+    "_설명": "설계자 제안(사장님 확인 전). 장면 안 3색 = 바탕 + 글 + 강조 하나.",
+    "scene_backgrounds": ["#080D22", "#0639A4", "#FA630F", "#F6F4EF"],
+    "_어두운바탕": "로고(파랑 획)를 얹는 어두운 바탕은 브랜드 navy(#021D76) 가 아니라 잉크 남색 #080D22 — navy 바탕이면 파랑 획 어두운 쪽이 묻힌다(10-08 로고 엔딩 시안에서 확인)",
+    "text_on_dark": "#FFFFFF",
+    "text_on_light": "#060606",
+    "accent_on_blue": "#FDA608",
+    "accent_on_orange": "#021D76",
+    "accent_on_paper": "#FA630F"
+  }
+}

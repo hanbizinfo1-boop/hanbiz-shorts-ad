@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-21 7번 «그렇기 때문에 / 모든 자산가가 / 강남 빌딩을 / 사고 싶어 합니다» — 상담 사진 포토 모자이크 → 강남빌딩. 사장님 원문은 지시작업/tools/r7m_build.py 머리.
+     900×1600 · 59.94 · 장면 0초 = 시퀀스 3.971. 자막(y 755~818) 밑 — 건물 y 890~1490.
+     4.24 건물 윤곽 · 4.70 «모든 자산가가» 상담 사진이 양옆·아래에서 날아들어 창문 칸에 박힘(점점 빨라짐) · 5.68 «강남 빌딩을» 실제 건물로 번쩍 · 6.50 «사고 싶어» 금빛 빛 · 7.00~ 빠짐 -->
+<script src="r7m_cells.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:relative;width:900px;height:1600px;overflow:hidden}
+.a{position:absolute;left:0;top:0;will-change:transform,opacity}
+.tile{position:absolute;left:0;top:0;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.85);will-change:transform,opacity}
+#bld,#line{position:absolute;background-size:100% 100%}
+#fl{position:absolute;background:#FFD27A}
+#glow{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,120,.75),rgba(255,190,80,.25) 60%,rgba(255,190,80,0))}
+</style></head>
+<body><div id="st"><div id="glow"></div><div id="line"></div><div id="tiles"></div><div id="bld"></div><div id="fl"></div></div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 3.153;
+window.PALETTE = ['#ffffff', '#FFD43B'];
+const R = window.R7M, P = '../../소재/r4s5/', B = '../../소재/r4s/bldcut_uh.png';
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const O = 3.971, at = s => s - O;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+const T = {line: at(4.24), flash: at(5.68), glow: at(6.50), out: at(7.00), end: 3.153};
+const FLY = .35;                                                     // 사진 한 장이 날아오는 시간
+const box = {left: R.x0 + 'px', top: R.y0 + 'px', width: R.bw + 'px', height: R.bh + 'px'};
+const bld = document.getElementById('bld'), line = document.getElementById('line'), fl = document.getElementById('fl'), glow = document.getElementById('glow');
+Object.assign(bld.style, box, {backgroundImage: `url(${B})`, filter: 'drop-shadow(0 18px 22px rgba(0,0,0,.5))'});
+Object.assign(line.style, box, {backgroundImage: `url(${B})`, filter: 'brightness(0) drop-shadow(0 0 1.5px #FFD43B) drop-shadow(0 0 1.5px #FFD43B)', opacity: 0});   // 어두운 실루엣 + 금빛 테두리 = 윤곽(흰 옷 위에서도 보이게)
+Object.assign(fl.style, box);
+fl.style.webkitMaskImage = fl.style.maskImage = `url(${B})`; fl.style.webkitMaskSize = fl.style.maskSize = '100% 100%';
+Object.assign(glow.style, {left: (R.x0 - 160) + 'px', top: (R.y0 - 90) + 'px', width: (R.bw + 320) + 'px', height: (R.bh + 180) + 'px'});
+const host = document.getElementById('tiles');
+const TL = R.cells.map(c => { const e = document.createElement('div'); e.className = 'tile'; Object.assign(e.style, {width: R.tw + 'px', height: R.th + 'px', backgroundImage: `url(${P}${c.img})`}); host.appendChild(e); return Object.assign({e}, c); });
+window.EVENTS = [{t: T.line, role: 'line'}, {t: at(4.70), role: 'fly'}, {t: T.flash, role: 'flash'}, {t: T.glow, role: 'glow'}];
+
+window.seek = async function (t) {
+  const fade = clamp((T.end - t) / (T.end - T.out));
+  const lift = t > T.out ? 60 * eio((t - T.out) / (T.end - T.out)) : 0;     // 빠질 때 살짝 내려가며 사라짐
+  const pop = t > T.glow ? 1 + .04 * eo((t - T.glow) / .3) : 1;
+  const g = `translate(0,${lift}px) scale(${pop})`, org = `${R.x0 + R.bw / 2}px ${R.y0 + R.bh}px`;
+  ['tiles', 'bld', 'fl', 'line', 'glow'].forEach(id => { const e = document.getElementById(id); e.style.transform = g; e.style.transformOrigin = id === 'tiles' ? org : `${R.bw / 2}px ${R.bh}px`; });
+  document.getElementById('tiles').style.transformOrigin = org;
+  glow.style.transformOrigin = '50% 100%';
+  // ① 윤곽(4.24 ~ 번쩍 전까지 은은히)
+  show(line, .45 * eo((t - T.line) / .3) * (1 - clamp((t - T.flash) / .1)) * fade);
+  // ② 상담 사진 — 출발 자리에서 돌며 날아와 칸에 박힘(도착 직전 살짝 크게)
+  const tilesOn = 1 - clamp((t - T.flash - .05) / .15);              // 번쩍 뒤 실제 건물로 바뀜
+  TL.forEach(c => {
+    const u = (t - (c.land - FLY)) / FLY;
+    if (u <= 0) { show(c.e, 0); return; }
+    const k = eo(u), x = c.sx + (c.x - c.sx) * k, y = c.sy + (c.y - c.sy) * k - 90 * Math.sin(Math.PI * clamp(u)) * (1 - k);
+    const sc = u < 1 ? 1.8 - .8 * k : 1 + .25 * Math.max(0, 1 - (t - c.land) / .08);
+    c.e.style.transform = `translate(${x}px,${y}px) rotate(${c.rot * (1 - k)}deg) scale(${sc})`;
+    show(c.e, clamp(u * 3) * tilesOn * fade);
+  });
+  // ③ 5.68 번쩍 → 실제 건물
+  show(bld, clamp((t - T.flash) / .12) * fade);
+  show(fl, .6 * clamp((t - T.flash + .03) / .03) * (1 - clamp((t - T.flash) / .14)));   // 짧은 금빛 번쩍(흰 덩어리처럼 남지 않게)
+  // ④ 6.50 금빛 빛
+  show(glow, eo((t - T.glow) / .25) * (.85 + .15 * Math.sin((t - T.glow) * 8)) * fade);
+};
+</script></body></html>

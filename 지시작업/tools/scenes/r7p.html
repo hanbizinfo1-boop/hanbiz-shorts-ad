@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-21 7번 19.136~23.774 «저는 지난 18년간 / 강남빌딩을 / 45채 사보고 / 36채를 지어봤습니다».
+     사장님 «45채 사보고 << 이부분을 빌딩보러다니는 사진위주로 36채 지어본건 공사현장위주로해서 … 세련되게 … 저는 지난 18년간 << 이부분에서 자막아래에 사진들로 빌드업하고
+     강남빌딩을 할때부터 좀 전체화면에 사진쪽으로 연출구도잡고싶은데» → 추천안 «오케이 진행해봐».
+     2판 «저는 지난 18년간할때 좀더 카드가 들어와서 펼쳐졌으면 좋겠고 / 마지막이 지어봣습니다 하는 건물이 올라가는게 그냥 사진이 올라가는느낌이라 건축을해서 지어졌다는 느낌이 안들어»
+       → 추천(부채꼴 · 설계도 → 층층이) «일단 추천대로하고 그리고 45채 사보고가 너무 빨리넘어가는데 이게 살짝 넘겨지고 이 화면이 위쪽에 작은카드로 보관되는 느낌이면 좋을것같아»
+     ① 0.04 카드 7장이 한 묶음으로 올라옴 → 0.40~0.92 부채꼴로 펼침 + 연표 2008 → 2026 ② 1.118 가운데 맨 앞(완성 빌딩)이 쏙 뽑혀 화면 전체로(매치 줌)
+     ③ 1.902 «45채» 지금 사진이 살짝 넘겨지며 작아져 위쪽 줄에 작은 카드로 보관 · 밑에 다음 사진(4장) + 01 → 45
+     ④ 3.019 «36채» 설계도 바탕 위 공사현장 카드가 층처럼 쌓임 → 3.714 완성 건물 설계도 선 → 3.914~4.414 1층부터 한 층씩 «쿵» 채워짐 → 4.414 금빛이 아래 → 위 훑으며 완공 + 01 → 36
+     3판 «연혁이 너무 밑에나와 자막 이러면 영상에 안보일걸» → 쇼츠 화면 아래(제목·설명 글씨 자리)를 피해: 연표 자막 바로 밑(y 838~895) · 부채꼴 80px 위로 · 숫자 위쪽(y 330~480).
+     4판 «이게 눈에 안읽히는데.. 저 연도를 어떻게하면 눈에 잘 보이게 할수있을까?»(흰 니트 위 금색 글씨) → 연도를 남색 알약 표지(금테·흰 굵은 글씨)에 넣어 선 위를 달림 · 선 굵게 + 어두운 테두리 · 양끝 2008/2026 점.
+     6판 «여기서 산 느낌을 주는건 첫번째 사진밖에없는데.. 건물사진으로 바꾸던지 …» → «a안고고»: 45채 4장 = 건물 사진(t0~t3 = 232·236·239·233) — 넘겨져 위쪽에 보관되는 카드가 전부 건물.
+     7판 사장님 «타임라인 수정했어 다시파악»(17:05 자동 저장본 seq_7번_1705) → 18.569 컷이 줄어 이 구간이 당겨짐: 19.136→19.002 · 20.254→20.103 · 21.038→20.888 · 22.155→22.005 · 23.774→23.624.
+     8판 «지금 다시 저장했어»(17:39 seq_7번_save2) → 끝 23.624→23.54 · 설계도 22.65 · 층 22.83~23.23 · 완공 23.27(금빛 0.27초).
+     사진 = tools/r7p_assets.py → 소재/r7p (b6_full.jpg · b6_bp.png 도). 납품: 0~1.118 V4 · 1.118~ V1. 900×1600 · 59.94 · 장면 0초 = 시퀀스 19.136. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:absolute;inset:0;overflow:hidden}
+.ph{position:absolute;background-size:cover;background-position:50% 50%;filter:saturate(1.05) contrast(1.06) sepia(.06)}
+.card{position:absolute;border-radius:10px;background:#15181f;box-shadow:0 14px 30px rgba(0,0,0,.55)}
+.card .ph{border-radius:4px;box-shadow:0 0 0 2px rgba(214,178,98,.9)}
+#tl{position:absolute;left:110px;top:893px;width:680px;height:7px;margin-top:-3px;background:rgba(29,42,68,.85);border-radius:4px;box-shadow:0 0 0 2px rgba(10,14,24,.55)}
+#tl:before,#tl:after{content:"";position:absolute;top:-4px;width:15px;height:15px;border-radius:50%;background:#1d2a44;box-shadow:0 0 0 3px #e9c46a}
+#tl:before{left:-7px}#tl:after{right:-7px}
+#tlf{position:absolute;left:0;top:1px;height:5px;background:#f1cf74;border-radius:3px;box-shadow:0 0 10px rgba(241,207,116,.8)}
+#yr{position:absolute;top:834px;width:150px;height:52px;margin-left:-75px;border-radius:26px;background:#1d2a44;box-shadow:0 0 0 3px #e9c46a,0 6px 16px rgba(0,0,0,.55);text-align:center;font:900 38px/52px "HM Pretendard";color:#fff;letter-spacing:1px}
+#yr:after{content:"";position:absolute;left:66px;bottom:-11px;border:9px solid transparent;border-top:10px solid #e9c46a;border-bottom:0}
+#full{position:absolute;inset:0;background:#0b0f18}
+.fp{position:absolute;left:0;top:0;width:900px;height:1600px}
+#tourw{position:absolute;inset:0;perspective:1400px}
+.tc{position:absolute;left:0;top:0;width:900px;height:1600px;transform-origin:0 0;border-radius:0;overflow:hidden}
+.tc .ph{inset:0}
+#bp{background-color:#0d1830;background-image:linear-gradient(rgba(120,170,255,.10) 2px,transparent 2px),linear-gradient(90deg,rgba(120,170,255,.10) 2px,transparent 2px),
+  linear-gradient(rgba(120,170,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(120,170,255,.05) 1px,transparent 1px);background-size:150px 150px,150px 150px,30px 30px,30px 30px}
+.bc{position:absolute;left:70px;width:760px;height:500px;border-radius:10px;background:#15181f;padding:8px;box-shadow:0 16px 34px rgba(0,0,0,.6)}
+.bc .ph{inset:8px;border-radius:4px;box-shadow:0 0 0 2px rgba(214,178,98,.9)}
+#bpl{background:url('../../소재/r7p/b6_bp.png') 0 0/900px 1600px;filter:drop-shadow(0 0 6px rgba(150,200,255,.6))}
+#done{background:url('../../소재/r7p/b6_full.jpg') 0 0/900px 1600px;filter:saturate(1.05) contrast(1.06) sepia(.06)}
+#edge{position:absolute;left:0;width:900px;height:6px;margin-top:-3px;background:#f1cf74;box-shadow:0 0 18px 6px rgba(241,207,116,.75)}
+#dust{position:absolute;left:0;width:900px;height:120px;margin-top:-70px;background:radial-gradient(60% 50% at 50% 70%,rgba(230,215,190,.55),rgba(230,215,190,0) 70%)}
+#gold{position:absolute;left:0;width:900px;height:420px;background:linear-gradient(rgba(255,215,120,0),rgba(255,215,120,.55) 50%,rgba(255,215,120,0));mix-blend-mode:screen}
+#shade{position:absolute;left:0;top:290px;width:900px;height:240px;background:radial-gradient(70% 60% at 22% 50%,rgba(0,0,0,.55),rgba(0,0,0,0) 75%)}
+#cnt{position:absolute;left:58px;top:330px;color:#f1cf74;font:900 150px/150px "HM Pretendard";letter-spacing:-4px;text-shadow:0 6px 18px rgba(0,0,0,.6)}
+#cnt small{font:800 46px/46px "HM Pretendard";color:#fff;letter-spacing:0;margin-left:14px}
+#grain{position:absolute;inset:0;background-image:url('../../소재/r7p/grain.png');mix-blend-mode:overlay;opacity:.13;pointer-events:none}
+#vig{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 45%,rgba(0,0,0,0) 60%,rgba(0,0,0,.45) 100%)}
+</style></head>
+<body><div id="st">
+  <div id="full">
+    <div class="fp ph" id="hero"></div>
+    <div id="tourw"></div>
+    <div class="fp" id="bp"></div><div id="bcs"></div>
+    <div class="fp" id="bpl"></div><div class="fp" id="done"></div><div id="dust"></div><div id="edge"></div><div id="gold"></div>
+    <div id="vig"></div><div id="shade"></div><div id="cnt"></div><div id="grain"></div>
+  </div>
+  <div id="deck"></div>
+  <div id="tl"><div id="tlf"></div></div><div id="yr"></div>
+</div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 4.538;
+window.PALETTE = ['#f1cf74', '#15181f', '#0d1830'];
+const P = '../../소재/r7p/';
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = x => { x = clamp(x); const c = 1.5; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, k) => a + (b - a) * k;
+const O = 19.002, at = s => s - O;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+const T = {up: .04, fan: .40, full: at(20.103), tour: at(20.888), build: at(22.005), bpl: at(22.65), fl: at(22.83), fin: at(23.27), end: 4.538};
+const $ = id => document.getElementById(id);
+// ① 부채꼴 덱 — 카드 0~5 + 가운데 맨 앞 6(완성 빌딩)
+const CW = 280, CH = 374, PX = 450, PY = 1110, PIV = 700;              // 펼친 뒤 카드 가운데 = 피벗(PX, PY+PIV) 에서 반지름 PIV
+const SLOT = [0, 1, 2, 4, 5, 6, 3], ANG = [-25, -16.7, -8.3, 0, 8.3, 16.7, 25];
+const DK = SLOT.map((s, i) => { const e = document.createElement('div'); e.className = 'card'; e.innerHTML = `<div class="ph" style="background-image:url(${P}d${i}.jpg)"></div>`; $('deck').appendChild(e); return e; });
+DK[6].style.zIndex = 5;
+// ③ 45채 — 4장 · 넘겨지며 위쪽 줄에 작은 카드로
+const TN = 4, TT = [0, .27, .54, .81].map(x => T.tour + x);              // TT[i] = i번째 화면이 보관되기 시작(0번 = 완성 빌딩 화면)
+const SLX = [38, 210, 382, 554, 726], SLY = 70, SW = 136, SH = 242;      // 위쪽 보관 줄(세로 카드 136×242)
+const TC = [];
+for (let i = 0; i <= TN; i++) {                                          // 0 = 완성 빌딩(hero) · 1~4 = 임장 사진 t0~t3
+  const e = document.createElement('div'); e.className = 'tc';
+  e.innerHTML = `<div class="ph" style="background-image:url(${P}${i ? 't' + (i - 1) : 'd6'}.jpg)"></div>`;
+  e.style.zIndex = 10 - i; $('tourw').appendChild(e); TC.push(e);
+}
+// ④ 36채 — 층처럼 쌓임(조금 빠르게) → 설계도 → 1층부터 채워짐
+const BT = [0, .12, .23, .34, .44, .53].map(x => T.build + .02 + x);
+const BC = BT.map((_, i) => { const e = document.createElement('div'); e.className = 'bc'; e.innerHTML = `<div class="ph" style="background-image:url(${P}b${i}.jpg)"></div>`; $('bcs').appendChild(e); return e; });
+const FLOOR = [1600, 1230, 1005, 790, 575, 360, 90];                      // 층 경계(위로) — b6_full 기준 필로티 · 5층 · 지붕
+const FT = [0, .08, .16, .24, .32, .40].map(x => T.fl + x);
+$('hero').style.backgroundImage = `url(${P}d6.jpg)`;
+window.EVENTS = [{t: T.up, role: 'deck_in'}, {t: T.fan, role: 'fan'}, {t: T.full, role: 'match_zoom'}, {t: T.tour, role: 'tour'}, {t: T.build, role: 'build'},
+                 {t: T.bpl, role: 'blueprint'}, {t: T.fl, role: 'floors'}, {t: T.fin, role: 'complete'}];
+
+window.seek = async function (t) {
+  // ── ① 덱: 한 묶음으로 올라옴 → 부채꼴로 펼침 · 가운데 맨 앞 장이 뽑혀 화면 전체로
+  const up = eo((t - T.up) / .34), fan = eio((t - T.fan) / .52), k = eio((t - T.full) / .45);
+  DK.forEach((e, i) => {
+    const a = ANG[SLOT[i]] * fan * Math.PI / 180;
+    let x = PX + Math.sin(a) * PIV, y = PY + PIV - Math.cos(a) * PIV + (1 - up) * 900;
+    let rot = ANG[SLOT[i]] * fan + (1 - up) * (i - 3) * 1.5, w = CW, h = CH, pad = 8, o = t > T.up ? 1 : 0;
+    if (i === 6) {                                                       // 가운데 맨 앞 = 완성 빌딩: 위로 쏙 뽑혀 화면 전체로
+      const lift = eo((t - T.full + .12) / .12);
+      y -= 60 * lift * (1 - k);
+      x = lerp(x, 450, k); y = lerp(y, 800, k); w = lerp(CW, 900, k); h = lerp(CH, 1600, k); pad = lerp(8, 0, k); rot = lerp(rot, 0, k);
+      o = t > T.up && t < T.full + .5 ? 1 : 0;
+    } else {
+      y += 700 * eio((t - T.full) / .4);
+      o *= 1 - clamp((t - T.full) / .3);
+    }
+    Object.assign(e.style, {left: x - w / 2 + 'px', top: y - h / 2 + 'px', width: w + 'px', height: h + 'px', borderRadius: lerp(10, 0, i === 6 ? k : 0) + 'px', transform: `rotate(${rot}deg)`});
+    Object.assign(e.firstElementChild.style, {left: pad + 'px', top: pad + 'px', right: pad + 'px', bottom: pad + 'px'});
+    show(e, o);
+  });
+  // 연표 2008 → 2026(펼쳐지는 동안)
+  const yk = eio((t - .1) / .95);
+  $('tlf').style.width = 680 * yk + 'px';
+  $('yr').style.left = 110 + 680 * yk + 'px';
+  $('yr').textContent = Math.round(2008 + 18 * yk);
+  const tlo = clamp((t - .1) / .15) * (1 - clamp((t - T.full) / .2));
+  show($('tl'), tlo); show($('yr'), tlo);
+  // ── ② 화면 전체: 완성 빌딩이 천천히 다가감(③ 의 0번 카드가 이어받음)
+  show($('full'), t >= T.full + .45 ? 1 : 0);
+  show($('hero'), 0);
+  // ── ③ 45채: 지금 화면이 살짝 넘겨지며(오른쪽 위 모서리가 들림) 작아져 위쪽 줄에 보관 · 밑에 다음 사진
+  TC.forEach((e, i) => {
+    const s0 = i ? TT[i - 1] : T.full + .45;                             // 이 사진이 화면에 깔리는 때
+    const g = eio((t - TT[i]) / .42);                                    // 보관되는 정도
+    const push = 1 + .05 * clamp((t - s0) / .9) * (1 - g);               // 깔린 동안 천천히 다가감
+    if (i === TN && t < T.build) {                                       // 마지막 사진은 화면에 남았다가 ④ 로
+      e.style.transform = `scale(${push})`; e.style.borderRadius = '0px';
+      show(e, t > s0 - .02 ? 1 : 0); return;
+    }
+    const sx = lerp(1, SW / 900, g), sy = lerp(1, SH / 1600, g);
+    const x = lerp(0, SLX[i], g), y = lerp(0, SLY, g);
+    const flip = Math.sin(Math.PI * clamp((t - TT[i]) / .42)) * 28;       // 넘기는 순간 살짝 기울었다 섬
+    e.style.transform = `translate(${x}px,${y}px) rotateY(${-flip}deg) rotateZ(${(i % 2 ? 3 : -3) * g}deg) scale(${sx * push},${sy * push})`;
+    e.style.borderRadius = 24 * g / Math.max(sx, .01) + 'px';
+    e.style.boxShadow = g > .01 ? `0 0 0 ${3 / sx}px rgba(214,178,98,.95), 0 ${10 / sy}px ${24 / sy}px rgba(0,0,0,.5)` : 'none';
+    show(e, t > s0 - .02 ? 1 - clamp((t - T.build - .1) / .25) : 0);
+  });
+  // ── ④ 36채: 설계도 바탕 · 공사현장 카드가 층처럼 쌓임
+  const bk = eo((t - T.build) / .3);
+  show($('bp'), t > T.build ? 1 : 0);
+  $('bp').style.transform = `translateY(${900 * (1 - bk)}px)`;
+  const bout = eio((t - T.bpl) / .22);                                   // 설계도가 나오며 카드들이 걷힘
+  BC.forEach((e, i) => {
+    const a = eo((t - BT[i]) / .22);
+    const lv = BT.filter((b, j) => j > i).reduce((s, b) => s + eo((t - b) / .22), 0);
+    e.style.top = 835 + (1 - a) * 800 - 175 * lv + 'px';
+    e.style.transform = `scale(${Math.pow(.92, lv) * (1 - .15 * bout)})`;
+    e.style.filter = `brightness(${1 - .12 * lv})`;
+    show(e, t > BT[i] ? clamp(1 - (lv - 3.2)) * (1 - bout) : 0);
+  });
+  show($('bcs'), t > T.build ? 1 : 0);
+  // 완성 건물 설계도 선(위 → 아래로 그려짐) → 1층부터 한 층씩 실제 건물로 «쿵»
+  const lk = eo((t - T.bpl) / .2);
+  $('bpl').style.clipPath = `inset(0 0 ${100 - 100 * lk}% 0)`;
+  show($('bpl'), t > T.bpl ? 1 : 0);
+  let fy = FLOOR[0], hit = -1;
+  FT.forEach((f, i) => { const s = eo((t - f) / .07); if (t > f) { fy = lerp(FLOOR[i], FLOOR[i + 1], s); hit = i; } });
+  const fu = hit >= 0 ? t - FT[hit] : 9;
+  $('done').style.clipPath = `inset(${fy}px 0 0 0)`;
+  show($('done'), t > T.fl ? 1 : 0);
+  const thud = fu < .25 ? 7 * Math.exp(-16 * fu) * Math.sin(55 * fu) : 0;   // 층마다 살짝 내려앉는 반동
+  $('done').style.transform = `translateY(${thud}px) scale(${1 + .04 * eio((t - T.fin) / (T.end - T.fin))})`;
+  $('bpl').style.transform = $('done').style.transform;
+  $('edge').style.top = fy + 'px'; show($('edge'), t > T.fl && t < T.fin + .1 ? 1 - clamp((t - T.fin) / .1) : 0);
+  $('dust').style.top = fy + 'px'; show($('dust'), fu < .3 && t < T.fin + .1 ? 1 - fu / .3 : 0);
+  // 완공: 금빛이 아래 → 위로 훑음
+  const gk = eio((t - T.fin) / .27);
+  $('gold').style.top = 1600 - 2000 * gk + 'px'; show($('gold'), t > T.fin && gk < 1 ? 1 : 0);
+  // 숫자 01 → 45 · 01 → 36(완공 때 36)
+  const c1 = eo((t - T.tour - .05) / 1.0), c2 = eio((t - T.build - .05) / (T.fin - T.build - .05));
+  const cv = t < T.build ? [Math.max(1, Math.round(45 * c1)), '채 매입'] : [Math.max(1, Math.round(36 * c2)), '채 건축'];
+  $('cnt').innerHTML = `${String(cv[0]).padStart(2, '0')}<small>${cv[1]}</small>`;
+  show($('cnt'), t > T.tour ? 1 : 0); show($('shade'), t > T.tour ? 1 : 0);
+  // 필름 입자
+  const f = Math.floor(t * 59.94);
+  $('grain').style.backgroundPosition = `${(f * 137) % 256}px ${(f * 91) % 256}px`;
+};
+</script></body></html>

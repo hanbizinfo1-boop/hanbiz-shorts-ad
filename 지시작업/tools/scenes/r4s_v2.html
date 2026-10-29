@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-20 4번 «그래서 결국 돈 있는 분들이 찾는 게 / 강남빌딩이에요» — 사장님 원문·근거는 지시작업/tools/r4s_build.py 머리.
+     900×1600 · 59.94 · 이 장면 0초 = 사장님 시퀀스 15.649초. 사진은 사장님 프리미어 안쪽 안전선(x 90~808 · 자막 밑 y 975~1430) 안.
+     말 시각(whisper): 그래서 15.649 · 결국 16.169 · 돈 16.509 · 있는 16.729 · 분들이 16.969 · 찾는 17.289 · 게 17.689 · 강남 17.849 · 빌딩이에요 18.189 -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:relative;width:900px;height:1600px;overflow:hidden}
+.card{position:absolute;left:0;top:0;transform-origin:50% 50%;box-shadow:0 14px 26px rgba(0,0,0,.42),0 2px 5px rgba(0,0,0,.25);background-size:100% 100%;will-change:transform,opacity}
+.pc{position:absolute;left:0;top:0;background-repeat:no-repeat;will-change:transform,opacity}
+</style></head>
+<body><div id="st"></div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 3.186;
+window.PALETTE = ['#ffffff'];
+const A = '../../소재/r4s/';
+const st = document.getElementById('st');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const ei = x => Math.pow(clamp(x), 2.4);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const wob = (x, f = 30, d = 9) => x <= 0 ? 0 : Math.cos(x * f) * Math.exp(-x * d);
+const O = 15.649, at = s => s - O;               // 시퀀스 초 → 장면 초
+let sd = 7; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+
+/* ── 세미나 사진 7장 — 말에 맞춰 하나씩 자막 밑으로 박힘(겹쳐도 됨, 각도·순서 자유) ── */
+const K = .82;   // 10-20 «세미나사진 좀더 크게 해줘 지근 너무작아 겹쳐도 좋으니까» — .62 → .82(가로 417×318, 세로 269×351) · 안쪽 안전선 x 90~808 안
+const SEM = [
+  {f: 'sem_4.jpg', w: 508, h: 388, t: at(15.66), x: 305, y: 1140, r: -8},
+  {f: 'sem_2.jpg', w: 508, h: 388, t: at(16.17), x: 595, y: 1130, r: 7},
+  {f: 'sem_1.jpg', w: 328, h: 428, t: at(16.51), x: 452, y: 1215, r: -4},
+  {f: 'sem_6.jpg', w: 508, h: 388, t: at(16.73), x: 310, y: 1268, r: 6},
+  {f: 'sem_0.jpg', w: 508, h: 388, t: at(16.97), x: 592, y: 1262, r: -7},
+  {f: 'sem_3.jpg', w: 508, h: 388, t: at(17.29), x: 355, y: 1175, r: 9},    // 10-20 «마지막 2개 … 연속 가운데라 위치 변경» → 왼쪽 위
+  {f: 'sem_5.jpg', w: 508, h: 388, t: at(17.55), x: 560, y: 1225, r: -5},   // → 오른쪽 아래
+];
+/* ── 강남빌딩 3장 — 왼·가운데·오른쪽 절도 있게(각도 0, 같은 크기·같은 간격) ── */
+const BK = .64, BW = 354 * BK, BH = 464 * BK;   // 227×297 — 간격 244 에서 틈 17px(딱 튈 때 겹치지 않게)
+const BLD = [{f: 'bld_0.jpg', x: 450 - 244}, {f: 'bld_1.jpg', x: 450}, {f: 'bld_2.jpg', x: 450 + 244}].map(b => ({...b, y: 1205}));
+const T = {shatter: at(17.768), gather: at(18.02), land: at(18.30),   /* v2 10-20 «좀더 잘게 쪼개지고 멀리 쪼개지면서 다시 자석붙듯이 합쳐지게» */ out: at(18.70), end: 3.186};   /* 10-20 자막이 «돈 있는 분들이 찾는게 / 강남빌딩이에요»(17.768)로 바뀜 · «깨지고나서 꺠진조각들이 다시붙으면서 빌딩사진으로 변환» */
+window.EVENTS = SEM.map((s, i) => ({t: s.t, role: 'slam' + i})).concat([{t: T.shatter, role: 'shatter'}, {t: T.land, role: 'land'}]);
+
+// 카드 만들기 + 조각(가루) 만들기
+function mkCard(src, w, h) { const e = document.createElement('div'); e.className = 'card'; e.style.width = w + 'px'; e.style.height = h + 'px'; e.style.backgroundImage = `url(${A}${src})`; st.appendChild(e); return e; }
+function mkPieces(src, w, h, cols, rows) {
+  const out = [];
+  for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+    const e = document.createElement('div'); e.className = 'pc'; const pw = w / cols, ph = h / rows;
+    Object.assign(e.style, {width: (pw + .6) + 'px', height: (ph + .6) + 'px', backgroundImage: `url(${A}${src})`, backgroundSize: `${w}px ${h}px`, backgroundPosition: `${-i * pw}px ${-j * ph}px`});
+    st.appendChild(e); out.push({e, ox: (i + .5) * pw - w / 2, oy: (j + .5) * ph - h / 2, pw, ph, a: rnd() * 6.283, v: 160 + rnd() * 420, vr: (rnd() - .5) * 720, dl: rnd() * .08});
+  }
+  return out;
+}
+SEM.forEach(s => { s.W = s.w * K; s.H = s.h * K; s.e = mkCard(s.f, s.W, s.H); s.p = mkPieces(s.f, s.W, s.H, 16, 12); });   // v2 더 잘게(9×7 → 16×12)
+BLD.forEach(b => { b.e = mkCard(b.f, BW, BH); b.e.dataset.box = 'bld_' + b.f; b.p = mkPieces(b.f, BW, BH, 13, 17); });
+// 깨진 세미나 조각이 «그대로» 날아가 빌딩 조각 자리에 다시 붙으며 그림이 빌딩으로 바뀐다 — 빌딩 조각 하나 = 세미나 조각 하나(겹치지 않게 골고루 뽑음)
+const SEMP = SEM.flatMap(s => s.p.map(p => ({s, p})));
+const NB = BLD.reduce((n, b) => n + b.p.length, 0); let gk = 0;
+BLD.forEach(b => b.p.forEach(q => { const src = SEMP[Math.floor(gk++ * SEMP.length / NB)]; q.src = src; src.p.used = true;
+  const c = document.createElement('div'); Object.assign(c.style, {position: 'absolute', inset: 0, backgroundImage: src.p.e.style.backgroundImage, backgroundSize: src.p.e.style.backgroundSize, backgroundPosition: src.p.e.style.backgroundPosition, backgroundRepeat: 'no-repeat'});
+  q.e.appendChild(c); q.semc = c; q.e.style.width = src.p.pw + .6 + 'px'; q.e.style.height = src.p.ph + .6 + 'px'; }));
+const place = (e, x, y, r, s, o) => { e.style.transform = `translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`; e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+function semPos(s, t) {   // 박힐 때: 위에서 크게 내려와 툭 박히며 살짝 돌아감
+  const u = t - s.t, k = eo(u / .2);
+  return {x: s.x, y: s.y - (1 - k) * 90, r: s.r + (1 - k) * (s.r > 0 ? 14 : -14) + 2.5 * wob(u - .2, 30, 9), sc: 1.35 - .35 * k + .04 * wob(u - .2, 34, 10), o: clamp(u / .06)};
+}
+function pieceShat(s, q, t) {   // 깨진 조각의 자리(가루처럼 흩어짐)
+  const p = semPos(s, T.shatter), u = Math.max(0, t - T.shatter - q.dl), rr = p.r * Math.PI / 180;
+  const bx = p.x + q.ox * Math.cos(rr) - q.oy * Math.sin(rr), by = p.y + q.ox * Math.sin(rr) + q.oy * Math.cos(rr);
+  const d = eo(u / .32) * q.v * 1.45;   // v2 더 멀리(화면 끝까지)
+  return {x: bx + Math.cos(q.a) * d, y: by + Math.sin(q.a) * d - 40 * eo(u / .45), r: p.r + q.vr * eo(u / .6) * .3, sc: 1 - .55 * eo(u / .5)};
+}
+
+window.seek = async function (t) {
+  const fade = clamp((T.end - t) / (T.end - T.out));
+  // 세미나 사진
+  SEM.forEach(s => {
+    if (t < T.shatter) { const p = semPos(s, t); place(s.e, p.x - s.W / 2, p.y - s.H / 2, p.r, p.sc, t >= s.t ? p.o : 0); s.p.forEach(q => q.e.style.display = 'none'); return; }
+    place(s.e, 0, 0, 0, 1, 0);
+    s.p.forEach(q => { if (q.used) { q.e.style.display = 'none'; return; }   // 빌딩으로 다시 붙을 조각은 빌딩 쪽에서 그림
+      const p = pieceShat(s, q, t), o = 1 - eio((t - T.shatter - .05) / .25); place(q.e, p.x - q.pw / 2, p.y - q.ph / 2, p.r, p.sc, Math.max(0, o)); });
+  });
+  // 빌딩 — 흩어진 조각이 다시 날아와 붙으며(세미나 그림 → 빌딩 그림으로 바뀜) 왼·가운데·오른쪽 3장이 됨
+  BLD.forEach((b, bi) => {
+    if (t < T.shatter) { place(b.e, 0, 0, 0, 1, 0); b.p.forEach(q => q.e.style.display = 'none'); return; }
+    if (t < T.land) {
+      place(b.e, 0, 0, 0, 1, 0);
+      b.p.forEach(q => {
+        const sp = q.src.p, g = clamp((t - T.gather - sp.dl * .5) / (T.land - T.gather - .05)), kk = g < 1 ? Math.pow(g, 3.2) : 1;   // v2 자석: 처음엔 거의 안 끌리다 마지막에 확 빨려 붙음
+        const s0 = pieceShat(q.src.s, sp, Math.min(t, T.gather + sp.dl));          // 깨져 흩어지는 동안은 세미나 조각 그대로
+        const tx = b.x + q.ox, ty = b.y + q.oy;
+        const w = sp.pw + (q.pw - sp.pw) * kk, h = sp.ph + (q.ph - sp.ph) * kk;      // 조각 크기도 빌딩 칸 크기로
+        q.e.style.width = w + .6 + 'px'; q.e.style.height = h + .6 + 'px';
+        q.semc.style.opacity = 1 - clamp((kk - .25) / .5);                         // 날아오는 중간에 그림이 빌딩으로 바뀜
+        place(q.e, s0.x + (tx - s0.x) * kk - w / 2, s0.y + (ty - s0.y) * kk - h / 2, s0.r * (1 - kk), s0.sc + (1 - s0.sc) * kk, 1);
+      });
+      return;
+    }
+    b.p.forEach(q => q.e.style.display = 'none');
+    const u = t - T.land, punch = 1 + .035 * Math.exp(-u * 16) * Math.cos(u * 34);   // 붙는 순간 «딸깍» 튐
+    place(b.e, b.x - BW / 2, b.y - BH / 2, 0, punch, fade);
+  });
+};
+</script></body></html>

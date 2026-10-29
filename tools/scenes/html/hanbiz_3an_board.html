@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 3안 타이포 스토리보드 정지 화면 (10-12 재설계, motion-typo.md J 카드).
+     ?bar=1..10&ph=in|hold|out  → 1080×1920 한 장. 크롬 --screenshot 으로 뜬다(tools/scenes/hanbiz_3an_board.py).
+     실제 렌더(html_motion seek)는 이 배치·층을 그대로 시간축으로 옮긴다. -->
+<style>
+@font-face{font-family:P;src:url("../../../소재/fonts/pretendard/Pretendard-Light.otf");font-weight:300}
+@font-face{font-family:P;src:url("../../../소재/fonts/pretendard/Pretendard-SemiBold.otf");font-weight:600}
+@font-face{font-family:P;src:url("../../../소재/fonts/pretendard/Pretendard-Bold.otf");font-weight:700}
+@font-face{font-family:P;src:url("../../../소재/fonts/pretendard/Pretendard-ExtraBold.otf");font-weight:800}
+@font-face{font-family:P;src:url("../../../소재/fonts/pretendard/Pretendard-Black.otf");font-weight:900}
+:root{--paper:#F6F4EF;--ink:#080D22;--royal:#0639A4;--blue:#1857D1;--orange:#FA630F;--amber:#FDA608;--black:#060606}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#st{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:P,sans-serif;word-break:keep-all}
+.L{position:absolute;inset:0}
+#bg{background:var(--paper)}
+#grain{opacity:.07;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='540' height='540'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1.4 -.2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:540px 540px}
+.dark #grain{mix-blend-mode:screen;opacity:.09}
+#glow{pointer-events:none}
+#txt{position:absolute;left:80px;right:80px;top:420px;height:960px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.04;letter-spacing:-.03em}
+#hud{position:absolute;top:190px;left:80px;right:80px;display:flex;justify-content:space-between;font:600 24px P;letter-spacing:.18em;opacity:.55}
+.cn{position:absolute;width:44px;height:44px;opacity:.5}
+.cn.tl{top:150px;left:56px;border-top:3px solid currentColor;border-left:3px solid currentColor}
+.cn.tr{top:150px;right:56px;border-top:3px solid currentColor;border-right:3px solid currentColor}
+.w9{font-weight:900}.w3{font-weight:300}.w6{font-weight:600}
+.o{color:var(--orange)}.a{color:var(--amber)}
+.sdoc{position:absolute;width:620px;border-radius:8px;box-shadow:0 30px 70px rgba(8,13,34,.28)}
+.wash{position:absolute;inset:0}
+.doc{position:absolute;width:520px;height:700px;background:#fff;border-radius:10px;box-shadow:0 30px 60px rgba(0,0,0,.18);padding:60px 54px}
+.doc i{display:block;height:22px;background:#C9CDD6;border-radius:4px;margin:0 0 26px}
+.doc i.h{height:44px;width:70%;background:#0639A4;margin-bottom:44px}
+.doc b{position:absolute;right:50px;bottom:60px;width:150px;height:150px;border:12px solid #EB2320;border-radius:50%}
+.ghost{position:absolute;font-weight:900;white-space:nowrap;color:transparent;-webkit-text-stroke:3px currentColor;line-height:1}
+.smear{text-shadow:-28px 0 0 rgba(255,255,255,.35),-56px 0 0 rgba(255,255,255,.18),-84px 0 0 rgba(255,255,255,.08)}
+.caret{display:inline-block;width:12px;height:.9em;background:currentColor;vertical-align:-.08em;margin-left:8px}
+.card{position:absolute;inset:0}
+.btn{margin-top:60px;background:var(--royal);color:#fff;font:700 46px P;border-radius:80px;padding:30px 60px}
+.label{font:600 40px P;letter-spacing:.02em;opacity:.8;margin-top:36px}
+#note{position:absolute;left:0;right:0;bottom:120px;text-align:center;font:600 30px P;opacity:.0}
+</style></head>
+<body><div id="st">
+  <div class="L" id="bg"></div>
+  <div class="L" id="far"></div>
+  <div class="L" id="glow"></div>
+  <div class="L" id="grain"></div>
+  <div class="cn tl"></div><div class="cn tr"></div>
+  <div id="hud"><span>HANBIZ</span><span id="sec"></span></div>
+  <div id="txt"></div>
+  <div class="L" id="fx"></div>
+</div>
+<script>
+const q=new URLSearchParams(location.search), bar=+(q.get('bar')||1), ph=q.get('ph')||'hold';
+const st=document.getElementById('st'), bg=document.getElementById('bg'), far=document.getElementById('far'),
+      glow=document.getElementById('glow'), txt=document.getElementById('txt'), fx=document.getElementById('fx');
+const $=(h)=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild};
+function theme(c,dark){bg.style.background=c; st.classList.toggle('dark',!!dark); st.style.color=dark?'#fff':'var(--black)'}
+function docs(n,blur,op,spread){ // B4 흐린 서류 층
+  for(let i=0;i<n;i++){const d=$(`<div class="doc"><i class="h"></i><i></i><i style="width:80%"></i><i></i><i style="width:60%"></i><i></i><i style="width:85%"></i>${i%3==0?'<b></b>':''}</div>`);
+    const x=140+((i*317)%560)-spread*40, y=300+((i*211)%900);
+    d.style.left=x+'px'; d.style.top=y+'px'; d.style.transform=`rotate(${(i%2?1:-1)*(4+i*3)}deg) scale(${.9+((i*7)%5)/20})`;
+    d.style.filter=`blur(${blur}px)`; d.style.opacity=op; far.appendChild(d)}}
+const DOCDIR='../../../소재/견본/';
+// B4 실제 결과물 견본 층(10-12 사장님 «실제 자료 기반으로 글자가 작게나마 보이게») — [이름, x, y, 회전°, 배율, 블러px]
+function sdocs(list, wash){
+  for(const [n,x,y,r,k,b] of list){const im=$(`<img class="sdoc" src="${DOCDIR}${n}.png">`);
+    im.style.left=x+'px'; im.style.top=y+'px'; im.style.transform=`rotate(${r}deg) scale(${k})`; im.style.filter=`blur(${b}px)`; far.appendChild(im)}
+  if(wash) far.appendChild($(`<div class="wash" style="background:${wash}"></div>`))}
+function halo(col){glow.style.background=`radial-gradient(46% 24% at 50% 47%, ${col} 0%, transparent 100%), radial-gradient(120% 85% at 50% 45%, transparent 55%, rgba(8,13,34,.25) 100%)`}
+function ghost(t,size,x,y,op,col){const g=$(`<div class="ghost" style="font-size:${size}px;left:${x}px;top:${y}px;opacity:${op};color:${col||'currentColor'}">${t}</div>`);far.appendChild(g)}
+function vign(col,a){glow.style.background=`radial-gradient(120% 85% at 50% 45%, transparent 55%, ${col} 100%)`;glow.style.opacity=a}
+function pool(c1,x,y){glow.style.background=`radial-gradient(50% 32% at ${x}% ${y}%, ${c1} 0%, transparent 70%), radial-gradient(120% 85% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%)`}
+function rays(col,a){const r=$(`<div class="L" style="inset:-600px;background:repeating-conic-gradient(from 8deg at 50% 50%, ${col} 0deg 6deg, transparent 6deg 30deg);opacity:${a}"></div>`);far.appendChild(r)}
+function push(s){txt.style.transform=`scale(${s})`}
+function blurTxt(px,op){txt.style.filter=`blur(${px}px)`;txt.style.opacity=op}
+document.getElementById('sec').textContent=String(Math.min(bar,10)).padStart(2,'0')+' / 10';
+
+const B={
+ 1(){ theme('var(--paper)'); sdocs([['사업계획서',520,180,7,1.0,2.4],['로드맵',-90,1180,-6,1.0,2.0],['매달리포트',560,1150,5,.95,2.0],['경영진단',60,360,-5,1.08,1.0]],'rgba(246,244,239,.42)'); halo('rgba(246,244,239,.92)');
+   const s=ph=='in'?1.3:1; txt.innerHTML=`<div class="w9" style="font-size:380px;transform:scale(${s});filter:blur(${ph=='in'?3:0}px)">대출</div>
+   <div class="w9" style="font-size:118px;margin-top:70px">${ph=='in'?'나왔<span class="caret"></span>':'나왔으니'}</div>`; if(ph=='hold')push(1.04)},
+ 2(){ theme('var(--orange)',1); vign('rgba(120,20,0,.35)',1); ghost('?',1700,330,40,.10,'#fff');
+   txt.innerHTML=`<div class="w9 ${ph=='in'?'smear':''}" style="font-size:640px;color:#fff;${ph=='in'?'transform:translateX(40px)':''}">돈</div><div class="w9" style="font-size:110px;color:#fff;margin-top:-10px">주세요?</div>`;
+   if(ph=='out'){blurTxt(8,.55); far.style.filter='blur(6px)'}},
+ 3(){ theme('var(--ink)',1); pool('rgba(24,87,209,.55)',50,46); rays('rgba(255,255,255,.05)',1);
+   txt.innerHTML=`<div class="w3" style="font-size:110px;color:#fff;opacity:.85">아직</div><div style="font-size:196px;font-weight:${ph=='in'?500:900};color:#fff;margin-top:24px">안 받습니다</div>`;
+   if(ph=='in'){blurTxt(9,.7); fx.style.background='rgba(255,255,255,.55)'}},
+ 4(){ theme('var(--paper)'); sdocs([['인증서류',-120,240,-8,1.0,2.2],['지원사업알림',600,120,6,.9,2.2],['상권분석',540,1120,-4,1.0,1.6],['실사대비',20,1080,5,1.05,1.0]],'rgba(246,244,239,.42)'); halo('rgba(246,244,239,.92)');
+   if(ph=='in') fx.style.background='linear-gradient(115deg, var(--ink) 0 46%, transparent 46%)';
+   const syl=['남','았','거','든','요'], k=ph=='in'?2:5;
+   txt.innerHTML=`<div class="w6" style="font-size:120px">드릴 게</div><div class="w9 o" style="font-size:212px;margin-top:20px">${syl.map((c,i)=>`<span style="display:inline-block;opacity:${i<k?1:0};transform:translateY(${i==k-1&&ph=='in'?24:0}px)">${c}</span>`).join('')}</div>`},
+ 5(){ const names=['경영진단','로드맵','사업계획서','상권 분석','인증 서류','지원사업 알림','매달 리포트','쿠폰북'];
+   const i=ph=='in'?0:ph=='hold'?3:7; const c=i==7?'var(--orange)':(i%2?'var(--royal)':'var(--ink)'); theme(c,1);
+   const files=['경영진단','로드맵','사업계획서','상권분석','인증서류','지원사업알림','매달리포트','쿠폰북'];
+   sdocs([[files[i],230,i==7?620:420,-5,1.5,.8]], i==7?'rgba(250,99,15,.66)':(i%2?'rgba(6,57,164,.55)':'rgba(8,13,34,.58)'));
+   vign('rgba(0,0,0,.45)',1);
+   txt.innerHTML=`<div class="w9" style="font-size:${names[i].length>5?150:200}px;color:#fff;text-shadow:0 6px 40px rgba(0,0,0,.35)">${names[i]}</div>`;
+   if(ph=='in'){fx.style.background='radial-gradient(circle at 50% 50%, transparent 0 360px, var(--paper) 362px)'}},
+ 7(){ theme('var(--paper)'); sdocs([['쿠폰북',360,520,14,.8,1.6],['매달리포트',150,560,-12,.85,1.6],['지원사업알림',420,480,9,.8,1.4],['인증서류',120,500,-7,.88,1.3],['상권분석',330,470,5,.88,1.2],['사업계획서',180,440,-3,.9,1.1],['로드맵',280,430,3,.92,1.0],['경영진단',230,400,-1,.95,.8]],'rgba(246,244,239,.4)'); halo('rgba(246,244,239,.93)');
+   txt.innerHTML=`<div class="w9" style="font-size:140px;${ph=='in'?'clip-path:inset(0 0 45% 0);transform:translateY(40px)':''}">다 드린 뒤에</div><div class="w9" style="font-size:140px;margin-top:10px;${ph=='in'?'opacity:0':''}">정산합니다</div>
+   ${ph=='out'?'<div style="margin-top:50px;border:14px solid var(--orange);color:var(--orange);border-radius:24px;padding:10px 46px;font:900 150px P;transform:rotate(-8deg)">정산</div>':''}`;
+   if(ph=='in'){st.style.transform='scale(1.0)'; fx.style.boxShadow='inset 0 0 0 0 transparent'}},
+ 8(){ theme('var(--ink)',1); pool('rgba(6,57,164,.6)',50,40); ghost('5,622',640,-60,1180,.07,'#fff');
+   const a=ph=='in'?'3,988':'4,326', b=ph=='in'?'4,107':'5,622';
+   txt.innerHTML=`<div class="w9 a ${ph=='in'?'smear':''}" style="font-size:220px;font-variant-numeric:tabular-nums">${a}곳</div><div class="w9 ${ph=='in'?'smear':''}" style="font-size:220px;color:#fff;font-variant-numeric:tabular-nums">${b}건</div><div class="label" style="color:#fff">누적 고객사 · 성공 컨설팅</div>`},
+ 9(){ theme('var(--paper)'); vign('rgba(8,13,34,.25)',1); ghost('말고',620,170,1250,.05);
+   const strike=ph!='in';
+   txt.innerHTML=`<div class="w9" style="font-size:190px;position:relative;display:inline-block">대출만${strike?'<span style="position:absolute;left:-10px;right:-10px;top:52%;height:22px;background:var(--orange)"></span>':''}</div><div class="w9" style="font-size:150px;margin-top:10px">받아 주는 곳</div><div class="w9" style="font-size:150px;margin-top:10px;opacity:${ph=='out'?1:0}">말고</div>`},
+ 10(){ theme('var(--orange)',1); rays('rgba(255,255,255,.09)',1); vign('rgba(120,20,0,.3)',1);
+   const s=ph=='in'?1.32:1;
+   txt.innerHTML=`<div class="w9" style="font-size:200px;color:#fff;transform:scale(${s})">회사가</div><div class="w9" style="font-size:250px;color:#fff;margin-top:10px;transform:scale(${s})">잘 되게</div>`;
+   if(ph=='in') st.style.filter='blur(2px)'; if(ph=='hold')push(1.04)},
+};
+(B[bar]||B[1])();
+</script></body></html>

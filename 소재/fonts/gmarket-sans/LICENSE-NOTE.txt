@@ -1,0 +1,4 @@
+Gmarket Sans - 공식 배포 페이지(https://corp.gmarket.com/fonts/) 문구 (2026-10-08 확인)
+"Gmarket Sans는 'SIL Open Font License'에 따라 개인 또는 기업이 영리적, 비영리적 목적으로 자유롭게 사용할 수 있습니다."
+"Gmarket Sans는 누구나 제약 없이 자유롭게 수정하고 재배포 하실 수 있습니다."
+배포 압축(GmarketSansTTF.zip)에는 별도 라이선스 파일이 없어 위 페이지 문구를 옮겨 둔다.

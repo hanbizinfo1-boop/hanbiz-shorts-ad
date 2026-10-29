@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-21 7번 28.145~29.997 «실제 사례로 / 알려드리겠습니다» — 인터넷 자료 → 카페 클릭 → 책이 물방울처럼 들어가며 성공사례가 쏟아짐(화면 전체 V1).
+     사장님 «그다음 실제 사례로 알려드리겠습니다 까지 이어서 전환효과 부드럽게 연출 효과붙여서 넣어주면 좋을듯 / 이 부분은 인터넷상 수많은 자료중에 하나를 클릭했더니
+     [카페 화면] 이 카페가 나오고 이 카페 속으로 새폴더의 책5 가 속 들어가면서(지면에 물방울 들어갈때 이는 출렁임연출) 성공사례들이 쏟아져나오는 연출로»
+     «이름·로고 그대로 다시 그림» «저거 카페홍보겸해서하는거니까 제대로 따라해줘» → 카페 본문은 사장님 캡처 그대로(소재/r7c/cafe_page.jpg) + 주소창은 새로 그림 · 아래 게시판 줄 = 캡처 왼쪽 메뉴의 실제 게시판 이름.
+     ① 0~0.40 앞 장면 마지막 화면(홀로그램)이 작아져 자료 벽의 한 칸이 됨 ② 0.30~0.75 자료 벽이 위로 흐름 · 커서가 카페 칸으로 → 0.68 딸깍
+     ③ 0.72~1.00 카페 칸이 화면 전체로 ④ 0.867 «알려드리겠습니다» 책5 가 떨어져 1.05 카페 화면 속으로 쏙 · 물방울 출렁임 ⑤ 1.12~ 상담 후기·성공사례 카드가 쏟아져 나옴.
+     소재 tools/r7c_assets.py → 소재/r7c. 900×1600 · 59.94 · 장면 0초 = 시퀀스 28.145(17:39 저장본). -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent;font-family:"HM Pretendard"}
+#st{position:absolute;inset:0;overflow:hidden;background:#0c1018}
+#wall{position:absolute;left:0;top:0;width:900px}
+.mt{position:absolute;width:200px;height:300px;border-radius:12px;overflow:hidden;background:#fff center/cover;box-shadow:0 10px 24px rgba(0,0,0,.5)}
+#last{position:absolute;background:url('../../소재/r7c/last.jpg') center/cover;border-radius:0;overflow:hidden;box-shadow:0 10px 24px rgba(0,0,0,.5)}
+#cafe{position:absolute;left:0;top:0;width:900px;height:1600px;transform-origin:0 0;background:#fff;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+#addr{position:absolute;left:0;top:0;width:900px;height:118px;background:#f1f3f4;border-bottom:1px solid #dadce0}
+#addr .pill{position:absolute;left:30px;right:30px;top:30px;height:58px;border-radius:29px;background:#fff;box-shadow:inset 0 0 0 1px #dadce0;font:500 30px/58px "HM Pretendard";color:#202124;padding-left:74px}
+#addr .pill:before{content:"";position:absolute;left:28px;top:18px;width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 3px #5f6368}
+#page{position:absolute;left:0;top:118px;width:900px;height:1024px;background:url('../../소재/r7c/cafe_page.jpg') 0 0/900px 1024px}
+#more{position:absolute;left:0;top:1142px;width:900px;height:458px;background:#fff;padding:22px 26px}
+#more .row{height:62px;border-bottom:1px solid #eee;display:flex;align-items:center;font:600 26px/1 "HM Pretendard";color:#333}
+#more .row b{color:#03c75a;margin-right:14px;font-weight:800;font-size:22px}
+#ring1,#ring2{position:absolute;border-radius:50%;border:5px solid rgba(80,170,255,.75);box-shadow:0 0 18px rgba(80,170,255,.5)}
+#book{position:absolute;width:300px;height:428px;margin:-214px 0 0 -150px;background:url('../../소재/r7c/book5.png') center/100% 100%;box-shadow:0 22px 40px rgba(0,0,0,.55);border-radius:4px}
+.cs{position:absolute;width:230px;height:300px;margin:-150px 0 0 -115px;border-radius:14px;background:#fff;box-shadow:0 14px 30px rgba(0,0,0,.45);padding:10px;overflow:hidden}
+.cs i{display:block;width:210px;height:220px;border-radius:8px;background:#eee center/cover}
+.cs b{display:block;margin-top:10px;text-align:center;font:800 26px/48px "HM Pretendard";color:#fff;border-radius:24px;background:#03c75a}
+.cs b.g{background:linear-gradient(90deg,#e0a92c,#c98a12)}
+#cur{position:absolute;width:56px;height:76px;margin:-6px 0 0 -6px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.6))}
+#clk{position:absolute;border-radius:50%;border:4px solid #fff}
+#flash{position:absolute;inset:0;background:radial-gradient(40% 30% at 50% 35%,rgba(255,255,255,.75),rgba(255,255,255,0) 70%)}
+</style></head>
+<body><div id="st">
+  <div id="wall"></div>
+  <div id="last"></div>
+  <div id="cafe" style="filter:url(#rip)">
+    <div id="addr"><div class="pill">cafe.naver.com/gameheaven77</div></div>
+    <div id="page"></div>
+    <div id="more">
+      <div class="row"><b>강남빌딩 실전 정보집</b>강남빌딩 입지8법칙</div>
+      <div class="row"><b>강남빌딩 실전 정보집</b>강남빌딩 협상7법칙(공사견적서 비교법)</div>
+      <div class="row"><b>강남빌딩 실전 정보집</b>의사의 200억 강남빌딩 마스터플랜(기본편)</div>
+      <div class="row"><b>강남빌딩 실전 정보집</b>의사의 500억 강남빌딩 로드맵</div>
+      <div class="row"><b>성공사례&후기</b>강남빌딩 성공사례</div>
+      <div class="row"><b>성공사례&후기</b>황소장님 상담 후기</div>
+    </div>
+  </div>
+  <svg width="0" height="0" style="position:absolute"><filter id="rip" x="0" y="0" width="900" height="1600" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    <feFlood flood-color="rgb(128,128,128)" result="mid"/>
+    <feImage id="ripimg" href="../../소재/r7c/ripple.png" x="450" y="560" width="0" height="0" preserveAspectRatio="none" result="rm"/>
+    <feComposite in="rm" in2="mid" operator="over" result="map"/>
+    <feDisplacementMap id="ripd" in="SourceGraphic" in2="map" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+  </filter></svg>
+  <div id="ring1"></div><div id="ring2"></div>
+  <div id="book"></div>
+  <div id="cases"></div>
+  <div id="flash"></div>
+  <div id="clk"></div>
+  <svg id="cur" viewBox="0 0 28 38"><path d="M2 2 L2 30 L9 23 L14 35 L19 33 L14 21 L24 21 Z" fill="#fff" stroke="#111" stroke-width="2" stroke-linejoin="round"/></svg>
+</div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 1.852;
+window.PALETTE = ['#03c75a', '#ffffff', '#0c1018'];
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const ei = x => Math.pow(clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = x => { x = clamp(x); const c = 1.6; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, k) => a + (b - a) * k;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+const O = 28.145, at = s => s - O;
+const T = {shrink: 0, scroll: .30, click: .68, open: .72, book: at(29.012), hit: 1.05, burst: 1.12, end: 1.852};
+const $ = id => document.getElementById(id);
+const P = '../../소재/r7c/';
+// 자료 벽: 4열 · 행 간격 316 · 홀로그램 칸 = (1열, 1행) · 카페 칸 = (2열, 4행)
+const COLX = [26, 242, 458, 674], ROW0 = 140, RP = 316, SCROLL = 760;
+const HERO = [1, 1], CAFE = [2, 4];
+let n = 0;
+const MT = [];
+for (let r = 0; r < 8; r++) for (let c = 0; c < 4; c++) {
+  if ((c === HERO[0] && r === HERO[1]) || (c === CAFE[0] && r === CAFE[1])) continue;
+  const e = document.createElement('div'); e.className = 'mt'; e.style.backgroundImage = `url(${P}m${String(n++ % 28).padStart(2, '0')}.jpg)`;
+  e.style.left = COLX[c] + 'px'; $('wall').appendChild(e); MT.push({e, c, r, d: Math.hypot(c - HERO[0], r - HERO[1])});
+}
+// 성공사례 카드 12장 — 가운데에서 위·옆으로 솟았다 떨어짐
+const CS = [];
+for (let i = 0; i < 12; i++) {
+  const e = document.createElement('div'); e.className = 'cs';
+  e.innerHTML = `<i style="background-image:url(${P}s${String(i).padStart(2, '0')}.jpg)"></i><b class="${i % 3 === 1 ? 'g' : ''}">${i % 3 === 1 ? '성공사례' : '상담 후기'}</b>`;
+  $('cases').appendChild(e);
+  const a = -Math.PI / 2 + (i / 11 - .5) * 2.3, sp = 1500 + (i * 37 % 5) * 120;
+  CS.push({e, vx: Math.cos(a) * sp * .62, vy: Math.sin(a) * sp, rot: (i % 2 ? 1 : -1) * (10 + i * 3 % 14), t0: T.burst + (i % 6) * .035});
+}
+const RC = [450, 560];                                                  // 책이 들어가는 자리(자막 위)
+window.EVENTS = [{t: 0, role: 'shrink'}, {t: T.scroll, role: 'scroll'}, {t: T.click, role: 'click'}, {t: T.open, role: 'open'}, {t: T.book, role: 'book'}, {t: T.hit, role: 'ripple'}, {t: T.burst, role: 'burst'}];
+
+window.seek = async function (t) {
+  const sc = -SCROLL * eio((t - T.scroll) / .45);
+  const tileY = r => ROW0 + r * RP + sc;
+  // ── ① 앞 장면 마지막 화면 → 자료 벽의 한 칸
+  const k = eio(t / .40);
+  const hx = COLX[HERO[0]], hy = tileY(HERO[1]);
+  Object.assign($('last').style, {left: lerp(0, hx, k) + 'px', top: lerp(0, hy, k) + 'px', width: lerp(900, 200, k) + 'px', height: lerp(1600, 300, k) + 'px', borderRadius: 12 * k + 'px'});
+  MT.forEach(m => { const a = eo((t - .06 - m.d * .03) / .25); m.e.style.top = tileY(m.r) + 'px'; m.e.style.transform = `scale(${.8 + .2 * a})`; m.e.style.opacity = a; });
+  show($('wall'), t < T.open + .3 ? 1 : 0); show($('last'), t < T.open + .3 ? 1 : 0);
+  // ── ③ 카페 칸 → 화면 전체(카페 전체 화면을 줄여 칸에 넣어 둠)
+  const ok = eio((t - T.open) / .28);
+  const cs0 = 200 / 900, cx = COLX[CAFE[0]], cy = tileY(CAFE[1]);
+  const s = lerp(cs0, 1, ok);
+  $('cafe').style.transform = `translate(${lerp(cx, 0, ok)}px,${lerp(cy, 0, ok)}px) scale(${s})`;
+  $('cafe').style.borderRadius = 12 / s * (1 - ok) + 'px';
+  $('cafe').style.opacity = eo((t - .10) / .2);
+  // ── ② 커서 → 카페 칸 딸깍
+  const ck = eio((t - .34) / .32), tx = cx + 120, ty = cy + 200;
+  Object.assign($('cur').style, {left: lerp(760, tx, ck) + 'px', top: lerp(1420, ty, ck) + 'px', transform: `scale(${1 - .18 * Math.sin(Math.PI * clamp((t - T.click) / .1))})`});
+  show($('cur'), t > .32 && t < T.open + .1 ? 1 : 0);
+  const rk = (t - T.click) / .25;
+  Object.assign($('clk').style, {left: tx - 40 * rk + 'px', top: ty - 40 * rk + 'px', width: 80 * rk + 'px', height: 80 * rk + 'px'});
+  show($('clk'), rk > 0 && rk < 1 ? 1 - rk : 0);
+  // ── ④ 책5 가 떨어져 카페 화면 속으로 쏙(물방울)
+  const bf = ei((t - T.book) / (T.hit - T.book)), sink = eo((t - T.hit) / .2);
+  Object.assign($('book').style, {left: RC[0] + 'px', top: lerp(-300, RC[1], bf) + 'px',
+    transform: `rotate(${lerp(-14, 0, bf)}deg) scale(${lerp(1.15, .95, bf) * (1 - .85 * sink)})`});
+  $('book').style.filter = `brightness(${1 - .4 * sink})`;
+  show($('book'), t > T.book ? 1 - clamp((t - T.hit - .12) / .1) : 0);
+  // 출렁임: 동심원 왜곡 지도가 커지며 약해짐
+  const ru = t - T.hit, rr = ru > 0 ? 160 + 1500 * eo(ru / .7) : 0, amp = ru > 0 ? 70 * Math.exp(-3.2 * ru) : 0;
+  const ri = $('ripimg');
+  ri.setAttribute('x', RC[0] - rr / 2); ri.setAttribute('y', RC[1] - rr / 2); ri.setAttribute('width', rr); ri.setAttribute('height', rr);
+  $('ripd').setAttribute('scale', amp);
+  [['ring1', 0], ['ring2', .12]].forEach(([id, d]) => { const u = (t - T.hit - d) / .6, R = 40 + 520 * eo(u);
+    Object.assign($(id).style, {left: RC[0] - R + 'px', top: RC[1] - R * .55 + 'px', width: 2 * R + 'px', height: 1.1 * R + 'px'}); show($(id), u > 0 && u < 1 ? .9 * (1 - u) : 0); });
+  show($('flash'), ru > 0 && ru < .25 ? .6 * (1 - ru / .25) : 0);
+  // ── ⑤ 성공사례·상담 후기 카드가 쏟아져 나옴(포물선)
+  CS.forEach(c => {
+    const u = t - c.t0;
+    if (u <= 0) { show(c.e, 0); return; }
+    const x = RC[0] + c.vx * u * (1 - .35 * u), y = RC[1] + c.vy * u + 2600 * u * u * .5;
+    c.e.style.left = x + 'px'; c.e.style.top = y + 'px';
+    c.e.style.transform = `rotate(${c.rot * eo(u / .4)}deg) scale(${.25 + .75 * back(u / .3)})`;
+    show(c.e, 1);
+  });
+};
+</script></body></html>

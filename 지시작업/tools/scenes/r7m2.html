@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-21 7번 상담 모자이크 V2 — 전체 화면. 사장님 원문은 지시작업/tools/r7m2_build.py 머리.
+     900×1600 · 59.94 · 장면 0초 = 시퀀스 3.971. 짙은 차콜 배경.
+     3.97 상담 사진 한 장 크게(폭 600) · 4.70 «모든 자산가가» 줌아웃 → 사진 162칸이 강남빌딩 모자이크(높이 1100) · 5.68 «강남 빌딩을» 금빛 번쩍 → 실제 건물 · 6.50 «사고 싶어» 금빛 빛 · 6.98~ 사람 화면으로 -->
+<script src="r7m2_cells.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:relative;width:900px;height:1600px;overflow:hidden}
+#bg{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 55%,#2a2c32 0%,#16171b 60%,#0d0e10 100%)}
+#w{position:absolute;left:0;top:0;width:900px;height:1600px;transform-origin:0 0;will-change:transform}
+.tile{position:absolute;background-size:cover;background-position:center;box-shadow:0 0 0 .9px rgba(255,255,255,.85)}
+#bld,#fl{position:absolute;background-size:100% 100%}
+#fl{background:#FFD27A}
+#glow{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,120,.55),rgba(255,190,80,.18) 60%,rgba(255,190,80,0))}
+</style></head>
+<body><div id="st"><div id="bg"></div><div id="w"><div id="glow"></div><div id="tiles"></div><div id="bld"></div><div id="fl"></div></div></div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 3.153;
+window.PALETTE = ['#ffffff', '#FFD43B'];
+const R = window.R7M2, P = '../../소재/r4s5/', B = '../../소재/r4s/bldcut_uh.png';
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const O = 3.971, at = s => s - O;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+const T = {z0: at(4.70), z1: at(5.62), flash: at(5.68), glow: at(6.50), out: at(6.98), end: 3.153};
+const st = document.getElementById('st'), w = document.getElementById('w'), bg = document.getElementById('bg');
+const bld = document.getElementById('bld'), fl = document.getElementById('fl'), glow = document.getElementById('glow');
+const box = {left: R.x0 + 'px', top: R.y0 + 'px', width: R.bw + 'px', height: R.bh + 'px'};
+Object.assign(bld.style, box, {backgroundImage: `url(${B})`, filter: 'drop-shadow(0 24px 30px rgba(0,0,0,.6))'});
+Object.assign(fl.style, box);
+fl.style.webkitMaskImage = fl.style.maskImage = `url(${B})`; fl.style.webkitMaskSize = fl.style.maskSize = '100% 100%';
+Object.assign(glow.style, {left: (R.x0 - 260) + 'px', top: (R.y0 - 160) + 'px', width: (R.bw + 520) + 'px', height: (R.bh + 320) + 'px'});
+const host = document.getElementById('tiles');
+R.cells.forEach(c => { const e = document.createElement('div'); e.className = 'tile'; Object.assign(e.style, {left: c.x + 'px', top: c.y + 'px', width: R.tw + 'px', height: R.th + 'px', backgroundImage: `url(${P}${c.img})`}); host.appendChild(e); });
+const H0 = R.cells[R.hero], HX = H0.x + R.tw / 2, HY = H0.y + R.th / 2;
+const S0 = 600 / R.tw;                                   // 처음: 첫 장이 폭 600
+const FX = 450, FY = 800;                                // 마지막: 세계 좌표 = 화면 좌표
+window.EVENTS = [{t: 0, role: 'hero_in'}, {t: T.z0, role: 'zoom'}, {t: T.flash, role: 'flash'}, {t: T.glow, role: 'glow'}];
+
+window.seek = async function (t) {
+  const inn = eo(t / .18), fade = 1 - eio((t - T.out) / (T.end - T.out));
+  show(st, inn * fade);
+  // 카메라: 처음 한 장에 머물며 아주 천천히 다가감 → 4.70~5.62 로그 비율로 줌아웃(첫 장이 화면 위 자리를 자연스럽게 따라감)
+  const hold = S0 * (1 + .05 * clamp(t / T.z0)) * (.96 + .04 * inn);
+  const z = eio((t - T.z0) / (T.z1 - T.z0));
+  const s = Math.exp(Math.log(hold) * (1 - z));
+  const m = (1 / s - 1 / hold) / (1 - 1 / hold);        // 초점: 첫 장 → 화면 가운데(줌과 함께)
+  const fx = HX + (FX - HX) * m, fy = HY + (FY - HY) * m;
+  const pop = t > T.glow ? 1 + .03 * eo((t - T.glow) / .35) : 1;
+  const sy = 520 + (800 - 520) * m;                       // 첫 장은 자막(y≈787) 위 y 520 에 — 줌아웃하며 가운데로
+  w.style.transform = `translate(${450}px,${sy}px) scale(${s * pop}) translate(${-fx}px,${-fy}px)`;
+  // 실제 건물로: 금빛 번쩍(0.14초) + 모자이크 → 건물 0.15초
+  show(host, 1 - clamp((t - T.flash - .03) / .15));
+  show(bld, clamp((t - T.flash) / .15));
+  show(fl, .55 * clamp((t - T.flash + .03) / .03) * (1 - clamp((t - T.flash) / .14)));
+  show(glow, eo((t - T.glow) / .3) * (.85 + .15 * Math.sin((t - T.glow) * 8)));
+  bg.style.opacity = 1;
+};
+</script></body></html>

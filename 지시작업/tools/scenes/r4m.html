@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 10-20 4번 «건물만 사면 / 돈을 벌 수 있어요» — 사장님 «건물만 사면 << 건물이 딱 한채 살짝 왼쪽부분에 박혀주고 거기서 코인획득 효과음이랑 같이 돈다발 한 3개가 짤랑 하면서 위로살짝 올라가면서 디졸브되는 느낌으로 돈벌수있는걸 표현해줘»
+     건물 = 지시작업/소재/r4s/bldcut_1.png(rembg 누끼) · 돈다발 = 지시작업/소재/codex/r4m_bundle_a.png(Codex → rembg)
+     900×1600 · 59.94 · 장면 0초 = 시퀀스 25.359. 사장님 안쪽 안전선 x 90~808 · 자막(~950) 밑. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:900px;height:1600px;overflow:hidden;background:transparent}
+#st{position:relative;width:900px;height:1600px;overflow:hidden}
+.a{position:absolute;left:0;top:0;background-size:100% 100%;will-change:transform,opacity,filter}
+</style></head>
+<body><div id="st"></div>
+<script>
+window.W = 900; window.H = 1600; window.FPS = 59.94; window.DURATION = 1.635;
+window.PALETTE = ['#ffffff'];
+const st = document.getElementById('st');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const back = x => { x = clamp(x); const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const wob = (x, f = 30, d = 9) => x <= 0 ? 0 : Math.cos(x * f) * Math.exp(-x * d);
+const O = 25.359, at = s => s - O;
+const show = (e, o) => { e.style.opacity = o; e.style.display = o > .001 ? 'block' : 'none'; };
+function mk(src, w, h, box) { const e = document.createElement('div'); e.className = 'a'; Object.assign(e.style, {width: w + 'px', height: h + 'px', backgroundImage: `url(${src})`}); if (box) e.dataset.box = box; st.appendChild(e); return e; }
+// 건물 — 살짝 왼쪽, 밑선 1430
+const B = {w: 290, h: 437, x: 300, base: 1430, t: at(25.37)};
+B.e = mk('../../소재/r4s/bldcut_1.png', B.w, B.h, 'bld'); B.e.style.filter = 'drop-shadow(0 16px 18px rgba(0,0,0,.45))'; B.e.style.transformOrigin = '50% 100%';
+// 돈다발 3개 — «돈을 벌 수 있어요»에 건물 옥상에서 하나씩 «짤랑» 튀어나와 오른쪽에 자리 잡고 위로 살짝 떠오르며 디졸브
+const MW = 230, MH = MW * 687 / 1339;
+const M = [{t: at(26.23), x0: 330, y0: 1080, x1: 540, y1: 1140, r: -8}, {t: at(26.23), x0: 330, y0: 1080, x1: 655, y1: 1250, r: 7}, {t: at(26.23), x0: 330, y0: 1080, x1: 575, y1: 1360, r: -4}   /* 10-20 «돈다발 3개 한번에나오고 코인획득 효과음한번» */];
+M.forEach(m => { m.e = mk('../../소재/codex/r4m_bundle_a.png', MW, MH); });
+// 10-20 «약간 + 표시해주고» — 돈다발마다 왼쪽 위에 초록 «+», 돈다발과 같이 올라가며 사라짐
+const PL = M.map(() => { const e = document.createElement('div'); e.className = 'a'; e.textContent = '+';
+  Object.assign(e.style, {fontFamily: '"HM GmarketSans","HM Pretendard"', fontWeight: 500, fontSize: '96px', lineHeight: '96px', color: '#00FC00', WebkitTextStroke: '6px #0b0b0d', paintOrder: 'stroke fill'}); st.appendChild(e); return e; });
+const SP = M.map(() => { const e = document.createElement('div'); e.className = 'a'; e.innerHTML = '<svg width="120" height="120" viewBox="-60 -60 120 120"><path d="M0,-52 L9,-9 L52,0 L9,9 L0,52 L-9,9 L-52,0 L-9,-9Z" fill="#fff6c8"/></svg>'; st.appendChild(e); return e; });
+const T = {out: at(26.88), end: 1.635};
+window.EVENTS = [{t: B.t, role: 'bld'}, {t: M[0].t, role: 'coin'}];
+
+window.seek = async function (t) {
+  const fade = clamp((T.end - t) / (T.end - T.out));
+  // 건물: 위에서 떨어져 박히며 찌그러졌다 섬
+  const u = t - B.t, k = Math.min(1, Math.pow(Math.max(0, u) / .16, 2)), sq = u > .16 ? .1 * wob(u - .16, 30, 9) : 0;
+  B.e.style.transform = `translate(${B.x - B.w / 2}px,${B.base - B.h - (1 - k) * 180}px) scale(${1 + sq},${1 - sq})`;
+  show(B.e, u >= 0 ? clamp(u / .04) * fade : 0);
+  // 돈다발 — 10-20 «돈이 건물에서 튀어나오는게아니라 그냥 박히면서 천천이 위로 키프레임디졸브»: 제자리에 툭 박힘(0.14초) → 끝날 때까지 천천히 위로 + 서서히 사라짐
+  M.forEach((m, i) => {
+    const v = t - m.t; if (v < 0) { show(m.e, 0); show(SP[i], 0); show(PL[i], 0); return; }
+    const k = Math.min(1, Math.pow(v / .14, 2)), sq = v > .14 ? .08 * wob(v - .14, 30, 10) : 0;
+    const rest = Math.max(.01, T.end - m.t - .14), r = clamp((v - .14) / rest);       // 박힌 뒤 ~ 장면 끝
+    const x = m.x1, y = m.y1 - (1 - k) * 120 - 90 * r;                                // 위에서 툭 → 천천히 90px 위로
+    m.e.style.transform = `translate(${x - MW / 2}px,${y - MH / 2}px) rotate(${m.r}deg) scale(${(1 + sq) * (1.15 - .15 * k)},${(1 - sq) * (1.15 - .15 * k)})`;
+    m.e.style.filter = 'drop-shadow(0 10px 12px rgba(0,0,0,.4))';
+    show(m.e, clamp(v / .04) * (1 - r));                                              // 키프레임 디졸브(선형)
+    const pk = 1 + .35 * wob(v - .1, 26, 9) * (v > .1 ? 1 : 0);
+    if (i === 1) { PL[i].style.fontSize = '130px'; PL[i].style.transform = `translate(${x + MW / 2 - 10}px,${y - MH / 2 - 80}px) scale(${pk * Math.min(1, Math.max(0, (v - .08) / .12))})`; show(PL[i], clamp((v - .08) / .06) * (1 - r)); } else show(PL[i], 0);   // 10-20 «+는 하나만» — 가운데 돈다발 오른쪽 위에 하나
+    const sk = clamp((v - .1) / .25); SP[i].style.transform = `translate(${x + 40}px,${y - 90}px) scale(${.3 + sk}) rotate(${sk * 60}deg)`; show(SP[i], sk > 0 && sk < 1 ? 1 - sk : 0);
+  });
+};
+</script></body></html>

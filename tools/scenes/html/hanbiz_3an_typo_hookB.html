@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<!-- 3안 타이포 완성본 장면 — 5판 (10-12, 사장님 확정 대본: «정책자금 필요하세요?» ~ «이 모든걸 다 드립니다» · 15초 이후 «컨설팅부터 마케팅까지 / 전문가에게 맡기고싶다면»). 이전 판 기록:
+     1판 반려: 사장님 «흔들리는 연출 별로고 뭔가 찍 긋는 그런 연출도 좀 디자인신경썼으면좋겠고 글자나 그런 연출 및 효과가 너무 부족해»
+       → 흔들림 계열 전부 뺌(도장 흔들림 · 가로 번짐 잔상 · 매 프레임 바뀌는 그레인)
+       → «찍» 붓 획 시스템(끝이 가늘어지는 획 + 앞머리 빛, 4~6프레임): 밑줄 · 취소선 · 형광펜 · 화면 쓸기 전환
+       → 마디마다 «글자 단위 등장 + 보조 그래픽 + 강조» 3겹 (motion-typo.md J 카드)
+     html_motion 계약: W·H·FPS·DURATION · seek(t) 결정적.
+     0~18.738 = 마디 1~10 · 18.738~23.738 = 레이저 로고 엔딩 mp4(합성 단계) · 23.738~26.0 = 버튼 + 고지.
+     마디 시각 = 확정 BGM «I'm Under The Radar» 곡 28.166초부터의 실측 마디(기록/BGM_박자표_1012.json). -->
+<style>
+:root{--paper:#F6F4EF;--ink:#080D22;--royal:#0639A4;--blue:#1857D1;--orange:#FA630F;--amber:#FDA608;--black:#060606}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--paper)}
+#st{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:"HM Pretendard",sans-serif;word-break:keep-all;transform-origin:50% 47%}
+.L{position:absolute;inset:0}
+#far{overflow:hidden}
+#grain{opacity:.06;mix-blend-mode:multiply;background-size:540px 540px}
+#st.dark #grain{mix-blend-mode:screen;opacity:.07}
+#txt{position:absolute;left:60px;right:60px;top:420px;height:960px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.06;letter-spacing:-.03em;transform-origin:50% 50%}
+#hud{display:none;position:absolute;top:190px;left:80px;right:80px;display:flex;justify-content:space-between;font:600 24px "HM Pretendard";letter-spacing:.18em;opacity:.55}
+.cn{position:absolute;width:44px;height:44px;opacity:.5}
+.cn.tl{top:150px;left:56px;border-top:3px solid currentColor;border-left:3px solid currentColor}
+.cn.tr{top:150px;right:56px;border-top:3px solid currentColor;border-right:3px solid currentColor}
+.sdoc{position:absolute;width:620px;border-radius:8px;box-shadow:0 30px 70px rgba(8,13,34,.28)}
+.ghost{position:absolute;font-weight:900;white-space:nowrap;color:transparent;-webkit-text-stroke:3px currentColor;line-height:1}
+.ln{display:block;white-space:nowrap;position:relative}
+.wd{position:relative;display:inline-block}
+.sy{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .01em .06em}
+.sy>i{display:inline-block;font-style:normal}
+.mask{display:block;overflow:hidden;padding:0 10px .04em}
+.caret{display:inline-block;width:12px;height:.86em;background:currentColor;vertical-align:-.06em;margin-left:8px}
+.brush{position:absolute;overflow:visible;pointer-events:none;max-width:none;max-height:none}
+.dots{position:absolute;left:0;right:0;top:1300px;display:flex;justify-content:center;gap:22px}
+.dots b{width:16px;height:16px;border-radius:50%;border:3px solid rgba(255,255,255,.75)}
+.dots b.on{background:#fff;border-color:#fff}
+.dots b.cur{background:var(--amber);border-color:var(--amber);width:44px;border-radius:9px}
+.odo{display:inline-flex;font-variant-numeric:tabular-nums}
+.col{display:inline-block;height:1.06em;overflow:hidden;vertical-align:top}
+.col>span{display:block}
+.col>span>i{display:block;font-style:normal;height:1.06em}
+.oc{position:absolute;background:rgba(255,255,255,.93);border-radius:26px;box-shadow:0 26px 60px rgba(8,13,34,.22),0 0 0 1.5px rgba(255,255,255,.9) inset;overflow:hidden}
+.ochead{position:absolute;left:22px;top:20px;display:flex;gap:9px}.ochead b{width:14px;height:14px;border-radius:50%;background:#D7DAE2}
+.obars{position:absolute;left:18px;right:18px;bottom:24px;top:70px}.obars i{position:absolute;bottom:0;width:36px;border-radius:8px 8px 3px 3px;background:linear-gradient(var(--blue),var(--royal))}
+.ost i{width:60px;background:linear-gradient(#2A3F7A,var(--ink))}
+.oline{position:absolute;left:24px;top:84px;width:330px;height:150px;overflow:visible}
+.orc{position:absolute;left:34px;right:120px;top:76px}.orc i{display:block;height:15px;border-radius:8px;background:#C9CDD6;margin:0 0 20px}.orc u{display:block;border-top:4px dashed #C9CDD6;margin:0 0 20px}
+.ochk{position:absolute;right:26px;bottom:30px;width:92px;height:92px}
+.opct{position:absolute;right:28px;top:16px;font:900 54px "HM Pretendard";color:var(--royal)}
+.oflag{position:absolute;right:46px;top:40px;width:60px;height:90px}
+#panel{position:absolute;left:70px;right:70px;top:640px;height:560px;border-radius:44px;background:rgba(255,255,255,.66);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 30px 80px rgba(8,13,34,.25),0 0 0 2px rgba(255,255,255,.85) inset}
+#arw{position:absolute;left:0;right:0;top:1250px;height:300px}#arw svg{position:absolute;left:480px;width:120px;height:70px;opacity:0}
+/* 10-12 사장님 «저 위에 한비즈랑 01/10 이런것좀 없애줘» — HUD·모서리 괄호 전부 숨김(앞 판의 display:none 은 같은 규칙의 display:flex 에 덮였다) */
+#hud,.cn{display:none !important}
+#end{position:absolute;inset:0;display:none}
+#end img{position:absolute;inset:0;width:1080px;height:1920px}
+.btn{position:absolute;left:50%;top:1330px;transform:translateX(-50%);background:var(--royal);color:#fff;font:700 52px "HM Pretendard";border-radius:90px;padding:34px 70px;white-space:nowrap;box-shadow:0 18px 40px rgba(6,57,164,.35)}
+.note{position:absolute;left:90px;right:90px;top:1490px;text-align:center;font:500 28px "HM Pretendard";color:#4B5160;line-height:1.45;word-break:keep-all}
+.qf{position:absolute;font-weight:900;line-height:1;text-shadow:0 10px 40px rgba(0,0,0,.35)}
+.shard>.ln{margin:0}
+#crk polyline{fill:none;stroke:#fff;stroke-width:4px;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 6px rgba(255,255,255,.9))}
+.sbg{position:absolute;inset:0;overflow:hidden}.sbg img{position:absolute;left:-60px;top:-90px;width:1200px;height:2100px;object-fit:cover}
+.obub{position:absolute;height:40px;border-radius:20px}
+.otyp{position:absolute;left:28px;bottom:26px;display:flex;gap:8px}.otyp b{width:14px;height:14px;border-radius:50%;background:var(--royal)}
+.othumb{position:absolute;left:24px;top:70px;width:120px;height:120px;border-radius:14px;background:linear-gradient(135deg,var(--orange),var(--amber));display:flex;align-items:center;justify-content:center}.othumb svg{width:56px;height:56px}
+.oprog{position:absolute;left:170px;right:28px;height:18px;border-radius:9px;background:#E6E9F0;overflow:hidden}.oprog i{display:block;height:100%;width:0;border-radius:9px;background:var(--royal)}
+#more{position:absolute;left:50%;top:1300px;display:flex;align-items:center;gap:14px;background:var(--royal);color:#fff;font:800 56px "HM Pretendard";padding:30px 64px 30px 70px;border-radius:90px;box-shadow:0 24px 50px rgba(6,57,164,.45);white-space:nowrap;transform-origin:50% 100%;opacity:0;z-index:5}
+#more svg{width:44px;height:44px}#more .mhd{position:absolute;left:50%;top:-26px;width:90px;height:8px;margin-left:-45px;border-radius:4px;background:rgba(255,255,255,.85)}
+#crack polyline{fill:none;stroke:#fff;stroke-width:4px;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 8px rgba(255,255,255,.95))}
+#shatter{position:absolute;inset:0;pointer-events:none;z-index:20}.shp{position:absolute;inset:0;will-change:transform}
+.shp .txtc{position:absolute;left:60px;right:60px;top:420px;height:960px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.06;letter-spacing:-.03em}
+.cube{position:absolute;inset:0;transform-style:preserve-3d}.cube .cf{position:absolute;left:-60px;top:-90px;width:1200px;height:2100px;object-fit:cover;backface-visibility:hidden;-webkit-backface-visibility:hidden}.cube .cb{transform:rotateY(180deg)}
+.tline{display:flex;justify-content:center;gap:10px}
+.tl{display:inline-block;font-weight:900;font-size:150px;line-height:1;padding:14px 22px 20px;border-radius:6px;transform:rotate(var(--r));box-shadow:0 14px 26px rgba(8,13,34,.35),0 0 0 3px rgba(255,255,255,.9);position:relative}
+.tl::after{content:'';position:absolute;inset:0;border-radius:6px;background:repeating-linear-gradient(115deg,rgba(255,255,255,.05) 0 3px,transparent 3px 7px);pointer-events:none}
+.hw{font-weight:900;color:#fff;line-height:1;text-shadow:0 18px 50px rgba(0,0,0,.45)}
+.ring{position:absolute;left:540px;top:900px;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;border:10px solid rgba(253,166,8,.9);opacity:0}
+.cal{position:absolute;left:90px;right:90px;top:600px;height:400px;background:#fff;border-radius:28px;box-shadow:0 26px 60px rgba(8,13,34,.22);display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);padding:24px;gap:14px}
+.cal i{position:relative;font-style:normal;border-radius:14px;background:#F1F2F6;display:flex;align-items:flex-start;justify-content:flex-start;padding:10px 14px;font:700 30px "HM Pretendard";color:#5B6170}
+.cal i b{position:absolute;right:10px;bottom:8px;width:78px;height:78px;border-radius:50%;border:5px solid var(--orange);color:var(--orange);font:900 22px "HM Pretendard";display:flex;align-items:center;justify-content:center;transform:rotate(-12deg);opacity:0}
+.bill{position:absolute;width:300px;height:132px;border-radius:12px;background:linear-gradient(135deg,#2E7D5B,#3E9A70);box-shadow:0 10px 24px rgba(8,13,34,.25);display:flex;align-items:center;justify-content:center;font:900 64px "HM Pretendard";color:rgba(255,255,255,.85);border:5px solid rgba(255,255,255,.55)}
+.gl{position:absolute;left:60px;right:60px;text-align:center;font-weight:900;color:var(--ink);white-space:nowrap}
+.bc{position:absolute;left:90px;right:90px;height:150px;background:#fff;border-radius:26px;box-shadow:0 18px 40px rgba(8,13,34,.18);display:flex;align-items:center;gap:30px;padding:0 40px;font:800 60px "HM Pretendard";color:var(--ink);transform-origin:50% 50%}
+.bc .bx{flex:none;width:84px;height:84px;border-radius:18px;border:6px solid #C9CDD6;position:relative}
+.bc svg{position:absolute;left:-10px;top:-18px;width:110px;height:110px;overflow:visible}
+.conf{position:absolute;width:22px;height:34px;border-radius:3px}
+#rope{position:absolute;left:526px;top:0;width:28px;height:0;background:repeating-linear-gradient(160deg,#C79A63 0 10px,#A97A46 10px 20px);border-radius:14px;box-shadow:0 0 0 2px rgba(80,50,20,.35);z-index:6}
+#climber{position:absolute;width:820px;left:198px;z-index:7}
+#cta{position:absolute;inset:0;z-index:5;overflow:hidden}
+#cta .ctaw{position:absolute;left:44px;right:44px;top:600px;height:620px;padding:70px 40px;border-radius:44px;background:rgba(255,255,255,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 30px 80px rgba(8,13,34,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:56px}
+.gw{color:#fff;font-weight:900;text-shadow:0 10px 36px rgba(0,0,0,.45)}
+.blk3d{font-weight:900;color:var(--amber);letter-spacing:-.02em;text-shadow:1px 1px 0 #E08A00,2px 2px 0 #D88200,3px 3px 0 #CF7A00,4px 4px 0 #C67200,5px 5px 0 #BD6A00,6px 6px 0 #B46200,7px 7px 0 #AB5A00,8px 8px 0 #A25200,9px 9px 0 #994A00,10px 10px 0 #904300,12px 14px 26px rgba(0,0,0,.5);-webkit-text-stroke:2px #FFE0A0}
+.cuh{position:absolute;left:0;right:0;height:960px;overflow:hidden;background:#0A1A4E}
+#cuT{top:0}#cuB{top:960px}
+.cut{position:absolute;left:0;right:0;font-size:96px;text-align:center;white-space:nowrap}
+#cuT .cut{top:calc(960px - .5em);height:1em;line-height:1}#cuB .cut{top:calc(-.5em);height:1em;line-height:1}
+.wb{position:absolute;left:70px;right:70px;height:150px;border-radius:10px;background:url(../../../소재/배경/wood_block.png) center/cover,#B9874F;box-shadow:inset 0 3px 0 rgba(255,236,200,.45),inset 0 -6px 0 rgba(70,35,10,.45),0 18px 30px rgba(0,0,0,.4);transform-origin:50% 100%}
+.wbin{position:absolute;inset:0;display:flex;align-items:center;gap:28px;padding:0 40px}
+.cv{font:900 64px "HM Pretendard";color:#4A2508;text-shadow:0 -2px 0 rgba(40,18,4,.75),0 2px 0 rgba(255,232,190,.55);mix-blend-mode:multiply}
+.wb b.cv{flex:none;width:72px;text-align:center;font-size:70px;color:#7A2E06}
+.chip{position:absolute;top:50%;width:20px;height:20px;margin-top:-10px;border-radius:50%;background:radial-gradient(#FFE2A8,rgba(255,200,120,0) 70%);box-shadow:-14px -18px 0 -6px #E9C690,-26px 14px 0 -7px #D9AE74,-40px -8px 0 -8px #E9C690;opacity:0;margin-left:112px}
+#bigslip{position:absolute;left:120px;right:120px;top:330px;height:320px;transform-style:preserve-3d;opacity:0;perspective:1600px}
+.bsf{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:inset 0 4px 0 rgba(255,236,200,.45),inset 0 -8px 0 rgba(70,35,10,.45),0 30px 60px rgba(0,0,0,.45)}
+.wbface{background:url(../../../소재/배경/wood_block.png) center/cover,#B9874F}
+.bsback{transform:rotateX(180deg);display:flex;align-items:center;justify-content:center;gap:6px}
+.bsback .cv{font-size:160px}
+em.kw{font-style:normal;color:#1452D6;text-shadow:none}
+#okcol{position:absolute;left:0;right:0;top:420px;height:1080px;z-index:4;display:none;transform-origin:540px 540px;perspective:1600px}
+.okb{position:relative;width:250px;height:250px;margin:0 auto 20px;transform-style:preserve-3d}
+.okf{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:inset 0 4px 0 rgba(255,236,200,.45),inset 0 -8px 0 rgba(70,35,10,.45),0 22px 40px rgba(0,0,0,.4)}
+.okbk{transform:rotateX(180deg);display:flex;align-items:center;justify-content:center}
+.okbk .cv{font-size:180px}
+#more2{position:absolute;left:50%;top:1330px;display:flex;align-items:center;gap:14px;background:var(--royal);color:#fff;font:800 56px "HM Pretendard";padding:30px 64px 30px 70px;border-radius:90px;box-shadow:0 24px 50px rgba(6,57,164,.45);white-space:nowrap;opacity:0}
+#more2 svg{width:44px;height:44px}#more2 .mhd{position:absolute;left:50%;top:-26px;width:90px;height:8px;margin-left:-45px;border-radius:4px;background:rgba(255,255,255,.85)}
+#hookA{position:absolute;inset:0;z-index:3;pointer-events:none}
+.hkb{position:absolute;width:372px;height:372px;border-radius:30px;display:flex;align-items:center;justify-content:center;font:900 280px "HM Pretendard";line-height:1;padding-bottom:18px;box-sizing:border-box}
+.gold3d .sy>i{background:linear-gradient(#FFE7A3,#FDB52A 55%,#D98A00);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 0 #B87400) drop-shadow(0 3px 0 #9A6100) drop-shadow(0 4px 0 #7A4C00) drop-shadow(0 0 calc(var(--tr,0)*40px + 18px) rgba(253,166,8,.55))
+  drop-shadow(calc(var(--dx,0)*var(--tr,0)*60px) calc(var(--dy,0)*var(--tr,0)*60px) 0 rgba(255,214,140,calc(var(--tr,0)*.7)))
+  drop-shadow(calc(var(--dx,0)*var(--tr,0)*130px) calc(var(--dy,0)*var(--tr,0)*130px) 0 rgba(255,214,140,calc(var(--tr,0)*.4)))}
+.ink3d{color:#0639A4;-webkit-text-stroke:3px #F6F4EF;paint-order:stroke fill;text-shadow:1px 1px 0 #052F87,2px 2px 0 #052C80,3px 3px 0 #042978,4px 4px 0 #042670,5px 5px 0 #042368,6px 6px 0 #032060,7px 7px 0 #031D58,8px 8px 0 #031A50,9px 9px 0 #021748,10px 10px 0 #021440,14px 18px 30px rgba(8,13,34,.45)}
+.tap{position:absolute;width:90px;height:90px;border-radius:50%;border:5px solid #fff;box-shadow:0 0 0 3px rgba(6,57,164,.5)}
+</style></head>
+<body><div id="st">
+  <div class="L" id="bg"></div>
+  <div class="L" id="far"></div>
+  <div class="L" id="pile"></div>
+  <div class="L" id="pw"></div>
+  <div class="L" id="glow"></div>
+  <div class="L" id="grain"></div>
+  <div class="cn tl"></div><div class="cn tr"></div>
+  <div id="hud"><span>HANBIZ</span><span id="sec"></span></div>
+  <div class="L" id="hl"></div>
+  <div id="txt"></div>
+  <div class="L" id="ac"></div>
+  <div class="L" id="fx"></div>
+  <div class="L" id="wipe"></div>
+  <div id="end"><img src="../../../_tmp/typo3/laser_last.png">
+    <div class="btn" id="btn" data-box="btn">신청하고 내 한도 확인하기</div>
+    <div class="note" id="note" data-box="note">※ 승인 여부·한도는 기관 심사에 따라 달라집니다.<br>수임료·용역비는 상담 때 안내드립니다.</div>
+    <div class="tap" id="tap"></div></div>
+</div>
+<script>
+// ── 5판(10-12): 사장님 확정 대본으로 앞부분 재구성. BGM 을 곡 26.285초부터(한 마디 앞) — 드롭이 마디 4 «그러면 한비즈에 맡겨보세요»에 온다.
+window.W=1080; window.H=1920; window.FPS=29.97; window.DURATION=48.51;
+const BAR=[0,1.881,3.762,5.619,7.5,9.381,11.238,13.119,15.0,16.881,18.738,20.619,22.5,24.381,26.239,28.119,30.0,31.881,33.739,35.619,37.5,39.381,41.239], BEAT=0.4644, F=1001/30000, END=46.244;
+// 마디 종류(인덱스 = 마디-1)
+const KIND=['ask','list3','hard','drop','diff','attitude','year','mont','mont','allgive','count','off','off','how','grant','grant','together','bene','bene','allok','rope','rope'];
+const FIRST={grant:14,bene:17,allok:17,rope:20};
+window.PALETTE=['#F6F4EF','#080D22','#0639A4','#FA630F','#FDA608','#FFFFFF','#060606'];
+const DOC='../../../소재/견본/', BG='../../../소재/배경/';
+const NAMES=['경영진단','로드맵','사업계획서','상권 분석','인증 서류','지원사업 알림','매달 리포트','쿠폰북'];
+const FILES=['경영진단','로드맵','사업계획서','상권분석','인증서류','지원사업알림','매달리포트','쿠폰북'];
+const CARD_T=[0,1,2,3,4,5,6,7].map(k=>BAR[7]+k*BEAT);
+window.EVENTS=[
+ {t:0,role:'word_in',id:'정책자금'},{t:BAR[0]+BEAT,role:'word_in',id:'필요하세요'},
+ {t:BAR[1],role:'line_in',id:'각종서류'},{t:BAR[1]+BEAT,role:'line_in',id:'신청조건'},{t:BAR[1]+2*BEAT,role:'line_in',id:'신청방법까지'},
+ {t:BAR[2],role:'word_in',id:'어려우시다구요'},{t:BAR[3],role:'reverse_in',id:'맡겨보세요'},
+ {t:BAR[4],role:'line_in',id:'정책자금회사'},{t:BAR[4]+BEAT,role:'cascade_in',id:'뭐가다르냐구요'},
+ {t:BAR[5],role:'line_in',id:'대표님을대하는'},{t:BAR[5]+BEAT,role:'line_in',id:'태도부터'},
+ {t:BAR[6],role:'line_in',id:'저희는'},{t:BAR[6]+BEAT,role:'pop_in',id:'1년동안'},
+ ...CARD_T.map((t,k)=>({t:+t.toFixed(3),role:'card_in',id:'card'+k})),
+ {t:BAR[9],role:'line_in',id:'이모든걸'},{t:BAR[9]+BEAT,role:'line_in',id:'다드립니다'},
+ {t:BAR[10],role:'count_in',id:'4326'},{t:BAR[10]+BEAT,role:'count_in',id:'5622'},
+ {t:BAR[11],role:'line_in',id:'매출상승부터'},{t:BAR[11]+2*BEAT,role:'line_in',id:'절세방법까지'},{t:BAR[12],role:'line_in',id:'저금리'},{t:BAR[12]+2*BEAT,role:'line_in',id:'사업성공까지'},
+ {t:BAR[13],role:'line_in',id:'컨설팅부터마케팅까지'},{t:BAR[13]+2*BEAT,role:'line_in',id:'전문가에게'},{t:BAR[14],role:'line_in',id:'아래링크를'},
+ {t:END,role:'button_in',id:'btn'}];
+window.BOXES=[{kind:'keepout',id:'app_top',x:0,y:0,w:1080,h:150},{kind:'keepout',id:'meta_bottom',x:0,y:1585,w:1080,h:335}];
+
+const $=id=>document.getElementById(id), pile=$('pile'), pw=$('pw'), st=$('st'), bg=$('bg'), far=$('far'), glow=$('glow'), grain=$('grain'), txt=$('txt'), fx=$('fx'), hl=$('hl'), ac=$('ac'), wipe=$('wipe');
+const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)), lin=(u,a,b)=>cl((u-a)/(b-a)), eo=x=>1-Math.pow(1-cl(x),4), eo3=x=>1-Math.pow(1-cl(x),3), ei=x=>Math.pow(cl(x),3);
+const mix=(a,b,k)=>a+(b-a)*k;
+grain.style.backgroundImage=`url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='540' height='540'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1.4 -.2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")`;
+
+// ── «찍» 붓 획: 끝이 가늘어지는 획(가장자리 살짝 거침) + 앞머리 빛. 왼쪽 끝 기준 회전. 드러냄은 clip-path.
+function brushSVG(id,L,Wd,color,seed,glowCol,kind){
+  const N=48, top=[], bot=[];
+  for(let i=0;i<=N;i++){const s=i/N, x=s*L;
+    // chisel = 형광펜(끝이 비스듬히 잘린 납작한 획) · brush = 붓(눌러 시작해 꼬리가 가늘게 빠짐)
+    const taper=kind=='chisel'?Math.pow(Math.min(1,s*14,(1-s)*11),0.5)*(0.94+0.06*Math.sin(s*9+seed)):Math.pow(Math.min(1,s/0.05),0.5)*(1-0.88*Math.pow(s,2.6));
+    const rough=1+0.05*Math.sin(s*41+seed)+0.035*Math.sin(s*97+seed*2.3);
+    const h=Wd/2*taper*rough;
+    top.push(`${x.toFixed(1)},${(-h+Wd*0.04*Math.sin(s*6+seed)).toFixed(1)}`); bot.unshift(`${x.toFixed(1)},${(h+Wd*0.04*Math.sin(s*6+seed)).toFixed(1)}`)}
+  const pad=Wd;
+  return `<svg class="brush" id="${id}" width="${L+2*pad}" height="${Wd*3}" viewBox="${-pad} ${-Wd*1.5} ${L+2*pad} ${Wd*3}">
+   <defs><radialGradient id="${id}g"><stop offset="0" stop-color="${glowCol||'#fff'}" stop-opacity=".95"/><stop offset="1" stop-color="${glowCol||'#fff'}" stop-opacity="0"/></radialGradient>
+   <clipPath id="${id}c"><rect id="${id}r" x="${-pad}" y="${-Wd*1.5}" width="0" height="${Wd*3}"/></clipPath></defs>
+   <polygon clip-path="url(#${id}c)" fill="${color}" points="${top.concat(bot).join(' ')}"/>
+   <ellipse id="${id}t" cx="0" cy="0" rx="${Wd*0.9}" ry="${Wd*0.55}" fill="url(#${id}g)" opacity="0"/></svg>`}
+// 붓 획 놓기: (cx,cy)=획 시작점(화면 좌표), 각도°
+function place(svgHtml,layer,x,y,ang,Wd){const d=document.createElement('div');d.innerHTML=svgHtml;const s=d.firstElementChild;
+  s.style.width=s.getAttribute('width')+'px'; s.style.height=s.getAttribute('height')+'px'; s.style.left=(x-Wd)+'px'; s.style.top=(y-Wd*1.5)+'px'; s.style.transformOrigin=`${Wd}px ${Wd*1.5}px`; s.style.transform=`rotate(${ang}deg)`; layer.appendChild(s); return s}
+// 진행 p(0~1)만큼 그린다. 앞머리 빛은 그리는 동안만.
+function draw(id,L,Wd,p,center){const r=$(id+'r'),t=$(id+'t'); if(!r)return;
+  if(center){r.setAttribute('x',L/2-L/2*p); r.setAttribute('width',L*p+0.01)} else {r.setAttribute('x',-Wd); r.setAttribute('width',Wd+L*p+0.01)}
+  if(t){t.setAttribute('cx',center?L/2+L/2*p:L*p); t.setAttribute('opacity',p>0&&p<1?0.9*(1-p*0.6):0)}}
+
+function img(n,x,y,r,k,b){return `<img class="sdoc" data-d="1" src="${DOC}${n}.png" style="left:${x}px;top:${y}px;transform:rotate(${r}deg) scale(${k});filter:blur(${b}px)">`}
+function ghost(t,size,x,y,op,col){return `<div class="ghost" id="gh" style="font-size:${size}px;left:${x}px;top:${y}px;opacity:${op};color:${col}">${t}</div>`}
+const OKCOL=`<div id="okcol">${'전부가능'.split('').map((c,k)=>`<div class="okb" id="okb${k}"><div class="okf wbface"></div><div class="okf okbk wbface"><span class="cv">${c}</span></div></div>`).join('')}</div>`;
+function wash(c){return `<div class="L" style="background:${c}"></div>`}
+function theme(c,dark){bg.style.background=c; st.classList.toggle('dark',!!dark); st.style.color=dark?'#fff':'var(--black)'}
+const sy=(w,cls)=>w.split('').map((c,i)=>c==' '?'<span style="display:inline-block;width:.28em"></span>':`<span class="sy ${cls||''}"><i data-k="${i}">${c}</i></span>`).join('');
+const HALO=c=>`radial-gradient(46% 24% at 50% 47%, ${c} 0%, transparent 100%), radial-gradient(120% 85% at 50% 45%, transparent 55%, rgba(8,13,34,.25) 100%)`;
+const VIGN=c=>`radial-gradient(120% 85% at 50% 45%, transparent 55%, ${c} 100%)`;
+const POOL=(c,y)=>`radial-gradient(50% 32% at 50% ${y}%, ${c} 0%, transparent 70%), radial-gradient(120% 85% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%)`;
+const RAYS=(c)=>`<div class="L" id="rays" style="inset:-700px;background:repeating-conic-gradient(from 8deg at 50% 50%, ${c} 0deg 6deg, transparent 6deg 30deg)"></div>`;
+// 글자 기준 붓 획 위치(요소 박스 → 화면 좌표, 변형 없는 상태에서 잰다)
+function rectOf(el){const keep=txt.style.transform; txt.style.transform='none'; const r=el.getBoundingClientRect(); txt.style.transform=keep; return r}
+const BR={}; // 마디별 붓 획 정보 {id:[L,Wd,center]}
+function addBrush(id,layer,el,where,color,glowCol,ang,wMul,seed){
+  // 획을 글자(.wd) 안에 넣는다 — 글자의 변형(역팝·확대·마스크)을 그대로 따라간다. 크기는 offsetWidth/Height(변형 무관).
+  const kind=(where=='marker'||where=='low')?'chisel':'brush', w=el.offsetWidth, h=el.offsetHeight;
+  let L=w*1.08, Wd, x=-w*0.04, y, z=1;
+  if(where=='under'){Wd=Math.max(16,h*0.075)*(wMul||1); y=h*0.99}
+  if(where=='strike'){Wd=Math.max(18,h*0.13)*(wMul||1); y=h*0.53; L=w*1.16; x=-w*0.08}
+  if(where=='marker'){Wd=h*1.0*(wMul||1); y=h*0.54; L=w*1.12; x=-w*0.06; z=-1}
+  if(where=='low'){Wd=h*0.22*(wMul||1); y=h*0.95; L=w*1.06; x=-w*0.03; z=-1}   // 글자 아래 띠 — 글자 획과 겹치지 않음
+  el.style.isolation='isolate';
+  const sv=place(brushSVG(id,L,Wd,color,seed||3,glowCol,kind),el,x,y,ang||0,Wd); sv.style.zIndex=z;
+  BR[id]=[L,Wd,false]; draw(id,L,Wd,0)}
+
+
+// ── 서류 더미: 몽타주(마디 8~9)에서 박힘 → 떠다님 → 뭉침 → «다 드립니다»에 펼침
+const MP=[[300,700,-8],[780,640,7],[260,1190,5],[800,1160,-6],[540,520,-3],[540,1330,4],[170,950,-11],[910,910,10]];
+const FAN=[0,1,2,3,4,5,6,7].map(k=>{const a=(k*45+22.5)*Math.PI/180; return [540+390*Math.cos(a),1010+560*Math.sin(a),(k%2?1:-1)*(6+k*1.5)]});
+const STACK=k=>[540+((k%3)-1)*8,1010-k*4,(k%2?1:-1)*(1.5+k*0.5)];
+const T_GATHER=[BAR[9]-0.288,BAR[9]], T_SPREAD=BAR[9]+BEAT;
+function pileState(k,t){const Tk=CARD_T[k]; if(t<Tk||t>=BAR[10]) return null;
+  const sl=lin(t-Tk,0,5*F), slam=sl*sl;
+  let [x,y,r]=MP[k], s=mix(1.75,0.6,slam), o=lin(t-Tk,0,2*F), sh=mix(60,18,slam);
+  const fl=t-Tk; x+=4*Math.sin(fl*1.7+k); y+=7*Math.sin(fl*1.9+k*1.3); r+=0.7*Math.sin(fl*1.3+k*2.1);
+  const g=eo(lin(t,T_GATHER[0],T_GATHER[1])); if(g>0){const [sx,sy,sr]=STACK(k); x=mix(x,sx,g); y=mix(y,sy,g); r=mix(r,sr,g); s=mix(s,0.66,g)}
+  const sp=eo(lin(t,T_SPREAD,T_SPREAD+9*F)); if(sp>0){const [fx2,fy,fr]=FAN[k]; x=mix(x,fx2,sp); y=mix(y,fy,sp); r=mix(r,fr,sp); s=mix(s,0.5,sp);
+    const f2=t-T_SPREAD; x+=3*sp*Math.sin(f2*1.6+k); y+=6*sp*Math.sin(f2*1.8+k*1.1)}
+  return {x,y,r,s,o,sh}}
+function updatePile(t){
+  if(!pile.children.length) pile.innerHTML=FILES.map((n,k)=>`<img class="sdoc" id="p${k}" src="${DOC}${n}.png" style="left:-310px;top:-438px">`).join('');
+  const on=t>=BAR[7]&&t<BAR[10]; pile.style.display=on?'block':'none'; pw.style.display=on?'block':'none'; if(!on) return;
+  for(let k=0;k<8;k++){const e=$('p'+k), q=pileState(k,t); if(!q){e.style.opacity=0; continue}
+    e.style.opacity=q.o; e.style.transform=`translate(${q.x}px,${q.y}px) rotate(${q.r}deg) scale(${q.s})`; e.style.boxShadow=`0 ${q.sh*0.6}px ${q.sh*1.4}px rgba(8,13,34,.32)`}}
+
+
+// ── 화면 전체 깨짐(10-12 «어려우시다구요가 화면전체적으로 꺠졋으면좋겠어» · «팍 깨졌으면»)
+const IMP=[540,900];
+const SHARDS=(()=>{const N=12, R=[0,230,640,2600], out=[], j=(k,r)=>1+0.16*Math.sin(k*12.9898+r*0.0137)*(r>0?1:0);
+  const ang=k=>(k*360/N+9*Math.sin(k*3.1))*Math.PI/180, P=(r,k)=>{const a=ang(k), rr=r*j(k,r); return [IMP[0]+rr*Math.cos(a), IMP[1]+rr*Math.sin(a)]};
+  for(let ring=0;ring<3;ring++) for(let k=0;k<N;k++){const pts=ring==0?[IMP,P(R[1],k),P(R[1],k+1)]:[P(R[ring],k),P(R[ring+1],k),P(R[ring+1],k+1),P(R[ring],k+1)];
+    const cx=pts.reduce((a,p)=>a+p[0],0)/pts.length, cy=pts.reduce((a,p)=>a+p[1],0)/pts.length; out.push({pts,cx,cy,ring,k})}
+  return out})();
+function crackSVG(){ // 조각 경계선(금) — 안쪽부터 그려지게 pathLength 1
+  const lines=SHARDS.map((sd,i)=>`<polyline pathLength="1" points="${sd.pts.map(p=>p[0].toFixed(0)+','+p[1].toFixed(0)).join(' ')}"/>`).join('');
+  return `<svg id="crack" viewBox="0 0 1080 1920" style="position:absolute;inset:0;width:1080px;height:1920px;overflow:visible">${lines}</svg>`}
+function hardSnapshot(){ // 마디 3 화면을 그대로 복제할 HTML(아이디 제거) — 마디 4 에서 조각으로 잘라 날린다
+  const strip=html=>html.replace(/ id="[^"]*"/g,'').replace(/ data-box(-group)?="[^"]*"/g,'');
+  return {far:strip(far.innerHTML), glow:glow.style.background, txt:strip(txt.innerHTML).replace('color:transparent','color:var(--ink)').replace('-webkit-text-stroke:5px var(--orange)"','-webkit-text-stroke:5px var(--orange);color:var(--orange)"')}}
+let built=-1;
+const OFF_ANGLE=(blur,washc)=>`<img src="${BG}office_desk_angle.png" style="position:absolute;inset:-40px;width:1160px;height:2000px;object-fit:cover;filter:blur(${blur}px) saturate(.8)">`+wash(washc);
+const HOOK='B';
+const DOCS_A=()=>img('사업계획서',520,180,7,1.0,2.4)+img('로드맵',-90,1180,-6,1.0,2.0)+img('매달리포트',560,1150,5,.95,2.0)+img('경영진단',60,360,-5,1.08,1.0)+wash('rgba(246,244,239,.42)');
+const DOCS_B=()=>img('인증서류',-120,240,-8,1.0,2.2)+img('지원사업알림',600,120,6,.9,2.2)+img('상권분석',540,1120,-4,1.0,1.6)+img('실사대비',20,1080,5,1.05,1.0)+wash('rgba(246,244,239,.42)');
+const W9=(id,box,html,sz,extra)=>`<div class="ln" style="${extra||''}"><span class="wd" id="${id}" data-box="${box}" data-box-group="g" style="font-size:${sz}px;font-weight:900">${html}</span></div>`;
+
+function build(b,card){
+  far.innerHTML=''; glow.style.background=''; txt.innerHTML=''; hl.innerHTML=''; ac.innerHTML=''; fx.style.cssText=''; wipe.innerHTML='';
+  far.style.filter=''; far.style.opacity=''; glow.style.opacity=''; txt.style.filter=''; txt.style.opacity=1; ac.style.opacity=1; txt.style.top=''; txt.style.translate=''; txt.style.scale=''; txt.style.transformOrigin='50% 50%'; st.style.transform=''; st.style.filter=''; bg.style.filter='';
+  for(const k in BR) delete BR[k];
+  $('end').style.display='none'; {const o=$('shatter'); if(o) o.remove()} for(const id of ['cta','rope','climber','climber2','pushOld','okcol','hookA','hkflash']){const o=$(id); if(o) o.remove()} for(const l of [far,glow]) l.style.transform=''; txt.style.display=''; fx.innerHTML='';
+  const K=KIND[b];
+  if(K=='ask'){theme('var(--paper)'); far.innerHTML=DOCS_A(); glow.style.background=HALO('rgba(246,244,239,.92)');
+    txt.innerHTML=`<div class="ln" id="a" data-box="w1a" data-box-group="g" style="font-size:250px;font-weight:900">${sy('정책자금')}</div><div class="ln" style="margin-top:60px"><span class="wd" id="b" data-box="w1b" data-box-group="g" style="font-size:118px;font-weight:900"><span id="bt">필요하세요?</span></span></div>`;
+    if(HOOK=='A'){$('a').style.display='none'; $('b').parentElement.style.paddingTop='700px'}
+    addBrush('m1',hl,$('b'),'marker','var(--amber)','#FFF6D8',-1.5,1,5);
+    if(HOOK=='A'){ // 2×2 큰 입체 블록: 정(남색·왼) 책(파랑·위) / 자(호박·아래) 금(주황·오른)
+      far.insertAdjacentHTML('beforeend',wash('rgba(8,13,34,.30)'));
+      const C=[['정','#0B1F5C','#fff','#050E2E'],['책','#1857D1','#fff','#0C3A99'],['자','#FDA608','#080D22','#B87400'],['금','#FA630F','#fff','#B23F00']];
+      st.insertAdjacentHTML('beforeend',`<div id="hookA">${C.map(([c,bg,fg,dk],k)=>`<div class="hkb" id="hk${k}" style="background:${bg};color:${fg};box-shadow:0 10px 0 ${dk},0 20px 0 ${dk},0 40px 60px rgba(8,13,34,.45)">${c}</div>`).join('')}</div>`);}
+    if(HOOK=='B'){ // 어두운 시네마틱: 남색 바탕 + 조명 하나 · 빛 꼬리 · 합쳐지는 순간 번쩍 → 금색 입체
+      far.innerHTML=`<div class="L" style="background:radial-gradient(55% 38% at 50% 44%,#1C3F9E 0%,#0A1640 45%,#040818 100%)"></div><div class="L" id="dust" style="background-image:radial-gradient(rgba(255,214,140,.55) 1.2px,transparent 1.6px);background-size:46px 46px;opacity:.25"></div>`;
+      glow.style.background=VIGN('rgba(0,0,0,.6)');
+      $('a').classList.add('gold3d'); $('b').style.color='#fff'; st.insertAdjacentHTML('beforeend','<div id="hkflash" class="L" style="z-index:4;pointer-events:none"></div>')}
+    if(HOOK=='C'){ // 두꺼운 3D 블록 글꼴(폭 가득) + 박히는 순간 뒤 서류들이 바깥으로 흩날림
+      $('a').classList.add('ink3d'); $('a').style.fontSize='262px'}}
+  if(K=='list3'){theme('var(--ink)',1); far.innerHTML=OFF_ANGLE(7,'rgba(8,13,34,.74)'); glow.style.background=POOL('rgba(24,87,209,.45)',44);
+    txt.innerHTML=W9('a','w2a','각종서류',150,'color:#fff')+W9('b','w2b','신청조건',150,'color:#fff;margin-top:18px')+W9('c','w2c','신청방법까지',150,'color:#fff;margin-top:18px');
+    for(const [i,sd] of [['a',61],['b',63],['c',67]]){$(i).style.color='#fff'; addBrush('u2'+i,ac,$(i),'under','var(--amber)','#FFF1C9',-1.2,1.0,sd)}}
+  if(K=='hard'){theme('var(--ink)',1); // 10-12 «단색싫어 좀더 화려하고 복합적인 배경» — 서류 더미 사진 + 떠다니는 물음표 + 유리 띠
+    far.innerHTML=`<img id="hdbg" src="${BG}hard_v3_collage.png" style="position:absolute;left:-60px;top:-90px;width:1200px;height:2100px;object-fit:cover;filter:blur(.6px) saturate(.9)">`+wash('rgba(8,13,34,.10)')
+      +[['?',150,880,560,.0,'#fff',-12],['?',140,90,1300,.0,'#fff',10],['?',160,840,1390,.0,'var(--amber)',8],['?',130,120,240,.0,'#fff',-6],['?',120,700,1520,.0,'#fff',14]].map(([q,sz,x,y,o,c,r],k)=>`<div class="qf" id="qf${k}" style="font-size:${sz}px;left:${x}px;top:${y}px;color:${c};opacity:${o};transform:rotate(${r}deg)">${q}</div>`).join('');
+    glow.style.background=VIGN('rgba(8,13,34,.28)');
+    {const T=[['어','#080D22','#fff',-5],['려','#F6F4EF','#080D22',4],['우','#FDA608','#080D22',-3],['시','#F6F4EF','#080D22',5],['다','#080D22','#fff',-4],['구','#F6F4EF','#080D22',3],['요','#080D22','#fff',-5],['?','#FA630F','#fff',8]];
+     const tile=(c,bgc,fg,r,k)=>`<span class="tl" id="tl${k}" style="background:${bgc};color:${fg};--r:${r}deg">${c}</span>`;
+     txt.innerHTML=`<div class="ln" id="a" data-box="w3a" data-box-group="g" style="transform-origin:50% 50%"><div class="tline">${T.slice(0,5).map((x,k)=>tile(...x,k)).join('')}</div><div class="tline" style="margin-top:18px">${T.slice(5).map((x,k)=>tile(...x,k+5)).join('')}</div><span id="qm" style="display:none"></span></div>`}
+    wipe.innerHTML=crackSVG();
+    txt.style.top='640px'; // 콜라주 가운데 빈 종이(화면 약 860~1420)에 글자 블록 중심이 오게
+    window._HSNAP=hardSnapshot()}
+  if(K=='drop'){theme('var(--ink)',1); // 10-12 «한비즈를 암시하는 멋있는 공간이미지» — 프리미엄 컨설팅 사무실(Codex) + 남색 덧칠 + 빛줄기
+    far.innerHTML=`<img id="spbg" src="${BG}hanbiz_office.jpg" style="position:absolute;left:-60px;top:-90px;width:1200px;height:2100px;object-fit:cover">`+wash('linear-gradient(rgba(8,13,34,.30),rgba(8,13,34,.66) 42%,rgba(8,13,34,.66) 58%,rgba(8,13,34,.30))')+RAYS('rgba(255,255,255,.04)'); glow.style.background=POOL('rgba(24,87,209,.40)',46);
+    txt.innerHTML=`<div class="ln" id="a" data-box="w4a" data-box-group="g" style="font-size:104px;font-weight:300;color:#fff">그러면 <b style="font-weight:800;color:var(--amber)">한비즈</b>에</div><div class="ln" style="margin-top:24px"><span class="wd" id="b" data-box="w4b" data-box-group="g" style="font-family:'HM PretendardVar';font-size:190px;color:#fff">맡겨보세요</span></div>`;
+    addBrush('u4',ac,$('b'),'under','#fff','#9EC2FF',-1,1.1,11);
+    if(!window._HSNAP){const keep=[far.innerHTML,glow.style.background,txt.innerHTML,ac.innerHTML,{...BR}]; build(2); window._HSNAP=hardSnapshot();
+      theme('var(--ink)',1); far.innerHTML=keep[0]; glow.style.background=keep[1]; txt.innerHTML=keep[2]; ac.innerHTML=keep[3]; wipe.innerHTML=''; for(const k in BR) delete BR[k]; Object.assign(BR,keep[4])}
+    const H=window._HSNAP; st.insertAdjacentHTML('beforeend',`<div id="shatter">${SHARDS.map((sd,n)=>`<div class="shp" id="sp${n}" style="clip-path:polygon(${sd.pts.map(p=>p[0].toFixed(1)+'px '+p[1].toFixed(1)+'px').join(',')})"><div class="L" style="background:#080D22">${H.far}</div><div class="L" style="background:${H.glow}"></div><div class="txtc">${H.txt}</div></div>`).join('')}</div>`)}
+  if(K=='diff'){theme('var(--paper)'); far.innerHTML=DOCS_B(); glow.style.background=HALO('rgba(246,244,239,.92)');
+    txt.innerHTML=`<div class="ln" id="a" data-box="w5a" data-box-group="g" style="font-size:96px;font-weight:700">정책자금 회사 많은데</div><div class="ln" style="margin-top:22px"><span class="wd" id="b" data-box="w5b" data-box-group="g" style="font-size:126px;font-weight:900;color:var(--orange)">${'뭐가다르냐구요?'.split('').map((c,i)=>`<span id="s${i}" style="display:inline-block">${c}</span>`).join('')}</span></div>`;
+    addBrush('m5',hl,$('b'),'marker','var(--orange)','#FFD9C2',-1.2,1.02,7)}
+  if(K=='attitude'){theme('var(--ink)',1); far.innerHTML=OFF_ANGLE(5,'rgba(8,13,34,.70)'); glow.style.background=POOL('rgba(24,87,209,.5)',46);
+    txt.innerHTML=`<div class="ln" id="a" data-box="w6a" data-box-group="g" style="font-size:104px;font-weight:700;color:#fff">대표님을 대하는</div><div class="ln" style="margin-top:22px;font-size:104px;font-weight:900;color:#fff"><span class="wd" id="b" data-box="w6b" data-box-group="g">태도부터</span> <span id="c" style="display:inline-block">다릅니다</span></div>`;
+    addBrush('m6',hl,$('b'),'marker','var(--amber)','#FFF6D8',-1.2,1.0,71)}
+  if(K=='year'){theme('var(--paper)'); far.innerHTML=DOCS_A(); glow.style.background=HALO('rgba(246,244,239,.92)');
+    txt.innerHTML=`<div class="ln" id="a" data-box="w7a" data-box-group="g" style="font-size:110px;font-weight:700">저희는</div><div class="ln" style="margin-top:10px"><span class="wd" id="b" data-box="w7b" data-box-group="g" style="font-size:250px;font-weight:900"><span style="color:var(--orange)">1년</span>동안</span></div>`;
+    addBrush('u7',ac,$('b'),'under','var(--orange)','#FFD9C2',-1.5,1.1,73)}
+  if(K=='mont'){const i=card, c=i%2?'var(--royal)':'var(--ink)'; theme(c,1);
+    pw.style.background=i%2?'rgba(6,57,164,.55)':'rgba(8,13,34,.58)'; glow.style.background=VIGN('rgba(0,0,0,.45)');
+    txt.innerHTML=`<div style="display:flex;flex-direction:column;align-items:flex-start;text-align:left">${NAMES.map((n,k)=>`<div class="ln" style="margin:6px 0"><span class="wd" id="m${k}" data-box="list${k}" data-box-group="m" style="font-size:84px;font-weight:800;color:#fff;text-shadow:0 4px 24px rgba(0,0,0,.35);opacity:${k<i?0.78:k==i?1:0.55}">${n}</span></div>`).join('')}</div>`;
+    const cur=$('m'+i); cur.style.color='var(--ink)'; cur.style.textShadow='none';
+    addBrush('u5',ac,cur,'marker','var(--amber)','#FFF6D8',-1,1.0,13+i)}
+  if(K=='allgive'){theme('var(--paper)'); pw.style.background='rgba(246,244,239,.4)'; glow.style.background=HALO('rgba(246,244,239,.93)');
+    txt.innerHTML=`<span class="mask"><span class="ln" id="a" data-box="w9a" data-box-group="g" style="font-size:140px;font-weight:900">이 모든걸</span></span><span class="mask" style="margin-top:10px"><span class="ln"><span class="wd" id="b" data-box="w9b" data-box-group="g" style="font-size:160px;font-weight:900">다 드립니다</span></span></span>`;
+    addBrush('u9',ac,$('b'),'under','var(--orange)','#FFD9C2',-1,1.2,17)}
+  if(K=='count'){theme('var(--ink)',1); far.innerHTML=ghost('5,622',640,-60,1180,.07,'#fff'); glow.style.background=POOL('rgba(6,57,164,.6)',40);
+    const odo=(id,num,suf,col)=>`<span class="wd" id="${id}" style="font-size:220px;font-weight:900;color:${col}"><span class="odo">${num.split('').map((d,j)=>/\d/.test(d)?`<span class="col"><span data-t="${d}" data-j="${j}">${Array.from({length:20},(_,z)=>`<i>${z%10}</i>`).join('')}</span></span>`:`<span>${d}</span>`).join('')}</span>${suf}</span>`;
+    txt.innerHTML=`<div class="ln" data-box="w10a" data-box-group="g">${odo('a','4,326','곳','var(--amber)')}</div><div class="ln" data-box="w10b" data-box-group="g">${odo('b','5,622','건','#fff')}</div><div class="ln" id="c" data-box="w10c" data-box-group="g" style="font-size:40px;font-weight:600;color:#fff;margin-top:36px">누적 고객사 · 성공 컨설팅</div>`;
+    addBrush('u10',ac,$('a'),'under','var(--amber)','#FFF1C9',-1.2,1.0,19)}
+  if(K=='how'){theme('var(--ink)',1); // 10-12 «어떻게부분 왼쪽 푸쉬전환» — 앞 장면(통장 앞모습 + 패널)이 왼쪽으로 밀려나고 새 장면이 오른쪽에서 밀고 들어옴
+    far.innerHTML=`<img id="hwbg" src="${BG}${window.HOW_BG||'how_mag_v1.png'}" style="position:absolute;left:-60px;top:-90px;width:1200px;height:2100px;object-fit:cover">`+wash('rgba(246,244,239,.08)');
+    glow.style.background=VIGN('rgba(8,13,34,.18)');
+    txt.innerHTML=`<div class="ln" id="a" data-box="w14" data-box-group="g" style="font-size:250px;font-weight:900;letter-spacing:-.04em;color:var(--orange);-webkit-text-stroke:10px #F6F4EF;paint-order:stroke fill;filter:drop-shadow(0 18px 30px rgba(8,13,34,.35))">어떻게<span id="qd" style="color:var(--royal)">?</span></div>`;
+    st.insertAdjacentHTML('beforeend',`<div id="pushOld" style="position:absolute;inset:0;z-index:30;overflow:hidden"><img src="${BG}bank_front.png" style="position:absolute;left:-60px;top:-90px;width:1200px;height:2100px;object-fit:cover;transform:scale(1.06)"><div class="L" style="background:rgba(246,244,239,.08)"></div><div style="position:absolute;left:70px;right:70px;top:640px;height:560px;border-radius:44px;background:rgba(255,255,255,.66);box-shadow:0 30px 80px rgba(8,13,34,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;font:900 90px 'HM Pretendard';color:var(--ink);line-height:1.15"><div>저금리 대출 받고나서</div><div style="font-size:124px">사업성공까지</div></div></div>`)}
+  if(K=='grant'){theme('var(--ink)',1); // 10-12 «가운데로 나오게 → 1인당 평균이 위 멘트를 밀어내며 뿅 → 300만원 이상 3D 블록으로 박힘 → 전부 다 받아드립니다 반쪽 커튼»
+    far.innerHTML=`<img id="grbg" src="${BG}${window.HOW_BG||'how_mag_v1.png'}" style="position:absolute;left:-60px;top:-90px;width:1200px;height:2100px;object-fit:cover;filter:blur(10px) brightness(.8)">`+wash('linear-gradient(rgba(8,13,34,.62),rgba(6,25,80,.78))');
+    glow.style.background=POOL('rgba(24,87,209,.35)',46);
+    txt.style.cssText+=';display:block';
+    txt.innerHTML=`<div class="gl gw" id="gA" data-box="w15a" style="top:430px;font-size:76px">1년간 나오는 사업자 지원금을</div>
+      <div class="gl" id="gBC" style="top:520px;display:flex;align-items:center;justify-content:center;gap:26px"><span class="gw" id="gB" data-box="w15b" style="font-size:58px;display:inline-block">1인당 평균</span><span id="gC" data-box="w15c" style="display:inline-flex;align-items:baseline;gap:14px"><span class="blk3d" style="font-size:124px">300만원</span><span class="gw" style="font-size:54px">이상</span></span></div>
+      <div id="cur" style="position:absolute;left:-60px;right:-60px;top:-420px;height:1920px;pointer-events:none">
+        <div class="cuh" id="cuT"><div class="cut gw">전부 다 받아드립니다!</div></div>
+        <div class="cuh" id="cuB"><div class="cut gw">전부 다 받아드립니다!</div></div></div>`}
+  if(K=='together'){theme('var(--ink)',1); // 10-12 «글자가 전방향에서 모이는느낌으로 살짝 각도 제멋대로 … 배경 절대 단색하지말고 … 빵빠레 이런것도 하지마»
+    far.innerHTML=`<img id="tgbg" src="${BG}${window.TOGETHER_BG||'together_v3_3d.png'}" style="position:absolute;left:-60px;top:-90px;width:1200px;height:2100px;object-fit:cover">`+wash('linear-gradient(rgba(8,13,34,.15),rgba(8,13,34,.5) 45%,rgba(8,13,34,.5) 55%,rgba(8,13,34,.15))');
+    glow.style.background=VIGN('rgba(0,0,0,.3)');
+    const L='우리와 함께라면 ?'.split('');
+    txt.innerHTML=`<div class="ln hw" id="a" data-box="w16" data-box-group="g" style="font-size:132px">${L.map((c,k)=>c==' '?'<span style="display:inline-block;width:.3em"></span>':`<span class="tg" id="tg${k}" style="display:inline-block;${c=='?'?'color:var(--amber)':''}">${c}</span>`).join('')}</div>`}
+  if(K=='bene'){theme('var(--ink)',1); // 10-12 «제비뽑기에서 나오면서 화면으로 탁탁 박히는느낌»
+    far.innerHTML=`<img src="${BG}${window.TOGETHER_BG||'together_v3_3d.png'}" style="position:absolute;left:-60px;top:-90px;width:1200px;height:2100px;object-fit:cover;filter:blur(9px) brightness(.85)">`+wash('rgba(8,13,34,.42)');
+    glow.style.background=VIGN('rgba(0,0,0,.3)');
+    txt.style.cssText+=';display:block';
+    const items=['<em class="kw">2%</em> 저금리 정책자금','1년간 나오는 <em class="kw">모든지원금</em>','사업자 세금 <em class="kw">환급 및 절세</em>','<em class="kw">매출3배</em> 올리는 광고까지'];   // 10-13 «2% , 모든지원금 , 환금 및 절세 , 매출3배 << 이부분 각각 색칠»
+    txt.innerHTML=`<div class="gl gw" id="bh" style="top:100px;font-size:84px">우리와 함께라면 <span style="color:var(--amber)">?</span></div>`
+      +items.map((t,k)=>`<div class="wb" id="sl${k}" data-box="w17_${k}" data-box-group="g" style="top:${250+k*180}px"><div class="wbin"><b class="cv">${k+1}</b><span class="cv cvt" id="cv${k}">${t}</span><i class="chip" id="ch${k}"></i></div></div>`).join('')
+;
+    st.insertAdjacentHTML('beforeend',OKCOL)}
+  if(K=='allok'){build(17); return}
+
+  if(K=='rope'){theme('var(--ink)',1); // 10-13 «2d캐릭터없애주고 올라가는 밧줄연출도없애줘 · 전부가능하는 판속으로 빨려들어가면서 이구조가 궁금하다면 시작하는 전환» · 10-12 «이 구조가 궁금하다면? 디졸브 · 아래링크를 통해 문의남겨보세요 키보드치듯이 · 칸 여백 · 밑에는 더 알아보기»
+    far.innerHTML=`<img src="${BG}${window.TOGETHER_BG||'together_v3_3d.png'}" style="position:absolute;left:-60px;top:-90px;width:1200px;height:2100px;object-fit:cover;filter:blur(9px) brightness(.85)">`+wash('rgba(8,13,34,.42)');
+    txt.innerHTML=`<div class="ln" id="a"></div>`;
+    st.insertAdjacentHTML('beforeend',OKCOL+`<div id="cta"><img src="${BG}hanbiz_office.jpg" style="position:absolute;left:-60px;top:-90px;width:1200px;height:2100px;object-fit:cover;filter:blur(6px)"><div class="L" style="background:linear-gradient(rgba(8,13,34,.35),rgba(8,13,34,.55))"></div>
+      <div class="ctaw"><div class="ln" id="c1" data-box="w21a" style="font-size:96px;font-weight:900;color:var(--ink)">이 구조가 <span class="wd" id="kgu">궁금하다면</span>?</div><div class="ln" id="c2" data-box="w21b" style="font-size:60px;font-weight:700;color:var(--ink);min-height:1.2em;white-space:nowrap"><span id="c2t"></span><span class="caret" id="c2c"></span></div></div>
+      <div id="more2" data-box="more2"><span class="mhd"></span>더 알아보기<svg viewBox="0 0 24 24"><path d="M9 5 L16 12 L9 19" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+`);
+    addBrush('mkgu',hl,$('kgu'),'low','var(--amber)','#FFF6D8',-1,1.0,73)}
+  if(K=='off'){theme('var(--paper)'); // 10-12 «각 3개가 다른배경이미지로 각 장면을 상징하는 연출로 전환효과» — 장면마다 배경 사진·카드 2장, 가로 휩팬 전환
+    const BGS=['office_desk_top.png','scene_loan_success.png','scene_consult_marketing.png'];
+    far.innerHTML=BGS.map((f,k)=>k==1?`<div class="sbg" id="sb1" style="perspective:1500px"><div class="cube" id="cube"><img class="cf" src="${BG}bank_back.png"><img class="cf cb" src="${BG}bank_front.png"></div><div class="L" style="background:rgba(246,244,239,.08)"></div></div>`:`<div class="sbg" id="sb${k}"><img src="${BG}${f}"><div class="L" style="background:rgba(246,244,239,${k==0?.22:.10})"></div></div>`).join(''); // 10-12 «통장보는 뒷모습이 나오다가 3d처럼 돌면서 사업성공까지 할때 희망찬 표정»
+    glow.style.background=VIGN('rgba(8,13,34,.35)');
+    const card=(id,x,y,w,h,inner)=>`<div class="oc" id="${id}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px">${inner}</div>`;
+    const bars=[30,42,38,56,70,88].map((v,k)=>`<i style="left:${24+k*52}px;height:${v}%" data-h="${v}"></i>`).join('');
+    const chart=`<div class="ochead"><b></b><b></b><b></b></div><div class="obars">${bars}</div><svg class="oline" viewBox="0 0 330 150"><polyline id="ol1" points="10,130 70,112 125,118 180,84 235,60 300,22" fill="none" stroke="var(--amber)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><path d="M286,10 L312,18 L296,40 Z" fill="var(--amber)" id="ol1a" opacity="0"/></svg>`;
+    const receipt=`<div class="ochead"><b></b><b></b><b></b></div><div class="orc">${[80,62,74,50,68].map(w=>`<i style="width:${w}%"></i>`).join('')}<u></u><i style="width:44%;background:var(--royal)"></i></div><svg class="ochk" viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="var(--royal)"/><path id="ck2" d="M24 41 L35 52 L57 29" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg>`;
+    const rate=`<div class="ochead"><b></b><b></b><b></b></div><svg class="oline" viewBox="0 0 350 150" style="top:70px"><polyline points="10,150 340,150" stroke="rgba(8,13,34,.12)" stroke-width="2"/><polyline id="ol3" points="12,24 80,40 140,58 200,92 262,112 330,126" fill="none" stroke="var(--royal)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><circle id="ol3d" cx="330" cy="126" r="13" fill="var(--amber)" opacity="0"/></svg><div class="opct">%</div>`;
+    const steps=[22,38,56,76].map((v,k)=>`<i style="left:${40+k*80}px;height:${v}%" data-h="${v}"></i>`).join('');
+    const success=`<div class="ochead"><b></b><b></b><b></b></div><div class="obars ost">${steps}</div><svg class="oflag" viewBox="0 0 60 90"><rect x="6" y="0" width="5" height="90" fill="var(--ink)"/><path id="ofl" d="M11 4 L54 16 L11 30 Z" fill="var(--orange)"/></svg>`;
+    const consult=`<div class="ochead"><b></b><b></b><b></b></div>${[[0,62,'#E6E9F0'],[1,48,'var(--royal)'],[0,70,'#E6E9F0']].map(([r,w,c],k)=>`<div class="obub" id="bb${k}" style="${r?'right':'left'}:24px;top:${70+k*62}px;width:${w}%;background:${c}"></div>`).join('')}<div class="otyp" id="typ"><b></b><b></b><b></b></div>`;
+    const market=`<div class="ochead"><b></b><b></b><b></b></div><div class="othumb"><svg viewBox="0 0 40 40"><path d="M14 10 L32 20 L14 30 Z" fill="#fff"/></svg></div>${[78,56,90].map((w,k)=>`<div class="oprog" style="top:${92+k*44}px"><i id="pg${k}" data-w="${w}"></i></div>`).join('')}`;
+    far.insertAdjacentHTML('beforeend',card('c1',56,290,400,270,chart)+card('c2',614,1226,410,280,receipt)+card('c3',56,290,410,250,rate)+card('c4',614,1206,410,290,success)+card('c5',56,290,410,270,consult)+card('c6',614,1216,410,290,market));
+    far.insertAdjacentHTML('beforeend',`<div id="panel"></div><div id="more" data-box="more"><span class="mhd"></span>더 알아보기<svg viewBox="0 0 24 24"><path d="M9 5 L16 12 L9 19" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tap" id="tap2" style="display:none"></div>`);
+    const L=(id,html,sz)=>`<span class="mask"><span class="ln" id="${id}" style="font-size:${sz}px;font-weight:900;color:var(--ink)">${html}</span></span>`;
+    const w=(k,t)=>`<span class="wd" id="${k}">${t}</span>`;
+    txt.innerHTML=`<div id="g1">${L('l1',w('k1','매출 상승')+'부터',124)}${L('l2',w('k2','절세')+'방법까지',124)}</div>`+
+      `<div id="g2">${L('l3',w('k3','저금리 대출')+' 받고나서',90)}${L('l4',w('k4','사업성공')+'까지',124)}</div>`+
+      `<div id="g3">${L('l5',w('k5','컨설팅')+'부터 '+w('k5m','마케팅')+'까지',84)}${L('l5b',w('k7','전문가')+'에게',112)}${L('l5c','맡겨보고싶다면?',112)}</div>`+
+      `<div id="g4">${L('l6','아래링크를 '+w('k6','눌러보세요!'),84)}</div>`;
+    for(const [k,sd] of [['1',41],['2',43],['3',47],['4',53],['5',57],['5m',58],['7',61],['6',59]]) addBrush('mk'+k,hl,$('k'+k),'low','var(--amber)','#FFF6D8',-1,1.0,sd);
+    for(const g of ['g1','g2','g3','g4']){const e=$(g); e.style.position='absolute'; e.style.left='0'; e.style.right='0'; e.style.top='50%'; e.style.transform='translateY(-50%)'}
+    [['l1','w12a'],['l2','w12b'],['l3','w13a'],['l4','w13b'],['l5','w14a'],['l5b','w14b'],['l5c','w14c'],['l6','w15']].forEach(([i,b])=>{$(i).dataset.box=b; $(i).dataset.boxGroup='of'})}
+}
+function rise(el,u,gap,dur){if(!el)return; el.querySelectorAll('.sy>i').forEach(i=>{const k=+i.dataset.k, p=eo3(lin(u-k*gap*F,0,dur*F)); i.style.transform=`translateY(${(1-p)*105}%)`})}
+function trackIn(el,u,from,dur){if(!el)return; const p=eo(lin(u,0,dur*F)); el.style.letterSpacing=`${mix(from,-0.03,p)}em`; el.style.opacity=lin(u,0,3*F)}
+const show=(el,on)=>{if(el)el.style.opacity=on?1:0};
+const TYPE=['필','필요','필요하','필요하세','필요하세요','필요하세요?'];
+
+window.seek=async function(t){
+  if(!window._fl){await Promise.all([300,500,600,700,800,900].map(w=>document.fonts.load(`${w} 100px "HM Pretendard"`,'가나다')).concat([document.fonts.load('400 100px "HM PretendardVar"','가')])); window._fl=1}
+  if(t>=BAR[22]){
+    updatePile(t);
+    if(built!==99){built=99; build(0); far.innerHTML=''; txt.innerHTML=''; hl.innerHTML=''; ac.innerHTML=''; wipe.innerHTML=''; glow.style.background=''; $('end').style.display='block'; st.style.color='var(--black)'}
+    const u=t-END, k=eo(lin(u,0,8*F));
+    $('btn').style.transform=`translateX(-50%) translateY(${mix(120,0,k)}px)`; $('btn').style.opacity=k;
+    $('note').style.opacity=eo(lin(u,0.3,0.3+8*F));
+    const tp=$('tap'), tu=u-0.9;
+    if(tu>0&&tu<0.6){tp.style.display='block';const r=mix(1,1.8,eo(tu/0.6));tp.style.left=(540-45)+'px';tp.style.top=(1330+60-45)+'px';tp.style.transform=`scale(${r})`;tp.style.opacity=1-tu/0.6;
+      $('btn').style.transform=`translateX(-50%) scale(${tu<0.12?0.96:1})`}
+    else tp.style.display='none';
+    return}
+  let b=0; while(b<21&&t>=BAR[b+1])b++;
+  const K=KIND[b], u=t-BAR[b]; document.body.style.background='';
+  let card=0; if(K=='mont'){for(let i=0;i<8;i++) if(t>=CARD_T[i]) card=i}
+  const key=K=='off'?990:K=='mont'?700+card:FIRST[K]?5000+FIRST[K]:b; if(built!==key){built=key; build(K=='off'?11:K=='mont'?7:FIRST[K]||b,card)}
+  updatePile(t);
+  const A=$('a'),B=$('b'),C=$('c');
+  far.querySelectorAll('[data-d]').forEach((d,i)=>{d.style.translate=`${(i%2?-1:1)*u*6}px ${-u*8}px`});
+  const rays=$('rays'); if(rays) rays.style.transform=`rotate(${t*4}deg)`;
+  const gh=$('gh'); if(gh) gh.style.translate=`${-u*10}px 0`;
+  txt.style.transform=`scale(${1+0.03*cl(u/1.86)})`;
+  const sync=()=>{for(const l of [hl,ac]){l.style.transformOrigin='540px 900px'; l.style.transform=txt.style.transform}};
+  sync();
+  const D=(id,u0,dur,center)=>{const r=BR[id]; if(r) draw(id,r[0],r[1],eo3(lin(u-u0,0,dur*F)),center||r[2])};
+  const len=BAR[b+1]-BAR[b];
+
+  if(K=='ask'){ // «정책자금» 음절 오름 + 자간 모음 · «필요하세요?» 타자(키보드 소리) · 노란 형광펜 · 남색 붓 쓸기 전환
+    // 10-13 «정책자금이 각각 왼위아래오 방향에서 나와서 합쳐졌으면» — 정(왼)·책(위)·자(아래)·금(오른)이 1프레임 간격으로 6프레임 만에 날아와
+    // 살짝 벌어진 채 닿고(9프레임) → 3프레임에 «착» 붙으며 한 번 부풂
+    {const DIR=[[-1,0],[0,-1],[0,1],[1,0]], m=eo(lin(u,9*F,12*F)), bump=Math.sin(Math.PI*lin(u,9*F,14*F));
+     A.style.opacity=1; A.style.letterSpacing='-0.03em'; A.style.transform=`scale(${1+0.07*bump})`;
+     A.querySelectorAll('.sy').forEach(e=>e.style.overflow='visible');
+     A.querySelectorAll('.sy>i').forEach(i=>{const k=+i.dataset.k, [dx,dy]=DIR[k], tk=u-k*F, p=eo3(lin(tk,0,6*F)), d=1100*(1-p)+46*(1-m);
+       i.style.opacity=tk<0?0:1; i.style.transform=`translate(${dx*d}px,${dy*d}px)`; i.style.filter=`blur(${(1-p)*9}px)`; i.style.display='inline-block'})}
+    if(HOOK=='A'){const r=rectOf(B), S=372, G=mix(60,16,eo(lin(u,9*F,12*F))), top=r.top-70-2*S-G, DIR=[[-1,0],[0,-1],[0,1],[1,0]], bump=Math.sin(Math.PI*lin(u,9*F,15*F));
+      $('hookA').style.transform=`scale(${1+0.05*bump})`;
+      for(let k=0;k<4;k++){const e=$('hk'+k), [dx,dy]=DIR[k], cx=k%2, cy=k>>1, tk=u-k*F, p=eo3(lin(tk,0,6*F)), d=1300*(1-p);
+        e.style.left=(540-S-G/2+cx*(S+G))+'px'; e.style.top=(top+cy*(S+G))+'px'; e.style.opacity=tk<0?0:1;
+        e.style.transform=`translate(${dx*d}px,${dy*d}px) rotate(${(1-p)*(k%2?14:-14)}deg)`; e.style.filter=`blur(${(1-p)*8}px)`}}
+    if(HOOK=='B'){const DIR=[[-1,0],[0,-1],[0,1],[1,0]], fl=lin(u,9*F,9*F+10*F);
+      A.querySelectorAll('.sy>i').forEach(i=>{const k=+i.dataset.k, [dx,dy]=DIR[k], tk=u-k*F, p=eo3(lin(tk,0,6*F)), tr=(1-p);
+        i.style.setProperty('--tr',tr.toFixed(3)); i.style.setProperty('--dx',-dx); i.style.setProperty('--dy',-dy)});
+      $('hkflash').style.background=fl>0&&fl<1?`radial-gradient(circle at 540px ${rectOf(A).top+rectOf(A).height/2}px, rgba(255,240,200,${(1-fl)*0.9}) 0, rgba(253,166,8,${(1-fl)*0.35}) ${mix(120,900,fl)}px, transparent ${mix(200,1300,fl)}px)`:'';
+      $('dust').style.transform=`translateY(${-u*30}px) scale(${1+0.04*u})`}
+    if(HOOK=='C'){const sc=eo(lin(u,9*F,9*F+10*F));
+      [...far.children].slice(0,-1).forEach((d,k)=>{const r=d.getBoundingClientRect(), vx=r.left+r.width/2-540, vy=r.top+r.height/2-900, n=Math.hypot(vx,vy)||1;
+        d.style.translate=`${vx/n*260*sc}px ${vy/n*260*sc}px`; d.style.rotate=`${(k%2?1:-1)*10*sc}deg`; d.style.scale=`${1+0.08*sc}`});}
+    const tu=u-BEAT, n=tu<0?-1:Math.min(TYPE.length-1,Math.floor(tu/(3*F)));
+    $('bt').innerHTML=n<0?'':TYPE[n]+(tu>=0&&tu<BEAT*1.9?'<span class="caret"></span>':''); $('m1').style.visibility=n<0?'hidden':'visible';
+    D('m1',2*BEAT+3*F,10); // 10-12 «색깔이 너무 짧게» → 타자 끝나자마자 10프레임에 칠하고 마디 끝까지 유지
+    // 끝 9프레임: 형광펜 색이 그 자리에서 화면 전체로 퍼진다 → 다음 마디 첫 7프레임에 위로 걷히며 드러남
+    const sp=ei(lin(u,len-9*F,len)); if(sp>0){const r=rectOf(B), cx=r.left+r.width/2, cy=r.top+r.height/2; fx.style.background=`radial-gradient(circle at ${cx}px ${cy}px, var(--amber) 0 ${sp*2300}px, transparent ${sp*2300+2}px)`} else fx.style.background='';
+  }
+  if(K=='list3'){ // 세 줄 박마다 마스크 오름 + 노란 밑줄 · 첫 7프레임 앞 마디에서 퍼진 노란 색이 위로 걷힘
+    {const p=eo(lin(u,0,7*F)); fx.style.background='var(--amber)'; fx.style.clipPath=`inset(0 0 ${p*100}% 0)`; fx.style.opacity=p<1?1:0}
+    for(const [i,k] of [['a',0],['b',1],['c',2]]){const e=$(i), p=eo(lin(u-k*BEAT,0,6*F)); e.style.opacity=u<k*BEAT?0:1; e.style.transform=`translateY(${40*(1-p)}px)`; D('u2'+i,k*BEAT+3*F,5)}
+  }
+  if(K=='hard'){ // 외곽선 → 채움 · 물음표들이 천천히 떠다님 · 끝 0.45초 금이 가고 마지막 8프레임에 조각나 흩어짐(10-12 «글자가 깨지면서 화면전환»)
+    for(let k=0;k<8;k++){const e=$('tl'+k), tk=u-k*2*F, p=eo(lin(tk,0,5*F)); e.style.opacity=tk<0?0:1; e.style.transform=`rotate(calc(var(--r) * ${mix(3,1,p)})) scale(${mix(1.4,1,p)})`}
+    A.style.transform='';
+    $('hdbg').style.transform=`scale(${1+0.04*cl(u/len)})`;
+    for(let q=0;q<5;q++){const e=$('qf'+q); e.style.translate=`${(q%2?-1:1)*u*14}px ${-u*(10+q*4)}px`}
+    const ck=lin(u,len-0.35,len-2*F); // 금: 충격점에서 바깥으로 빠르게 번짐
+    $('crack').querySelectorAll('polyline').forEach((p,n)=>{const sd=SHARDS[n], d=lin(ck,sd.ring*0.22,sd.ring*0.22+0.5); p.style.strokeDashoffset=1-d; p.style.opacity=ck>0?1:0});
+    if(ck>0) A.style.transform=`scale(${1+0.05*eo(ck)})`;
+    $('hdbg').style.filter=`blur(.6px) saturate(.9) brightness(${1-0.25*ck})`;
+  }
+  if(K=='drop'){ // 플래시 → «그러면 한비즈에» 자간 모음 · «맡겨보세요» 블러 인 + 굵기 · 흰 밑줄 · 공간 사진 천천히 다가감
+    $('spbg').style.transform=`scale(${mix(1.12,1.0,eo(lin(u,0,0.6)))*(1+0.03*cl(u/len))})`;
+    fx.style.background='#fff'; fx.style.opacity=u<F?0.55:0;   // 짧은 섬광 1프레임(조각이 보이게)
+    {const sw=$('shatter'); if(sw){ if(u>0.62){sw.style.display='none'} else {sw.style.display='block';
+      SHARDS.forEach((sd,n)=>{const e=$('sp'+n), dx=sd.cx-IMP[0], dy=sd.cy-IMP[1], d=Math.hypot(dx,dy)||1, burst=eo(lin(u,0,7*F)), g=u*u*2600;
+        const sp=(1.0-sd.ring*0.18)*(420+0.45*d); const rot=(n%2?1:-1)*(30+((n*37)%50))*eo(lin(u,0,14*F));
+        e.style.transformOrigin=`${sd.cx}px ${sd.cy}px`; e.style.transform=`translate(${dx/d*sp*burst}px,${dy/d*sp*burst+g}px) rotate(${rot}deg) scale(${1-0.12*burst})`;
+        e.style.opacity=1-lin(u,0.3,0.6); e.style.filter=`brightness(${1+0.35*(1-burst)})`})}}}
+    trackIn(A,u-2*F,0.5,14);
+    const k=eo(lin(u,BEAT,BEAT+12*F)); B.style.filter=`blur(${mix(14,0,k)}px)`; B.style.opacity=k;
+    B.style.fontVariationSettings=`'wght' ${Math.round(mix(300,900,eo(lin(u,BEAT+6*F,BEAT+14*F))))}`;
+    D('u4',2*BEAT+4*F,6,true);
+  }
+  if(K=='diff'){ // 대각 와이프 · 자간 모음 · 음절 계단 · 주황 형광펜(글자 흰색) · «요» 속으로
+    const w=eo(lin(u,0,9*F)), X=mix(1780,-10,w);
+    fx.style.background='var(--ink)'; fx.style.clipPath=`polygon(0 0, ${X}px 0, ${X-700}px 1920px, 0 1920px)`; fx.style.opacity=w<1?1:0;
+    trackIn(A,u-3*F,0.4,12);
+    for(let i=0;i<8;i++){const s=$('s'+i), su=u-BEAT-i*2*F, k=eo(lin(su,0,6*F)); s.style.opacity=su<0?0:k; s.style.transform=`translateY(${24*(1-k)}px)`}
+    D('m5',2*BEAT+2*F,6); B.style.color=u>=2*BEAT+5*F?'#fff':'';
+    const zi=ei(lin(u,len-8*F,len)); if(zi>0){txt.style.transform='none'; const s6=$('s6').getBoundingClientRect(); txt.style.transformOrigin=`${s6.left+s6.width*0.5-60}px ${s6.top+s6.height*0.36-420}px`; txt.style.transform=`scale(${1+13*zi})`; hl.style.transformOrigin=`${s6.left+s6.width*0.5}px ${s6.top+s6.height*0.36}px`; hl.style.transform=`scale(${1+13*zi})`; far.style.filter=`blur(${6*zi}px)`}
+  }
+  if(K=='attitude'){ // «요» 속에서 아이리스로 열림 · 줄 자간 모음 · «태도부터» 노란 형광펜(글자 남색) · «다릅니다» 역팝
+    const ir=eo(lin(u,0,8*F)); fx.style.background=ir<1?`radial-gradient(circle at 50% 50%, transparent 0 ${mix(330,1300,ir)}px, var(--orange) ${mix(332,1302,ir)}px)`:'';
+    trackIn(A,u-2*F,0.4,12);
+    const kb=eo(lin(u-BEAT,0,6*F)); B.parentNode.style.opacity=u<BEAT?0:1; B.parentNode.style.transform=`translateY(${40*(1-kb)}px)`;
+    D('m6',BEAT+5*F,6); B.style.color=u>=BEAT+8*F?'var(--ink)':'';
+    const kc=eo(lin(u-2*BEAT,0,9*F)); C.style.transform=`scale(${mix(1.3,1,kc)})`; C.style.opacity=u<2*BEAT?0:1;
+  }
+  if(K=='year'){ // «저희는» 자간 모음 · «1년동안» 역팝 · 주황 밑줄 · 끝에 아이리스 직전
+    trackIn(A,u,0.4,12);
+    const k=eo(lin(u-BEAT,0,9*F)); B.style.transform=`scale(${mix(1.35,1,k)})`; B.style.opacity=u<BEAT?0:1;
+    D('u7',2*BEAT,6);
+    // 10-12 «안쪽으로 빨려들어가면서 전환» — 끝 10프레임 화면 전체가 소용돌이치며 가운데로 작아짐
+    const sk=lin(u,len-11*F,len); if(sk>0){const e=sk*sk*sk; st.style.transformOrigin='50% 47%'; st.style.transform=`scale(${mix(1,0.0,e)}) rotate(${-900*sk*sk}deg)`; st.style.filter=`blur(${sk*7}px)`;
+      document.body.style.background=`repeating-conic-gradient(from ${sk*400}deg at 50% 47%, rgba(255,255,255,${0.10+0.25*sk}) 0deg 2deg, transparent 2deg 9deg), radial-gradient(circle at 50% 47%, #1857D1 0%, #080D22 ${mix(70,30,sk)}%)`}
+    else {st.style.transform=''; st.style.filter=''}
+  }
+  if(K=='mont'){ // 정렬된 8줄 목록 · 지금 항목만 노란 형광펜 · 서류 박힘 · 첫 카드 아이리스(종이색 밖)
+    const cu=t-CARD_T[card]; txt.style.transform=`scale(${1+0.02*cl(cu/0.9)})`; sync(); const gl=lin(t,T_GATHER[0],T_GATHER[1]-2*F); txt.style.opacity=1-gl; ac.style.opacity=1-gl;
+    const r=BR.u5; if(r) draw('u5',r[0],r[1],eo3(lin(cu,0,4*F)));
+    const ir=eo(lin(t-BAR[7],0,9*F)); fx.style.background=''; if(card==0&&ir<1){st.style.transformOrigin='50% 47%'; st.style.transform=`scale(${mix(0.04,1,ir)}) rotate(${mix(540,0,ir)}deg)`; st.style.filter=`blur(${(1-ir)*6}px)`;
+      document.body.style.background=`repeating-conic-gradient(from ${ir*300}deg at 50% 47%, rgba(255,255,255,${0.35*(1-ir)}) 0deg 2deg, transparent 2deg 9deg), radial-gradient(circle at 50% 47%, #1857D1 0%, #080D22 50%)`} else {st.style.transform=''; st.style.filter=''}
+  }
+  if(K=='allgive'){ // 서류 더미(뭉침 → «다 드립니다»에 펼침) · 마스크 · 주황 밑줄
+    ac.style.opacity=1;
+    const m1=eo(lin(u,0,7*F)), m2=eo(lin(u-BEAT,0,7*F)); A.style.transform=`translateY(${110*(1-m1)}%)`; B.parentNode.style.transform=`translateY(${110*(1-m2)}%)`;
+    D('u9',2*BEAT,6);
+  }
+  if(K=='count'){ // 숫자 굴림 · 호박색 밑줄 · 라벨 자간 모음
+    const roll=(el,su)=>{if(!el)return; el.querySelectorAll('[data-t]').forEach((c,j)=>{const target=+c.dataset.t, stop=0.32+0.07*j, p=eo(lin(su,0,stop)), pos=(target+10)*p; c.style.transform=`translateY(${-pos*1.06}em)`;
+        c.parentNode.parentNode.parentNode.style.opacity=su<0?0:1})};
+    roll(A,u); roll(B,u-BEAT);
+    D('u10',2*BEAT,6); trackIn(C,u-2*BEAT,0.6,12); if(u<2*BEAT) C.style.opacity=0;
+  }
+  if(K=='how'){ // 왼쪽 푸시(9프레임): 앞 장면 −1080 · 새 장면 +1080→0 → «어떻게?» 위에서 떨어져 박힘 → 끝 8프레임 카메라 쪽으로 다가오며 사라짐(줌 스루)
+    const p=lin(u,0,9*F), e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+    const po=$('pushOld'); if(po){po.style.transform=`translateX(${-1080*e}px)`; po.style.display=p>=1?'none':'block'}
+    for(const l of [far,glow,txt]) l.style.transform=`translateX(${1080*(1-e)}px)`;
+    const d=lin(u,6*F,12*F), de=d*d; A.style.transform=`translateY(${(1-de)*-700}px) scale(${mix(1.25,1,de)})`; A.style.opacity=d>0?1:0;
+    if(u>=12*F) A.style.transform=`scale(${1+0.04*cl((u-12*F)/1.2)})`;
+    $('hwbg').style.transform=`scale(${1.05+0.04*cl(u/len)})`;
+    const z=ei(lin(u,len-8*F,len)); if(z>0){txt.style.transform=`scale(${1+5*z})`; txt.style.filter=`blur(${z*12}px)`; txt.style.opacity=1-z; far.style.filter=`blur(${z*8}px)`} else {txt.style.filter=''; txt.style.opacity=1; far.style.filter=''}
+  }
+  if(K=='grant'){ // 0: 가운데 «1년간 나오는 사업자 지원금을» · 2박: «1인당 평균»이 뿅 → 위 멘트 밀어 올림 · 3박: «300만원 이상» 3D 블록이 옆에서 박힘 · 둘째 마디: 반쪽 커튼(위 반쪽 내려옴·아래 반쪽 올라옴) → 마주하며 커짐 → 가로로 늘어나며 사라짐
+    const v=t-BAR[14], v2=t-BAR[15]-0.5;   // 10-13 «300만원이상 하고 체류시간 0.5초 정도만 더길게»
+    $('grbg').style.transform=`scale(${1.06+0.05*cl(v/3.7)})`;
+    const gA=$('gA'), gBC=$('gBC'), gB=$('gB'), gC=$('gC');
+    {const p=eo(lin(v,0,7*F)); gA.style.opacity=p; gA.style.transform=`translateY(${(1-p)*40}px)`}
+    const push=eo(lin(v-2*BEAT,0,6*F)); gA.style.top=mix(430,250,push)+'px'; gA.style.opacity=lin(v,0,4*F)*(1-0.35*push);
+    {const tb=v-2*BEAT, p=eo(lin(tb,0,6*F)); gB.style.opacity=tb<0?0:1; gB.style.transform=`scale(${tb<0?0:mix(0.2,1,p)})`; gBC.style.top=mix(560,470,push)+'px'}
+    {const tc=v-3*BEAT, p=lin(tc,0,4*F), e2=p*p; gC.style.opacity=tc<0?0:1; gC.style.transform=`translateX(${(1-e2)*700}px) scale(${mix(1.6,1,e2)})`}
+    // 커튼
+    const T=$('cuT'), B=$('cuB'), cp=lin(v2,0,9*F), ce=eo3(cp), grow=eo(lin(v2,9*F,9*F+0.6)), out=ei(lin(v2,(BAR[16]-BAR[15]-0.5)-10*F,BAR[16]-BAR[15]-0.5));
+    T.style.transform=`translateY(${v2<0?-1200:mix(-1100,0,ce)}px)`; B.style.transform=`translateY(${v2<0?1200:mix(1100,0,ce)}px)`;
+    const cut=$('cur'); cut.style.display=v2<0?'none':'block';
+    cut.style.transform=`scale(${mix(1,1.1,grow)*mix(1,5,out)},${mix(1,1.1,grow)*mix(1,0.04,out)})`; cut.style.opacity=1-out; cut.style.filter=`blur(${out*6}px)`;
+    if(v2>=0){gA.style.opacity=gA.style.opacity*(1-ce); gBC.style.opacity=1-ce}
+  }
+  if(K=='together'){ // 글자가 전 방향에서 날아와 모임(제각각 각도로 멈춤) · 빵빠레 없음 · 끝 8프레임 위로 올라가 제목 자리
+    const N=9; for(let k=0;k<N;k++){const e=$('tg'+k); if(!e) continue; const a=(k*137.5+30)*Math.PI/180, dist=1300, tk=u-k*1.5*F, p=eo3(lin(tk,0,10*F));
+      const r0=((k*73)%140)-70, rEnd=((k*29)%11)-5; e.style.opacity=tk<0?0:1; e.style.transform=`translate(${Math.cos(a)*dist*(1-p)}px,${Math.sin(a)*dist*(1-p)}px) rotate(${mix(r0,rEnd,p)}deg) scale(${mix(1.6,1,p)})`; e.style.filter=`blur(${(1-p)*6}px)`}
+    $('tgbg').style.transform=`scale(${1.04+0.05*cl(u/len)})`;
+    const o=eo(lin(u,len-8*F,len)); A.style.translate=`0 ${-o*480}px`; A.style.scale=`${mix(1,0.58,o)}`;
+  }
+  if(K=='bene'||K=='allok'){ // 나무 토막이 위에서 떨어져 «탁» 박힘(박 2개 간격) → 조각칼이 왼→오로 지나가며 글자가 새겨짐 · «전부가능!»: 큰 토막이 뒤집히며 전·부·가·능·! 한 글자씩 새겨짐
+    const v=t-BAR[17], TT=[0,2*BEAT,BAR[18]-BAR[17],BAR[18]-BAR[17]+2*BEAT], vo=t-BAR[19];
+    {const e=$('bh'), p=eo(lin(v,0,6*F)); e.style.opacity=p}
+    for(let k=0;k<4;k++){const e=$('sl'+k), tk=v-TT[k]; if(tk<0){e.style.opacity=0; continue}
+      const d=lin(tk,0,5*F), de=d*d, land=lin(tk,5*F,9*F);           // 떨어짐(가속) → 착지 눌림
+      const sq=land>0&&land<1?Math.sin(land*Math.PI)*0.06:0;
+      e.style.opacity=1; e.style.transform=`translateY(${(1-de)*-260}px) rotate(${(1-de)*(k%2?4:-4)}deg) scale(${mix(1.25,1,de)+sq},${mix(1.25,1,de)-sq})`;
+      const c=lin(tk,7*F,7*F+0.55), cv=$('cv'+k), ch=$('ch'+k);   // 새김: 클립이 왼쪽부터 열림 + 조각칼 끝 부스러기
+      cv.style.clipPath=`inset(-20% ${100-c*100}% -20% 0)`; ch.style.left=`calc(${(c*100).toFixed(2)}% - 10px)`; ch.style.opacity=c>0&&c<1?1:0; ch.parentElement.style.setProperty('--cx',c);
+      if(vo>=0){const g=eo(lin(vo,0,8*F)); e.style.opacity=1-g; e.style.transform+=` translateY(${-g*90}px)`}}
+    if(vo>=0){$('bh').style.opacity=1-eo(lin(vo,0,8*F))}
+    {const oc=$('okcol'); oc.style.display=vo<0?'none':'block';
+     for(let k=0;k<4;k++){const b=$('okb'+k), pi=eo(lin(vo,k*2*F,k*2*F+6*F)), fl=lin(vo,8*F+k*6*F,16*F+k*6*F), fe=fl<.5?4*fl*fl*fl:1-Math.pow(-2*fl+2,3)/2;
+       b.style.opacity=vo<k*2*F?0:1; b.style.transform=`scale(${mix(0.6,1,pi)}) rotateX(${-180*fe}deg)`}}
+  }
+  if(K=='rope'){ // «전부가능» 판 속으로 빨려 들어감(확대·회전·흐림) → 문의 장면이 안쪽에서 돌며 나옴 → 디졸브 · 타자 · 더 알아보기
+    const v=t-BAR[20];
+    for(let k=0;k<4;k++){const b=$('okb'+k); b.style.opacity=1; b.style.transform='rotateX(-180deg)'}
+    const sk=ei(lin(v,0,0.55)), oc=$('okcol');
+    oc.style.transform=`scale(${mix(1,11,sk)}) rotate(${mix(0,35,sk)}deg)`; oc.style.filter=`blur(${sk*10}px)`; oc.style.opacity=1-lin(v,0.3,0.5);
+    far.style.transform=`scale(${mix(1,1.6,sk)})`; far.style.filter=`blur(${sk*14}px)`;
+    {const q=eo(lin(v,0.2,0.7)), c=$('cta'); c.style.transform=`scale(${mix(0.3,1,q)}) rotate(${mix(-35,0,q)}deg)`; c.style.opacity=lin(v,0.2,0.32)}
+    {const c1=$('c1'), d=lin(v-0.65,0,10*F); c1.style.opacity=d; c1.style.filter=`blur(${(1-d)*10}px)`;   // 디졸브
+     const r=BR.mkgu; if(r) draw('mkgu',r[0],r[1],eo3(lin(v-0.65-10*F,0,6*F)));
+     const msg='아래링크를 통해 문의남겨보세요', tv=v-0.65-14*F, n=tv<0?0:Math.min(msg.length,Math.floor(tv/(3*F))+1); // 키보드 치듯(음절당 3프레임)
+     $('c2t').textContent=msg.slice(0,n); $('c2c').style.opacity=(tv>=0&&(n<msg.length||Math.floor(v/0.4)%2==0))?1:0}
+    {const mo=$('more2'), mu=v-0.65-14*F-16*3*F-3*F, mp=eo3(lin(mu,0,12*F)); mo.style.opacity=mu<0?0:1; mo.style.transform=`translate(-50%,${mix(300,0,mp)}px)`}
+  }
+  if(K=='off'){ // 장면 3개(배경 사진 가로 휩팬) · 줄 마스크 · 글자 밑 노란 띠 · 카드 2장씩 · 마지막 «더 알아보기» 버튼이 아래에서 끌려 올라옴
+    const T=[BAR[11],BAR[12],BAR[13]], S4=BAR[14];
+    for(let k=0;k<3;k++){const e=$('sb'+k), inn=k==0?1:eo(lin(t-T[k],0,8*F)), out=k<2?eo(lin(t-T[k+1],0,8*F)):0;
+      e.style.transform=`translateX(${1080*(1-inn)-1080*out}px)`; e.style.display=(t<T[k]&&k>0)||out>=1?'none':'block';
+      if(k==1){const rot=lin(t,T[1]+2*BEAT-9*F,T[1]+2*BEAT+3*F), ee=rot<.5?4*rot*rot*rot:1-Math.pow(-2*rot+2,3)/2; $('sb1').style.background='#0B1530'; $('cube').style.transform=`rotateY(${-180*ee}deg) scale(${1.06-0.16*Math.sin(Math.PI*ee)})`} else e.firstChild.style.transform=`scale(${1.06+0.05*cl((t-T[k])/3.7)})`; if(k!=1) e.firstChild.style.filter=`blur(${k==0?1.5:1}px) brightness(${k==2?mix(1,0.78,lin(t-S4,0,8*F)):1})`}
+    const pn=$('panel'); const pin=eo(lin(t-T[0],0,8*F)); pn.style.opacity=pin; pn.style.transform=`translateY(${(1-pin)*40}px) scale(${mix(.96,1,pin)})`;
+    const lineIn=(id,t0)=>{const e=$(id); const p=eo(lin(t-t0,0,6*F)); e.style.transform=`translateY(${110*(1-p)}%)`; e.parentNode.style.visibility=t>=t0?'visible':'hidden'};
+    const grp=(id,t0,t1)=>{const e=$(id); const out=eo(lin(t-t1,0,6*F)); e.style.opacity=t<t0?0:1-out; e.style.marginTop=`${-out*60}px`};
+    grp('g1',T[0],T[1]); grp('g2',T[1],T[2]); /* g3·g4 는 아래 «모였다가 펼쳐짐»에서 */
+    lineIn('l1',T[0]); lineIn('l2',T[0]+2*BEAT); lineIn('l3',T[1]); lineIn('l4',T[1]+2*BEAT); lineIn('l5',T[2]); lineIn('l5b',T[2]+2*BEAT); lineIn('l5c',T[2]+3*BEAT);
+    // 10-12 «글자가 한곳으로 모이면서 아래링크를 눌러보세요로 쫙 늘어나면서» — 셋째 묶음이 끝 7프레임에 한 점으로 모이고(가로·세로 0.02), 넷째 줄이 그 점에서 가로로 쫙 펼쳐짐(7프레임)
+    {const g3=$('g3'), g4=$('g4'), c=ei(lin(t,S4-7*F,S4)), x=eo(lin(t-S4,0,7*F));
+     if(t<S4){g3.style.transform=`translateY(-50%) scale(${mix(1,0.02,c)},${mix(1,0.25,c)})`; g3.style.filter=`blur(${c*6}px)`; g3.style.marginTop='0px'; g3.style.opacity=t<T[2]?0:1}
+     else {g3.style.opacity=0}
+     g4.style.transform=`translateY(-50%) scale(${mix(0.02,1,x)},${mix(0.3,1,x)})`; g4.style.filter=`blur(${(1-x)*8}px)`; g4.style.opacity=t<S4?0:1; $('l6').style.transform='none'; $('l6').parentNode.style.visibility=t>=S4?'visible':'hidden'}
+    const MK=(k,t0)=>{const r=BR['mk'+k]; if(r) draw('mk'+k,r[0],r[1],eo3(lin(t-t0,0,6*F)))};
+    MK('1',T[0]+5*F); MK('2',T[0]+2*BEAT+5*F); MK('3',T[1]+5*F); MK('4',T[1]+2*BEAT+5*F); MK('5',T[2]+5*F); MK('5m',T[2]+9*F); MK('7',T[2]+2*BEAT+5*F); MK('6',S4+BEAT);
+    // 카드: 장면마다 2장 — 들어옴(아래에서 40px · 7프레임) → 장면 바뀔 때 배경과 함께 왼쪽으로 빠짐
+    const CI=[T[0],T[0]+2*BEAT,T[1],T[1]+2*BEAT,T[2],T[2]+2*BEAT], OUT=[T[1],T[1],T[2],T[2],S4,S4];
+    for(let k=0;k<6;k++){const e=$('c'+(k+1)), ci=eo(lin(t-CI[k],0,7*F)), ex=eo(lin(t-OUT[k],0,8*F));
+      e.style.opacity=t<CI[k]||ex>=1?0:ci; e.style.transform=`translate(${-1080*ex}px,${40*(1-ci)}px) rotate(${(k%2?1:-1)*2}deg)`}
+    $('c1').querySelectorAll('.obars i').forEach((i,k)=>{i.style.height=(+i.dataset.h)*eo(lin(t-CI[0]-(4+k*2)*F,0,8*F))+'%'});
+    $('ol1').style.strokeDashoffset=1-eo(lin(t-CI[0]-12*F,0,12*F)); $('ol1a').setAttribute('opacity',lin(t-CI[0]-22*F,0,3*F));
+    $('ck2').style.strokeDashoffset=1-eo(lin(t-CI[1]-8*F,0,8*F));
+    $('ol3').style.strokeDashoffset=1-eo(lin(t-CI[2]-5*F,0,14*F)); $('ol3d').setAttribute('opacity',lin(t-CI[2]-18*F,0,3*F));
+    $('c4').querySelectorAll('.obars i').forEach((i,k)=>{i.style.height=(+i.dataset.h)*eo(lin(t-CI[3]-(3+k*3)*F,0,8*F))+'%'});
+    $('ofl').style.transform=`scaleX(${eo(lin(t-CI[3]-16*F,0,6*F))})`; $('ofl').style.transformOrigin='11px 17px';
+    for(let k=0;k<3;k++){const p=eo(lin(t-CI[4]-(4+k*7)*F,0,6*F)); $('bb'+k).style.opacity=p; $('bb'+k).style.transform=`translateY(${(1-p)*16}px)`}
+    $('typ').querySelectorAll('b').forEach((d,k)=>{const ph=(t*2.2+k*0.22)%1; d.style.opacity=t>=CI[4]+24*F?0.35+0.65*Math.sin(Math.PI*ph):0});
+    for(let k=0;k<3;k++){const g=$('pg'+k); g.style.width=(+g.dataset.w)*eo(lin(t-CI[5]-(4+k*4)*F,0,12*F))+'%'}
+    // «더 알아보기» — 아래 화면 밖에서 끌려 올라와 멈춤(감속 · 이동 중 세로로 살짝 늘어남, 튕김 없음) → 탭
+    const mo=$('more'), mu=t-(S4+BEAT), mp=eo3(lin(mu,0,16*F)), vel=mu>0&&mp<1?(1-mp):0;
+    mo.style.opacity=mu<0?0:1; mo.style.transform=`translate(-50%,${mix(760,0,mp)}px) scaleY(${1+0.12*vel})`;
+    const tp=$('tap2'), tu=mu-0.75; if(tu>0&&tu<0.6){tp.style.display='block'; tp.style.left=(540-45)+'px'; tp.style.top=(1352-45)+'px'; tp.style.transform=`scale(${mix(1,1.8,eo(tu/0.6))})`; tp.style.opacity=1-tu/0.6; mo.style.transform=`translate(-50%,0) scale(${tu<0.12?0.96:1})`} else tp.style.display='none';
+  }
+};
+</script></body></html>
